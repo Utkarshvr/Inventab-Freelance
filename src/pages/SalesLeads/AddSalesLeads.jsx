@@ -692,128 +692,177 @@ const AddSalesDataForm = () => {
                             <th scope="col">Action</th>
                           </tr>
                         </thead>
-                        <tbody>
-                          {values?.parts?.map((part, index) => {
-                            return (
-                              <tr key={index + 1}>
-                                <td>
-                                  <div className="select-port">
-                                    <Select
-                                      className="select"
-                                      placeholder="Select Port No"
-                                      value={{
-                                        label: part?.part_id?.part_number,
-                                        value: part?.part_id?.id,
-                                      }}
-                                      options={parts}
-                                      name="part_id"
-                                      isSearchable
-                                      isClearable
-                                      onChange={(selectedOption) =>
-                                        handlePartSelectChange(
-                                          selectedOption,
-                                          index
-                                        )
-                                      }
+                        {values?.parts?.map((part, index) => {
+                          return (
+                            <>
+                              <tbody>
+                                <tr key={index + 1}>
+                                  <td>
+                                    <div className="select-port">
+                                      <Select
+                                        className="select"
+                                        placeholder="Select Port No"
+                                        value={{
+                                          label: part?.part_id?.part_number,
+                                          value: part?.part_id?.id,
+                                        }}
+                                        options={parts}
+                                        name="part_id"
+                                        isSearchable
+                                        isClearable
+                                        onChange={(selectedOption) =>
+                                          handlePartSelectChange(
+                                            selectedOption,
+                                            index
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <input
+                                      className="new_input_class"
+                                      type="text"
+                                      placeholder="Short Description"
+                                      name={`parts[${index}].short_description`}
+                                      value={part.short_description}
+                                      onChange={handleChange}
                                     />
-                                  </div>
-                                </td>
-                                <td>
-                                  <input
-                                    className="new_input_class"
-                                    type="text"
-                                    placeholder="Short Description"
-                                    name={`parts[${index}].short_description`}
-                                    value={part.short_description}
-                                    onChange={handleChange}
-                                  />
-                                </td>
+                                  </td>
 
-                                <td>
-                                  <input
-                                    className="new_input_class"
-                                    type="number"
-                                    placeholder="Total Quntity"
-                                    name={`parts[${index}].quantity`}
-                                    value={part.quantity}
-                                    onChange={(e) => {
-                                      handleChange(e);
-                                      updateNetPrice(
-                                        index,
-                                        e.target.value,
-                                        "quantity"
-                                      ); // Update net_price when unit_cost changes
-                                    }}
-                                  />
-                                </td>
+                                  <td>
+                                    <input
+                                      className="new_input_class"
+                                      type="number"
+                                      placeholder="Total Quntity"
+                                      name={`parts[${index}].quantity`}
+                                      value={part.quantity}
+                                      onChange={(e) => {
+                                        handleChange(e);
+                                        updateNetPrice(
+                                          index,
+                                          e.target.value,
+                                          "quantity"
+                                        ); // Update net_price when unit_cost changes
+                                      }}
+                                    />
+                                  </td>
 
-                                <td>
-                                  <input
-                                    className="new_input_class"
-                                    type="number"
-                                    placeholder="Unit Cost"
-                                    name={`parts[${index}].unit_cost`}
-                                    value={part?.unit_cost}
-                                    onChange={(e) => {
-                                      handleChange(e);
-                                      updateNetPrice(
-                                        index,
-                                        e.target.value,
-                                        "unit-cost"
-                                      ); // Update net_price when unit_cost changes
-                                    }}
-                                  />
-                                </td>
+                                  <td>
+                                    <input
+                                      className="new_input_class"
+                                      type="number"
+                                      placeholder="Unit Cost"
+                                      name={`parts[${index}].unit_cost`}
+                                      value={part?.unit_cost}
+                                      onChange={(e) => {
+                                        handleChange(e);
+                                        updateNetPrice(
+                                          index,
+                                          e.target.value,
+                                          "unit-cost"
+                                        ); // Update net_price when unit_cost changes
+                                      }}
+                                    />
+                                  </td>
 
-                                <td>
-                                  <input
-                                    className="new_input_class"
-                                    type="number"
-                                    placeholder="Extd Net Cost"
-                                    name={`parts[${index}].gst`}
-                                    value={part?.gst || ""}
-                                    // onChange={handleChange}
-                                    readOnly
-                                  />
-                                </td>
+                                  <td>
+                                    <input
+                                      className="new_input_class"
+                                      type="number"
+                                      placeholder="Extd Net Cost"
+                                      name={`parts[${index}].gst`}
+                                      value={part?.gst || ""}
+                                      // onChange={handleChange}
+                                      readOnly
+                                    />
+                                  </td>
 
-                                <td>
-                                  <input
-                                    className="new_input_class"
-                                    type="number"
-                                    placeholder="Extd Net Cost"
-                                    name={`parts[${index}].net_price`}
-                                    value={part?.net_price}
-                                    // onChange={handleChange}
-                                    readOnly
-                                  />
-                                </td>
-                                <td>
-                                  <input
-                                    className="new_input_class"
-                                    type="number"
-                                    placeholder="Extd Gross Cost"
-                                    name={`parts[${index}].extd_gross_price`}
-                                    value={part?.extd_gross_price}
-                                    // onChange={handleChange}
-                                    readOnly
-                                  />
-                                </td>
-                                <td>
-                                  <button
-                                    type="button"
-                                    className="btn btn-danger btn-sm"
-                                    onClick={() => handleRemovePart(index)}
-                                  >
-                                    Remove
-                                  </button>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
+                                  <td>
+                                    <input
+                                      className="new_input_class"
+                                      type="number"
+                                      placeholder="Extd Net Cost"
+                                      name={`parts[${index}].net_price`}
+                                      value={part?.net_price}
+                                      // onChange={handleChange}
+                                      readOnly
+                                    />
+                                  </td>
+                                  <td>
+                                    <input
+                                      className="new_input_class"
+                                      type="number"
+                                      placeholder="Extd Gross Cost"
+                                      name={`parts[${index}].extd_gross_price`}
+                                      value={part?.extd_gross_price}
+                                      // onChange={handleChange}
+                                      readOnly
+                                    />
+                                  </td>
+                                  <td>
+                                    <button
+                                      type="button"
+                                      className="btn btn-danger btn-sm"
+                                      onClick={() => handleRemovePart(index)}
+                                    >
+                                      Remove
+                                    </button>
+                                  </td>
+                                </tr>
+                              </tbody>
+                              {values.parts?.length === index + 1 ? (
+                                <tbody>
+                                  <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "flex-end",
+                                      }}
+                                    >
+                                      <th
+                                        scope="col"
+                                        style={{
+                                          color: "white",
+                                          fontSize: "20px",
+                                        }}
+                                      >
+                                        Total
+                                      </th>
+                                    </td>
+                                    <td>
+                                      <div className="w-full">
+                                        <InputText
+                                          type="number"
+                                          name="total"
+                                          value={values?.total || ""}
+                                          readOnly
+                                        />
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <div className="w-full">
+                                        <InputText
+                                          type="number"
+                                          name="total"
+                                          value={values?.total || ""}
+                                          readOnly
+                                        />
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              ) : null}
+                            </>
+                          );
+                        })}
                       </table>
-                      <div className="w-100">
+                      {/* <div className="w-100">
                         <InputText
                           title="Total"
                           type="number"
@@ -821,7 +870,7 @@ const AddSalesDataForm = () => {
                           value={values?.total}
                           readOnly
                         />
-                      </div>
+                      </div> */}
                     </div>
                   ) : (
                     <h3 className="text-center">No Parts Added</h3>
