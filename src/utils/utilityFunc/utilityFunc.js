@@ -240,13 +240,37 @@ utils.formatChartData = (kipPo) => {
     });
     return total;
   };
+  const calculateCumulativeData = (data, month) => {
+    let total = 0;
+    const amountsArr = [];
+    // console.log({ DATA: data, month });
+    data?.forEach((department) => {
+      if (department?.name !== "monthly-totals") {
+        if (department[month] !== null) {
+          total += department[month] || 0;
+        }
+      }
+    });
+    // console.log([...amountsArr, total]);
+    // console.log({ month, total });
+    amountsArr.push(total);
+    return total;
+  };
 
   const formattedDataWithTotal = months.map((month) => {
     const entry = { month };
     data?.forEach((department) => {
-      entry[department.department] = department[month];
+      if (department?.name !== "monthly-totals") {
+        entry[department.department] = department[month];
+      }
     });
-    entry.total = calculateTotal(data, month); // Add the total for the month
+    const total = calculateTotal(data, month); // Add the total for the month
+    entry.total = total; // Add the total for the month
+
+    const cumulativeTotal = calculateCumulativeData(data, month); // Add the cumulative figures for the month
+    entry.cumulativeTotal = cumulativeTotal;
+
+    console.log({ month, total: total, cumulativeTotal });
     return entry;
   });
 
