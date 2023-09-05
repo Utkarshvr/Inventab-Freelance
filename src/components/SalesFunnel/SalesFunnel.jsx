@@ -25,7 +25,10 @@ export default function SalesFunnel() {
       try {
         setLoading(true);
         const { data } = await axios.get(
-          `pipo/sales/lead/?org=${orgId}&financial_year=${selectedYr}`
+          `pipo/sales/lead/?org=${orgId}&financial_year=${selectedYr?.label?.replace(
+            /\s/g,
+            ""
+          )}`
         );
 
         // Create an object to store the counts for each status
