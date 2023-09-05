@@ -13,6 +13,16 @@ import { useAuth } from "../../../hooks/useAuth";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Loader from "../../../ui/Loader";
 import "./sales.css";
+import { createYearsUpto2021 } from "../../../utils/utilityFunc/utilityFunc";
+
+const calcTotalValue = (row) => {
+  let total = 0;
+  row?.parts?.forEach((part) => {
+    total += part?.quantity * part?.unit_cost;
+  });
+
+  return total;
+};
 
 const SalesLead = () => {
   const axios = useAxiosPrivate();
@@ -25,6 +35,10 @@ const SalesLead = () => {
   const [csv, setCsv] = useState([]);
   // const [selectedFiled, setSelectedfield] = useState("");
   const [selectedEl, setSelectedEL] = useState(null);
+  // console.log({ csv });
+
+  const yearsOption = createYearsUpto2021();
+  const [selectedYr, setSelectedYr] = useState(yearsOption[0]);
 
   // load leads
   useEffect(() => {
@@ -34,10 +48,15 @@ const SalesLead = () => {
     const getLeads = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(`pipo/sales/lead/?org=${orgId}`, {
-          signal: controller.signal,
-        });
+        const { data } = await axios.get(
+          `pipo/sales/lead/?org=${orgId}&financial_year=${selectedYr?.label}`,
+          {
+            signal: controller.signal,
+          }
+        );
+        // pipo/sales/lead/?org={org_id}&financial_year=2023-2024
         setLoading(false);
+        console.log(data?.results);
         isMount && setSalesLeads(data?.results);
         isMount && setSearchData(data?.results);
       } catch (error) {
@@ -51,7 +70,7 @@ const SalesLead = () => {
     return () => {
       (isMount = false), controller.abort();
     };
-  }, [axios, orgId]);
+  }, [axios, orgId, selectedYr]);
 
   // columns for table
   const columns = [
@@ -60,19 +79,20 @@ const SalesLead = () => {
       cell: (row) => {
         return (
           <Link
-            className='text-center text-info dark_theme_text'
-            to={`/dashboard/sales/update-sales-leads/${row?.lead_no}`}>
+            className="text-center text-info dark_theme_text"
+            to={`/dashboard/sales/update-sales-leads/${row?.lead_no}`}
+          >
             {row?.lead_id}
           </Link>
         );
       },
     },
 
-    {
-      name: "Sub Org",
-      selector: (row) => row?.sub_org?.sub_company_name || "",
-      sortable: true,
-    },
+    // {
+    //   name: "Sub Org",
+    //   selector: (row) => row?.sub_org?.sub_company_name || "",
+    //   sortable: true,
+    // },
     {
       name: "Client",
       selector: (row) => row?.client?.company_name,
@@ -85,19 +105,12 @@ const SalesLead = () => {
     },
     {
       name: "Value",
-      selector: (row) => {
-        let total = 0;
-        row?.parts?.forEach((part) => {
-          total += part?.quantity * part?.unit_cost;
-        });
-
-        return total;
-      },
+      selector: (row) => calcTotalValue(row),
       sortable: true,
     },
     {
       name: "Probabilistic Value",
-      selector: (row) => row?.probability,
+      selector: (row) => calcTotalValue(row) * row?.probability,
       sortable: true,
     },
     {
@@ -169,7 +182,7 @@ const SalesLead = () => {
       // @desc sales leads csv object
       const csvObj = {
         Sl: salesData?.lead_id || "",
-        "Sub Org": salesData?.sub_org?.sub_company_name || "",
+        // "Sub Org": salesData?.sub_org?.sub_company_name || "",
         Client: salesData?.client?.company_name || "",
         "Expected PO date": salesData?.expected_date || "",
         Value: total || 0,
@@ -199,13 +212,23 @@ const SalesLead = () => {
     <div>
       {/* react select */}
 
-      <PageTitle title='Sales Leads' />
-      <SectionTitle title='Sales Leads' />
-      <div className='row'>
+      <PageTitle title="Sales Leads" />
+      <SectionTitle title="Sales Leads" />
+
+      <Select
+        options={yearsOption}
+        value={selectedYr}
+        onChange={(selected) => setSelectedYr(selected)}
+        placeholder="Select Year"
+        isSearchable={false}
+        className="text-start w-25 mb-4 "
+      />
+
+      <div className="row">
         <Toaster />
-        <div className='col-12'>
-          <div className='card'>
-            <div className='card-body'>
+        <div className="col-12">
+          <div className="card">
+            <div className="card-body">
               {loading ? (
                 <Loader />
               ) : (
@@ -228,29 +251,33 @@ const SalesLead = () => {
                   }}
                   noContextMenu
                   fixedHeader
-                  fixedHeaderScrollHeight='550px'
+                  fixedHeaderScrollHeight="550px"
                   pagination
                   striped
                   highlightOnHover
                   subHeader
                   // progressPending={loading}
                   //Search & select area start
+                  subHeaderAlign="left"
                   subHeaderComponent={
-                    <div className='searchBox-salesLead rounded my-4'>
+                    <div
+                      style={{ width: "60%" }}
+                      className="searchBox-salesLead rounded my-4"
+                    >
                       {/* Select Area */}
                       <Select
-                        className='select text-start'
+                        className="select text-start"
                         options={options}
                         onChange={setSelectedEL}
                         isClearable
                         isSearchable
-                        placeholder='Search'
+                        placeholder="Search"
                       />
                       {/* Input Search Area */}
                       <input
-                        type='search'
-                        placeholder='Search here'
-                        className='form-control shadow-none' /* border-0 bg-transparent shadow-none */
+                        type="search"
+                        placeholder="Search here"
+                        className="form-control shadow-none" /* border-0 bg-transparent shadow-none */
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                       />
@@ -265,14 +292,15 @@ const SalesLead = () => {
                         filename={`Sales-Leads -${new Date(
                           Date.now()
                         ).toLocaleDateString("en-IN")}`}
-                        className='bg-primary btn text-white mb-3 border-0 d-flex align-items-center rounded-1'
-                        onClick={exportAsCsv}>
-                        <FiDownload className='fs-4 me-2' />
+                        className="bg-primary btn text-white mb-3 border-0 d-flex align-items-center rounded-1"
+                        onClick={exportAsCsv}
+                      >
+                        <FiDownload className="fs-4 me-2" />
                         Export as CSV
                       </CSVLink>
                       {/* Add Sale Order */}
-                      <Link to='/dashboard/sales/add-sales-leads'>
-                        <button className='bg-primary btn text-white mb-3 border-0 d-flex align-items-center ms-2 rounded-1'>
+                      <Link to="/dashboard/sales/add-sales-leads">
+                        <button className="bg-primary btn text-white mb-3 border-0 d-flex align-items-center ms-2 rounded-1">
                           Add Sales Lead
                         </button>
                       </Link>

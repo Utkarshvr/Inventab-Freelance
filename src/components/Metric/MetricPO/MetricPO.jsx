@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useAuth } from "../../../hooks/useAuth";
 
@@ -11,6 +11,7 @@ import {
   calculateMonthlyTotals,
 } from "../../../utils/utilityFunc/utilityFunc";
 import RevenueChart from "../../Chart/Chart";
+import { SelectedYrContext } from "../../../context/selectedYrContext";
 
 export default function MetricPO() {
   const axios = useAxiosPrivate();
@@ -20,6 +21,8 @@ export default function MetricPO() {
   const [salesOrders, setSalesOrders] = useState([]);
   let [salesdata, setSalesData] = useState([]);
   const [actualPoChart, setActualPoChart] = useState();
+
+  const { selectedYr } = useContext(SelectedYrContext);
 
   let allTotal = 0;
 
@@ -37,7 +40,12 @@ export default function MetricPO() {
     const getOrderList = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(`pipo/so/order/?org=${orgId}`);
+        const { data } = await axios.get(
+          `pipo/so/order/?org=${orgId}`
+        );
+        // const { data } = await axios.get(
+        //   `pipo/so/order/?org=${orgId}&financial_year=${selectedYr}`
+        // );
         setLoading(false);
         setSalesOrders(data?.results);
       } catch (error) {
@@ -46,7 +54,7 @@ export default function MetricPO() {
       }
     };
     getOrderList();
-  }, [axios, orgId]);
+  }, [axios, selectedYr, orgId]);
 
   useEffect(() => {
     if (!loading && salesOrders?.length && salesOrders?.length > 0) {

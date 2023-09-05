@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useAuth } from "../../../hooks/useAuth";
 
@@ -11,6 +11,7 @@ import {
   calculateMonthlyTotals,
 } from "../../../utils/utilityFunc/utilityFunc";
 import RevenueChart from "../../Chart/Chart";
+import { SelectedYrContext } from "../../../context/selectedYrContext";
 
 export default function KPIPOCOPY() {
   const { auth } = useAuth();
@@ -21,8 +22,8 @@ export default function KPIPOCOPY() {
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
   const [kpiPoChart, setKpiPoChart] = useState({});
-  console.log(kipPo);
-
+  const { selectedYr } = useContext(SelectedYrContext);
+  console.log(selectedYr);
   // load leads
   useEffect(() => {
     // get kpi po
@@ -30,6 +31,9 @@ export default function KPIPOCOPY() {
       setLoading(true);
       try {
         // 0a055b26-ae15-40a9-8291-25427b94ebb3
+        // const { data } = await axios.get(
+        //   `pipo/kpi/list/?org=${orgId}&metric=PO&financial_year=${selectedYr}`
+        // );
         const { data } = await axios.get(
           `pipo/kpi/list/?org=${orgId}&metric=PO`
         );
@@ -47,7 +51,7 @@ export default function KPIPOCOPY() {
     };
 
     getKpiPo();
-  }, [axios, orgId]);
+  }, [axios, selectedYr, orgId]);
 
   // sub total after mount this page
   useEffect(() => {

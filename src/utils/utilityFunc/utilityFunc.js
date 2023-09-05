@@ -351,6 +351,32 @@ utils.calculateMonthlyTotals = (data) => {
   return monthlyTotals;
 };
 
+// Options for react-select
+utils.createYearsUpto2021 = () => {
+  const currentYear = new Date().getFullYear();
+  const numOfYrsPast2021 = currentYear - 2021;
+
+  const yrs = [];
+
+  for (let yr = 0; yr <= numOfYrsPast2021; yr++) {
+    const obj = {
+      value: currentYear - yr,
+      label: `${currentYear - yr} - ${currentYear - yr + 1}`,
+    };
+    yrs.push(obj);
+  }
+
+  return yrs;
+};
+utils.calculateTotalNetPrice = (items) => {
+  return items.reduce((total, item) => {
+    const netPrice = parseFloat(item.net_price);
+    if (!isNaN(netPrice)) {
+      total += netPrice;
+    }
+    return total;
+  }, 0);
+};
 export const {
   removeDuplicateObjects,
   removeUndefinedObj,
@@ -367,4 +393,6 @@ export const {
   daysLeftForSearchFunc,
   dueDate,
   calculateMonthlyTotals,
+  createYearsUpto2021,
+  calculateTotalNetPrice,
 } = utils;

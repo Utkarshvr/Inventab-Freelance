@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useAuth } from "../../../hooks/useAuth";
 
@@ -12,6 +12,7 @@ import {
   numDifferentiation,
 } from "../../../utils/utilityFunc/utilityFunc";
 import RevenueChart from "../../Chart/Chart";
+import { SelectedYrContext } from "../../../context/selectedYrContext";
 
 export default function MetricInvoice() {
   const axios = useAxiosPrivate();
@@ -22,6 +23,8 @@ export default function MetricInvoice() {
   const [invoices, setInvoices] = useState([]);
   const [actualInvoiceChart, setActualInvoiceChart] = useState({});
 
+  const { selectedYr } = useContext(SelectedYrContext);
+
   // load actual invoices
   useEffect(() => {
     // get actual invoices
@@ -29,7 +32,7 @@ export default function MetricInvoice() {
       try {
         setloading(true);
         const { data } = await axios.get(
-          `invoices/fetch/all/invoices/?org=${orgId}`
+          `invoices/fetch/all/invoices/?org=${orgId}&financial_year=${selectedYr}`
         );
 
         setactualInvoices(data?.results);
@@ -40,7 +43,7 @@ export default function MetricInvoice() {
       }
     };
     getActualInvoices();
-  }, [axios, orgId]);
+  }, [axios, selectedYr, orgId]);
 
   useEffect(() => {
     if (!loading && actualInvoices?.length > 0) {

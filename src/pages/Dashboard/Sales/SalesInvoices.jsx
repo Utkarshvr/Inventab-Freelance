@@ -11,6 +11,7 @@ import { useAuth } from "../../../hooks/useAuth";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Loader from "../../../ui/Loader";
 import "./sales.css";
+import { createYearsUpto2021 } from "../../../utils/utilityFunc/utilityFunc";
 
 const SalesInvoices = () => {
   const { auth } = useAuth();
@@ -22,6 +23,9 @@ const SalesInvoices = () => {
   const [csv, setCsv] = useState([]);
   const [selectedEl, setSelectedEL] = useState(null);
 
+  const yearsOption = createYearsUpto2021();
+  const [selectedYr, setSelectedYr] = useState(yearsOption[0]);
+
   // load invoices
   useEffect(() => {
     // fetch table
@@ -31,9 +35,12 @@ const SalesInvoices = () => {
       try {
         setLoading(true);
         const response = (
-          await axios.get(`invoices/fetch/all/invoices/?org=${auth?.orgId}`, {
-            signal: controller.signal,
-          })
+          await axios.get(
+            `invoices/fetch/all/invoices/?org=${auth?.orgId}&financial_year=${selectedYr?.label}`,
+            {
+              signal: controller.signal,
+            }
+          )
         ).data;
         setLoading(false);
         isMount && setInvoice(response?.results);
@@ -48,7 +55,7 @@ const SalesInvoices = () => {
     return () => {
       (isMount = false), controller.abort();
     };
-  }, [auth?.orgId, axios]);
+  }, [auth?.orgId, selectedYr, axios]);
 
   //@desc  columns for react data table component
   const columns = [
@@ -57,8 +64,9 @@ const SalesInvoices = () => {
       cell: (row) => {
         return (
           <Link
-            className='text-center text-info dk_theme_text'
-            to={`/dashboard/sales-invoices/sales-invoices-details/${row?.id}`}>
+            className="text-center text-info dk_theme_text"
+            to={`/dashboard/sales-invoices/sales-invoices-details/${row?.id}`}
+          >
             {row?.invoice_number}
           </Link>
         );
@@ -198,12 +206,22 @@ const SalesInvoices = () => {
 
   return (
     <div>
-      <PageTitle title='Invoices' />
-      <SectionTitle title='Invoices' />
-      <div className='row'>
-        <div className='col-12'>
-          <div className='card'>
-            <div className='card-body'>
+      <PageTitle title="Invoices" />
+      <SectionTitle title="Invoices" />
+
+      <Select
+        options={yearsOption}
+        value={selectedYr}
+        onChange={(selected) => setSelectedYr(selected)}
+        placeholder="Select Year"
+        isSearchable={false}
+        className="text-start w-25 mb-4 "
+      />
+
+      <div className="row">
+        <div className="col-12">
+          <div className="card">
+            <div className="card-body">
               {loading ? (
                 <Loader />
               ) : (
@@ -226,7 +244,7 @@ const SalesInvoices = () => {
                   }}
                   noContextMenu
                   fixedHeader
-                  fixedHeaderScrollHeight='550px'
+                  fixedHeaderScrollHeight="550px"
                   pagination
                   striped
                   highlightOnHover
@@ -238,34 +256,38 @@ const SalesInvoices = () => {
                       filename={`Invoices-${new Date(
                         Date.now()
                       ).toLocaleDateString("en-IN")}`}
-                      className='bg-primary btn text-white mb-3 border-0 d-flex align-items-center rounded-1'
-                      onClick={exportAsCsv}>
-                      <FiDownload className='fs-4 me-2' />
+                      className="bg-primary btn text-white mb-3 border-0 d-flex align-items-center rounded-1"
+                      onClick={exportAsCsv}
+                    >
+                      <FiDownload className="fs-4 me-2" />
                       Export as CSV
                     </CSVLink>
                   }
                   subHeaderComponent={
-                    <div className='searchBox-salesLead rounded my-4'>
+                    <div
+                      style={{ width: "60%" }}
+                      className="searchBox-salesLead rounded my-4"
+                    >
                       {/* Select Area */}
                       <Select
-                        className='select text-start'
+                        className="select text-start"
                         options={options}
                         onChange={setSelectedEL}
                         isClearable
                         isSearchable
-                        placeholder='Search'
+                        placeholder="Search"
                       />
                       {/* Input Search Area */}
                       <input
-                        type='search'
-                        placeholder='Search here'
-                        className='form-control shadow-none' /* border-0 bg-transparent shadow-none */
+                        type="search"
+                        placeholder="Search here"
+                        className="form-control shadow-none" /* border-0 bg-transparent shadow-none */
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                       />
                     </div>
                   }
-                  subHeaderAlign='left'
+                  subHeaderAlign="left"
                 />
               )}
             </div>

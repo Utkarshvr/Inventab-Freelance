@@ -12,6 +12,7 @@ import { Toaster, toast } from "react-hot-toast";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Loader from "../../../ui/Loader";
 import "./sales.css";
+import { createYearsUpto2021 } from "../../../utils/utilityFunc/utilityFunc";
 
 const SalesOrders = () => {
   const axios = useAxiosPrivate();
@@ -24,13 +25,22 @@ const SalesOrders = () => {
   const [csv, setCsv] = useState([]);
   const [selectedEl, setSelectedEL] = useState(null);
 
+  const yearsOption = createYearsUpto2021();
+  const [selectedYr, setSelectedYr] = useState(yearsOption[0]);
+
   // load leads
   useEffect(() => {
     // fetch table
     const getSalesOrders = async () => {
       try {
         setLoading(true);
-        const response = (await axios.get(`pipo/so/order/?org=${orgId}`)).data;
+        const response = (
+          await axios.get(
+            `pipo/so/order/?org=${orgId}&financial_year=${selectedYr?.label}`
+          )
+        ).data;
+        // const response = (await axios.get(`pipo/so/order/?org=${orgId}`)).data;
+        console.log(orgId, response?.results);
         setLoading(false);
         setSalesOrders(response?.results);
         setSearchData(response?.results);
@@ -41,7 +51,7 @@ const SalesOrders = () => {
       }
     };
     getSalesOrders();
-  }, [axios, orgId]);
+  }, [axios, orgId, selectedYr]);
 
   // columns
   const columns = [
@@ -50,8 +60,9 @@ const SalesOrders = () => {
       cell: (row) => {
         return (
           <Link
-            className='text-center text-info dark_theme_text'
-            to={`/dashboard/sales-orders/update-sales-order/${row?.id}`}>
+            className="text-center text-info dark_theme_text"
+            to={`/dashboard/sales-orders/update-sales-order/${row?.id}`}
+          >
             {row?.so_id}
           </Link>
         );
@@ -190,14 +201,22 @@ const SalesOrders = () => {
   ];
 
   return (
-    <div className='position-relative'>
+    <div className="position-relative">
       <Toaster />
-      <PageTitle title='Sales Orders' />
-      <SectionTitle title='Sales Orders' />
-      <div className='row'>
-        <div className='col-12'>
-          <div className='card'>
-            <div className='card-body'>
+      <PageTitle title="Sales Orders" />
+      <SectionTitle title="Sales Orders" />
+      <Select
+        options={yearsOption}
+        value={selectedYr}
+        onChange={(selected) => setSelectedYr(selected)}
+        placeholder="Select Year"
+        isSearchable={false}
+        className="text-start w-25 mb-4 "
+      />
+      <div className="row">
+        <div className="col-12">
+          <div className="card">
+            <div className="card-body">
               {loading ? (
                 <Loader />
               ) : (
@@ -220,7 +239,7 @@ const SalesOrders = () => {
                   }}
                   noContextMenu
                   fixedHeader
-                  fixedHeaderScrollHeight='550px'
+                  fixedHeaderScrollHeight="550px"
                   pagination
                   striped
                   highlightOnHover
@@ -233,42 +252,46 @@ const SalesOrders = () => {
                         filename={`Sales-Orders-${new Date(
                           Date.now()
                         ).toLocaleDateString("en-IN")}`}
-                        className='bg-primary btn text-white mb-3 border-0 d-flex align-items-center rounded-1'
-                        onClick={exportAsCsv}>
-                        <FiDownload className='fs-4 me-2' />
+                        className="bg-primary btn text-white mb-3 border-0 d-flex align-items-center rounded-1"
+                        onClick={exportAsCsv}
+                      >
+                        <FiDownload className="fs-4 me-2" />
                         Export as CSV
                       </CSVLink>
 
                       {/* Add Sale Order */}
-                      <Link to='/dashboard/sales-orders/add-sales-order'>
-                        <button className='bg-primary btn text-white mb-3 border-0 d-flex align-items-center ms-2 rounded-1'>
+                      <Link to="/dashboard/sales-orders/add-sales-order">
+                        <button className="bg-primary btn text-white mb-3 border-0 d-flex align-items-center ms-2 rounded-1">
                           Add Sales Order
                         </button>
                       </Link>
                     </>
                   }
                   subHeaderComponent={
-                    <div className='searchBox-salesLead rounded my-4'>
+                    <div
+                      style={{ width: "60%" }}
+                      className="searchBox-salesLead rounded my-4"
+                    >
                       {/* Select Area */}
                       <Select
-                        className='select text-start'
+                        className="select text-start"
                         options={options}
                         onChange={setSelectedEL}
                         isClearable
                         isSearchable
-                        placeholder='Search'
+                        placeholder="Search"
                       />
                       {/* Input Search Area */}
                       <input
-                        type='search'
-                        placeholder='Search here'
-                        className='form-control shadow-none' /* border-0 bg-transparent shadow-none */
+                        type="search"
+                        placeholder="Search here"
+                        className="form-control shadow-none" /* border-0 bg-transparent shadow-none */
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                       />
                     </div>
                   }
-                  subHeaderAlign='left'
+                  subHeaderAlign="left"
                 />
               )}
             </div>

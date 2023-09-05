@@ -1,5 +1,5 @@
 /* eslint-disable no-prototype-builtins */
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import Select from "react-select";
 import { useAuth } from "../../hooks/useAuth";
@@ -7,6 +7,7 @@ import { useAuth } from "../../hooks/useAuth";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import Loader from "../../ui/Loader";
 import { numDifferentiation } from "../../utils/utilityFunc/utilityFunc";
+import { SelectedYrContext } from "../../context/selectedYrContext";
 
 export default function SalesFunnel() {
   const axios = useAxiosPrivate();
@@ -16,12 +17,16 @@ export default function SalesFunnel() {
   const [salesFunnel, setSalesFunnel] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
 
+  const { selectedYr } = useContext(SelectedYrContext);
+
   // load leads
   useEffect(() => {
     const getSalesFunnelData = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(`pipo/sales/lead/?org=${orgId}`);
+        const { data } = await axios.get(
+          `pipo/sales/lead/?org=${orgId}&financial_year=${selectedYr}`
+        );
 
         // Create an object to store the counts for each status
         const statusData = {};
@@ -54,7 +59,7 @@ export default function SalesFunnel() {
       }
     };
     getSalesFunnelData();
-  }, [axios, orgId]);
+  }, [axios, selectedYr, orgId]);
 
   // Define the columns for the DataTable
   const columns = [
@@ -107,7 +112,7 @@ export default function SalesFunnel() {
         <Loader />
       ) : (
         <>
-          <h1 className='text-center'>Sales Funnel Data</h1>
+          <h1 className="text-center">Sales Funnel Data</h1>
           <DataTable
             columns={columns}
             data={filteredData}
@@ -118,9 +123,9 @@ export default function SalesFunnel() {
                 options={options}
                 value={selectedOption}
                 onChange={handleSelectChange}
-                placeholder='Select a status...'
+                placeholder="Select a status..."
                 isSearchable
-                className='text-start w-25'
+                className="text-start w-25"
               />
             }
             customStyles={{
@@ -138,7 +143,7 @@ export default function SalesFunnel() {
             }}
             noContextMenu
             fixedHeader
-            fixedHeaderScrollHeight='550px'
+            fixedHeaderScrollHeight="550px"
             striped
             highlightOnHover
             subHeader

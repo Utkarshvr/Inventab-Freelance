@@ -15,7 +15,6 @@ import { SelectedYrContext } from "../../../context/selectedYrContext";
 
 export default function KPIInvoice() {
   const { selectedYr } = useContext(SelectedYrContext);
-  console.log({ selectedYr });
   const axios = useAxiosPrivate();
   const { auth } = useAuth();
   const { orgId } = auth;
@@ -31,8 +30,11 @@ export default function KPIInvoice() {
       try {
         setLoading(true);
         // 0a055b26-ae15-40a9-8291-25427b94ebb3 [if u wanna see some data then change the org with it]
+        // const { data } = await axios.get(
+        //   `pipo/kpi/list/?org=${orgId}&metric=INVOICE&financial_year=${selectedYr}`
+        // );
         const { data } = await axios.get(
-          `pipo/kpi/list/?org=${orgId}&metric=INVOICE&financial_year=${selectedYr}`
+          `pipo/kpi/list/?org=${orgId}&metric=INVOICE`
         );
         // 0a055b26-ae15-40a9-8291-25427b94ebb3
         // http://inventab.io/api/v1/pipo/kpi/list/?org=0a055b26-ae15-40a9-8291-25427b94ebb3&metric=PO
@@ -49,7 +51,7 @@ export default function KPIInvoice() {
       }
     };
     kpiPoInvoice();
-  }, [axios, orgId]);
+  }, [axios, selectedYr, orgId]);
 
   // calculate total after mount page
   useEffect(() => {
