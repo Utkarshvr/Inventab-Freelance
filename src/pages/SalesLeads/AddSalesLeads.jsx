@@ -825,15 +825,13 @@ const AddSalesDataForm = () => {
                                         justifyContent: "flex-end",
                                       }}
                                     >
-                                      <th
-                                        scope="col"
+                                      <h3
                                         style={{
-                                          color: "white",
                                           fontSize: "20px",
                                         }}
                                       >
                                         Total
-                                      </th>
+                                      </h3>
                                     </td>
                                     <td>
                                       <div className="w-full">

@@ -1083,12 +1083,7 @@ const UpdateOrderDataForm = ({ orderData }) => {
                                   justifyContent: "flex-end",
                                 }}
                               >
-                                <th
-                                  scope="col"
-                                  style={{ color: "white", fontSize: "20px" }}
-                                >
-                                  Total
-                                </th>
+                                <h3 style={{ fontSize: "20px" }}>Total</h3>
                               </td>
                               <td>
                                 <div className="w-full">
