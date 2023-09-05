@@ -23,7 +23,6 @@ export default function KPIPOCOPY() {
   const [total, setTotal] = useState(0);
   const [kpiPoChart, setKpiPoChart] = useState({});
   const { selectedYr } = useContext(SelectedYrContext);
-  console.log(selectedYr);
   // load leads
   useEffect(() => {
     // get kpi po
@@ -31,12 +30,15 @@ export default function KPIPOCOPY() {
       setLoading(true);
       try {
         // 0a055b26-ae15-40a9-8291-25427b94ebb3
-        // const { data } = await axios.get(
-        //   `pipo/kpi/list/?org=${orgId}&metric=PO&financial_year=${selectedYr}`
-        // );
         const { data } = await axios.get(
-          `pipo/kpi/list/?org=${orgId}&metric=PO`
+          `pipo/kpi/list/?org=${orgId}&metric=PO&financial_year=${selectedYr?.label?.replace(
+            /\s/g,
+            ""
+          )}`
         );
+        // const { data } = await axios.get(
+        //   `pipo/kpi/list/?org=${orgId}&metric=PO`
+        // );
 
         // Calculate the total for each month of all departments
         const monthlyTot = calculateMonthlyTotals(data?.results);

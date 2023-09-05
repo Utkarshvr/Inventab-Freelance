@@ -40,12 +40,15 @@ export default function MetricPO() {
     const getOrderList = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(
-          `pipo/so/order/?org=${orgId}`
-        );
         // const { data } = await axios.get(
-        //   `pipo/so/order/?org=${orgId}&financial_year=${selectedYr}`
+        //   `pipo/so/order/?org=${orgId}`
         // );
+        const { data } = await axios.get(
+          `pipo/so/order/?org=${orgId}&financial_year=${selectedYr?.label?.replace(
+            /\s/g,
+            ""
+          )}`
+        );
         setLoading(false);
         setSalesOrders(data?.results);
       } catch (error) {

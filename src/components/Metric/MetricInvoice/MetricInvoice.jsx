@@ -32,7 +32,10 @@ export default function MetricInvoice() {
       try {
         setloading(true);
         const { data } = await axios.get(
-          `invoices/fetch/all/invoices/?org=${orgId}&financial_year=${selectedYr}`
+          `invoices/fetch/all/invoices/?org=${orgId}&financial_year=${selectedYr?.label?.replace(
+            /\s/g,
+            ""
+          )}`
         );
 
         setactualInvoices(data?.results);

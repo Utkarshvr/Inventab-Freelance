@@ -30,12 +30,15 @@ export default function KPIInvoice() {
       try {
         setLoading(true);
         // 0a055b26-ae15-40a9-8291-25427b94ebb3 [if u wanna see some data then change the org with it]
-        // const { data } = await axios.get(
-        //   `pipo/kpi/list/?org=${orgId}&metric=INVOICE&financial_year=${selectedYr}`
-        // );
         const { data } = await axios.get(
-          `pipo/kpi/list/?org=${orgId}&metric=INVOICE`
+          `pipo/kpi/list/?org=${orgId}&metric=INVOICE&financial_year=${selectedYr?.label?.replace(
+            /\s/g,
+            ""
+          )}`
         );
+        // const { data } = await axios.get(
+        //   `pipo/kpi/list/?org=${orgId}&metric=INVOICE`
+        // );
         // 0a055b26-ae15-40a9-8291-25427b94ebb3
         // http://inventab.io/api/v1/pipo/kpi/list/?org=0a055b26-ae15-40a9-8291-25427b94ebb3&metric=PO
         // /api/v1/invoices/fetch/all/invoices/?org={org_id}&financial_year=2023-2024
