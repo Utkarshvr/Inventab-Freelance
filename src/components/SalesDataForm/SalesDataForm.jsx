@@ -325,6 +325,14 @@ export default function SalesDataForm(props) {
 
     setFieldValue(`parts[${index}].net_price`, netPrice.toFixed(2)); // You can format the net_price as needed
   };
+  useEffect(() => {
+    // console.log({ values, parts: values.parts });
+    if (values && values?.parts?.length > 0) {
+      // console.log({ TOTAL_NET_PRICE: calculateTotalNetPrice(values.parts) });
+      // setTotalQuantity(calculateTotalNetPrice(values.parts));
+      setFieldValue("total", calculateTotalNetPrice(values.parts));
+    }
+  }, [values]);
 
   // status options
   const statusOptions = [
@@ -817,7 +825,7 @@ export default function SalesDataForm(props) {
                                 placeholder="Extd Net Cost"
                                 name={`parts[${index}].gst`}
                                 value={part?.gst}
-                                onChange={handleChange}
+                                // onChange={handleChange}
                                 readOnly
                               />
                             </td>
@@ -829,7 +837,7 @@ export default function SalesDataForm(props) {
                                 placeholder="Extd Net Cost"
                                 name={`parts[${index}].net_price`}
                                 value={part?.net_price}
-                                onChange={(e) => handleChange(e)}
+                                // onChange={(e) => handleChange(e)}
                                 readOnly
                               />
                             </td>
@@ -840,7 +848,7 @@ export default function SalesDataForm(props) {
                                 placeholder="Extd Gross Cost"
                                 name={`parts[${index}].extd_gross_price`}
                                 value={part?.extd_gross_price}
-                                onChange={handleChange}
+                                // onChange={handleChange}
                                 readOnly
                               />
                             </td>
@@ -858,14 +866,26 @@ export default function SalesDataForm(props) {
                     </tbody>
                   </table>
                 </div>
-                {console.log({ ALLPARTS: values.parts })}
-                <input
+                {/* {console.log({ ALLPARTS: values.parts })} */}
+                {/* <input
                   className="new_input_class input-width"
                   type="number"
                   placeholder="Total"
                   value={calculateTotalNetPrice(values.parts)}
                   readOnly
-                />
+                /> */}
+                <div className="w-100">
+                  <label className="mb-2 text-dark text-capitalize">
+                    Total
+                  </label>
+                  <InputText
+                    type="number"
+                    name="total"
+                    value={values?.total}
+                    // onChange={handleChange}
+                    readOnly
+                  />
+                </div>
               </>
             ) : (
               <h4 className="text-center">Parts Not Available</h4>

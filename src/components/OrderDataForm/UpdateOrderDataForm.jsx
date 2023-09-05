@@ -7,6 +7,7 @@ import { useAuth } from "../../hooks/useAuth";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import Loader from "../../ui/Loader";
 import {
+  calculateTotalNetPrice,
   removeDuplicateObjects,
   removeUndefinedObj,
 } from "../../utils/utilityFunc/utilityFunc";
@@ -435,6 +436,33 @@ const UpdateOrderDataForm = ({ orderData }) => {
     },
   });
 
+  // Function to update net_price based on unit_cost and quantity
+  const updateNetPrice = (index, value, changedForm) => {
+    const part = values.parts[index];
+    let unitCost;
+    let quantity;
+
+    if (changedForm === "quantity") {
+      quantity = parseFloat(value) || 0;
+      unitCost = parseFloat(part.price) || 0;
+    } else {
+      unitCost = parseFloat(value) || 0;
+      quantity = parseFloat(part.quantity) || 0;
+    }
+
+    const netPrice = unitCost * quantity;
+
+    setFieldValue(`parts[${index}].net_price`, netPrice.toFixed(2)); // You can format the net_price as needed
+  };
+  useEffect(() => {
+    // console.log({ values, parts: values.parts });
+    if (values && values?.parts?.length > 0) {
+      // console.log({ TOTAL_NET_PRICE: calculateTotalNetPrice(values.parts) });
+      // setTotalQuantity(calculateTotalNetPrice(values.parts));
+      setFieldValue("total", calculateTotalNetPrice(values.parts));
+    }
+  }, [values]);
+
   // console.log(values.transportation_term);
   // so status
   const soStatus = [
@@ -444,13 +472,27 @@ const UpdateOrderDataForm = ({ orderData }) => {
     { label: "Invoiced", value: "Invoiced" },
   ];
 
-  // select part
+  // select part for the [PART NO]
   const handleSelectPart = (option) => {
     let { value } = option;
     if (value) {
       let s = partFullObj.find((part) => part?.id === value);
+      console.log({ s });
       setSelectPart(option);
       setshort_description(s?.short_description || "");
+
+      setTotalQuantity(1);
+      setPrice(s?.mrp);
+      // setstatus(
+      //   s?.is_active
+      //     ? { label: "Active", value: "Active" }
+      //     : { label: "Inactive", value: "Inactive" }
+      // );
+
+      setNet_price(s?.mrp * 1);
+      // Calc GST & NET PRICE
+      setgst(0);
+      setExtd_gross_price(0);
     } else {
       setshort_description("");
     }
@@ -507,76 +549,76 @@ const UpdateOrderDataForm = ({ orderData }) => {
   };
 
   return (
-    <div className='card-body'>
+    <div className="card-body">
       <Toaster />
       <form onSubmit={handleSubmit}>
-        <div className='row'>
+        <div className="row">
           {/* Po date input */}
-          <div className='mb-3 col-md-6'>
+          <div className="mb-3 col-md-6">
             <InputText
-              title='PO Date'
-              type='date'
-              name='po_date'
+              title="PO Date"
+              type="date"
+              name="po_date"
               value={values.po_date}
               onChange={handleChange}
             />
           </div>
 
           {/* ex inv date input */}
-          <div className='mb-3 col-md-6'>
+          <div className="mb-3 col-md-6">
             <InputText
-              title='Expected Invoice Date'
-              type='date'
-              name='expected_inv_date'
+              title="Expected Invoice Date"
+              type="date"
+              name="expected_inv_date"
               value={values.expected_inv_date}
               onChange={handleChange}
             />
           </div>
 
           {/* Rof PO NO input */}
-          <div className='mb-3 col-md-6'>
+          <div className="mb-3 col-md-6">
             <InputText
-              title='Ref PO'
-              type='text'
-              name='ref_po'
-              placeholder='Type Ref Po Number'
+              title="Ref PO"
+              type="text"
+              name="ref_po"
+              placeholder="Type Ref Po Number"
               value={values.ref_po}
               onChange={handleChange}
             />
           </div>
 
           {/* comments input */}
-          <div className='mb-3 col-md-6'>
+          {/* <div className="mb-3 col-md-6">
             <TextArea
-              title='Comments'
-              type='text'
-              name='comments'
-              placeholder='Type Your Comments'
+              title="Comments"
+              type="text"
+              name="comments"
+              placeholder="Type Your Comments"
               value={values.comments}
               onChange={handleChange}
             />
-          </div>
+          </div> */}
 
           {/* total input*/}
-          <div className='mb-3 col-md-6'>
+          {/* <div className="mb-3 col-md-6">
             <InputText
-              title='Total'
-              type='number'
-              name='total'
-              placeholder='Type Total'
+              title="Total"
+              type="number"
+              name="total"
+              placeholder="Type Total"
               value={values.total}
               onChange={handleChange}
             />
-          </div>
+          </div> */}
 
           {/* so status select*/}
-          <div className='mb-3 col-md-6'>
-            <label className='mb-2 text-dark text-capitalize'>So Status</label>
+          <div className="mb-3 col-md-6">
+            <label className="mb-2 text-dark text-capitalize">So Status</label>
             <Select
-              placeholder='Select So Status'
+              placeholder="Select So Status"
               isSearchable
               isClearable
-              name='so_status'
+              name="so_status"
               options={soStatus}
               value={values.so_status}
               onChange={(option) => setFieldValue("so_status", option)}
@@ -584,13 +626,13 @@ const UpdateOrderDataForm = ({ orderData }) => {
           </div>
 
           {/* Select client */}
-          <div className='mb-3 col-md-6'>
-            <label className='mb-2 text-dark text-capitalize'>Client</label>
+          <div className="mb-3 col-md-6">
+            <label className="mb-2 text-dark text-capitalize">Client</label>
             <Select
-              placeholder='Select Client'
+              placeholder="Select Client"
               isSearchable
               isClearable
-              name='client'
+              name="client"
               options={client}
               value={values.client}
               onChange={(option) => setFieldValue("client", option)}
@@ -598,14 +640,14 @@ const UpdateOrderDataForm = ({ orderData }) => {
           </div>
 
           {/* Select sub org */}
-          <div className='mb-3 col-md-6'>
-            <label className='mb-2 text-dark text-capitalize'>Sub Org</label>
+          <div className="mb-3 col-md-6">
+            <label className="mb-2 text-dark text-capitalize">Sub Org</label>
             <Select
-              placeholder='Select Sub Org'
+              placeholder="Select Sub Org"
               isSearchable
               isClearable
               isLoading={loading}
-              name='sub_org'
+              name="sub_org"
               options={subOrg}
               value={values?.sub_org}
               onChange={(option) => setFieldValue("sub_org", option)}
@@ -613,15 +655,15 @@ const UpdateOrderDataForm = ({ orderData }) => {
           </div>
 
           {/* select billing address */}
-          <div className='mb-3 col-md-6'>
-            <label className='mb-2 text-dark text-capitalize'>
+          <div className="mb-3 col-md-6">
+            <label className="mb-2 text-dark text-capitalize">
               Billing Address
             </label>
             <Select
-              placeholder='Select Billing Address'
+              placeholder="Select Billing Address"
               isSearchable
               isClearable
-              name='billing_address'
+              name="billing_address"
               options={billingAddress}
               value={values.billing_address}
               onChange={(option) => setFieldValue("billing_address", option)}
@@ -629,15 +671,15 @@ const UpdateOrderDataForm = ({ orderData }) => {
           </div>
 
           {/* select shipping address */}
-          <div className='mb-3 col-md-6'>
-            <label className='mb-2 text-dark text-capitalize'>
+          <div className="mb-3 col-md-6">
+            <label className="mb-2 text-dark text-capitalize">
               Shipping Address
             </label>
             <Select
-              placeholder='Select Shipping Address'
+              placeholder="Select Shipping Address"
               isSearchable
               isClearable
-              name='shipping_address'
+              name="shipping_address"
               options={shippingAddress}
               value={values.shipping_address}
               onChange={(option) => setFieldValue("shipping_address", option)}
@@ -645,15 +687,15 @@ const UpdateOrderDataForm = ({ orderData }) => {
           </div>
 
           {/* payment term select */}
-          <div className='mb-3 col-md-6'>
-            <label className='mb-2 text-dark text-capitalize'>
+          <div className="mb-3 col-md-6">
+            <label className="mb-2 text-dark text-capitalize">
               Payment Term
             </label>
             <Select
-              placeholder='Select Payment Term'
+              placeholder="Select Payment Term"
               isSearchable
               isClearable
-              name='payment_term'
+              name="payment_term"
               isLoading={loading}
               options={paymentTerm}
               value={values.payment_term}
@@ -662,15 +704,15 @@ const UpdateOrderDataForm = ({ orderData }) => {
           </div>
 
           {/* delivery term select */}
-          <div className='mb-3 col-md-6'>
-            <label className='mb-2 text-dark text-capitalize'>
+          <div className="mb-3 col-md-6">
+            <label className="mb-2 text-dark text-capitalize">
               Delivery Term
             </label>
             <Select
-              placeholder='Select Delivery Term'
+              placeholder="Select Delivery Term"
               isSearchable
               isClearable
-              name='delivery_term'
+              name="delivery_term"
               options={deliveryTerm}
               value={values.delivery_term}
               onChange={(option) => setFieldValue("delivery_term", option)}
@@ -678,13 +720,13 @@ const UpdateOrderDataForm = ({ orderData }) => {
           </div>
 
           {/* contact to select */}
-          <div className='mb-3 col-md-6'>
-            <label className='mb-2 text-dark text-capitalize'>Contact To</label>
+          <div className="mb-3 col-md-6">
+            <label className="mb-2 text-dark text-capitalize">Contact To</label>
             <Select
-              placeholder='Select Contact To'
+              placeholder="Select Contact To"
               isSearchable
               isClearable
-              name='contact_to'
+              name="contact_to"
               value={values?.contact_to || null}
               options={contactTo}
               onChange={(option) => setFieldValue("contact_to", option)}
@@ -692,13 +734,13 @@ const UpdateOrderDataForm = ({ orderData }) => {
           </div>
 
           {/* department select */}
-          <div className='mb-3 col-md-6'>
-            <label className='mb-2 text-dark text-capitalize'>Department</label>
+          <div className="mb-3 col-md-6">
+            <label className="mb-2 text-dark text-capitalize">Department</label>
             <Select
-              placeholder='Select Department'
+              placeholder="Select Department"
               isSearchable
               isClearable
-              name='department'
+              name="department"
               options={dept}
               value={values.department}
               onChange={(option) => setFieldValue("department", option)}
@@ -706,15 +748,15 @@ const UpdateOrderDataForm = ({ orderData }) => {
           </div>
 
           {/* transportation term select */}
-          <div className='mb-3 col-md-6'>
-            <label className='mb-2 text-dark text-capitalize'>
+          <div className="mb-3 col-md-6">
+            <label className="mb-2 text-dark text-capitalize">
               Transportation Term
             </label>
             <Select
-              placeholder='Select Transportation Term'
+              placeholder="Select Transportation Term"
               isSearchable
               isClearable
-              name='transportation_term'
+              name="transportation_term"
               options={transportationTerm}
               value={values?.transportation_term}
               onChange={(option) =>
@@ -724,23 +766,23 @@ const UpdateOrderDataForm = ({ orderData }) => {
           </div>
 
           {/* description input */}
-          <div className='mb-3 col-md-6'>
+          <div className="mb-3 col-md-6">
             <TextArea
-              title='Description'
-              type='text'
-              name='description'
-              placeholder='Type Description'
+              title="Description"
+              type="text"
+              name="description"
+              placeholder="Type Description"
               value={values.description}
               onChange={handleChange}
             />
           </div>
 
           {/* is_active checkbox */}
-          <div className='mb-3 col-md-12'>
-            <label className='d-flex align-items-center column-gap-2'>
+          <div className="mb-3 col-md-12">
+            <label className="d-flex align-items-center column-gap-2">
               <input
-                type='checkbox'
-                name='is_active'
+                type="checkbox"
+                name="is_active"
                 checked={values.is_active}
                 onChange={handleChange}
               />
@@ -749,11 +791,11 @@ const UpdateOrderDataForm = ({ orderData }) => {
           </div>
 
           {/* is_approved checkbox */}
-          <div className='mb-3 col-md-12'>
-            <label className='d-flex align-items-center column-gap-2'>
+          <div className="mb-3 col-md-12">
+            <label className="d-flex align-items-center column-gap-2">
               <input
-                type='checkbox'
-                name='is_approved'
+                type="checkbox"
+                name="is_approved"
                 checked={values.is_approved}
                 onChange={handleChange}
               />
@@ -763,35 +805,36 @@ const UpdateOrderDataForm = ({ orderData }) => {
         </div>
         {/* Table Part */}
         {/* Table */}
-        <div className='row'>
-          <div className='col-lg-12'>
-            <div className='card'>
-              <div className='table-responsive111'>
-                <table className='table header-border table-responsive-sm111'>
+        <div className="row">
+          <div className="col-lg-12">
+            <div className="card">
+              <div className="table-responsive111">
+                <table className="table header-border table-responsive-sm111">
                   <thead>
                     <tr>
-                      <th scope='col'>Parts No</th>
-                      <th scope='col'>Short Description</th>
-                      <th scope='col'>Quantity</th>
-                      <th scope='col'>Price</th>
-                      <th scope='col'>GST</th>
-                      <th scope='col'>Net Price</th>
-                      <th scope='col'>Extd Gross Price</th>
-                      <th scope='col'>Action</th>
+                      <th scope="col">Parts No</th>
+                      <th scope="col">Short Description</th>
+                      {/* <th scope="col">Quantity</th>
+                      <th scope="col">Price</th>
+                      <th scope="col">GST</th>
+                      <th scope="col">Net Price</th>
+                      <th scope="col">Extd Gross Price</th>
+                      <th scope="col">Action</th> */}
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
                       <td>
-                        <div className='select-port'>
+                        <div className="select-port">
                           <Select
-                            className='select select-width'
-                            placeholder='Select Part No'
+                            className="select select-width"
+                            placeholder="Select Part No"
                             isSearchable
                             isClearable
                             menuPortalTarget={document.querySelector("body")}
                             isLoading={partsLoading}
                             options={allParts}
+                            value={selectPart}
                             onChange={(option) => handleSelectPart(option)}
                           />
                         </div>
@@ -799,71 +842,71 @@ const UpdateOrderDataForm = ({ orderData }) => {
 
                       <td>
                         <input
-                          className='new_input_class'
-                          type='text'
-                          placeholder='Short Description'
-                          name='short_description'
+                          className="new_input_class"
+                          type="text"
+                          placeholder="Short Description"
+                          name="short_description"
                           value={short_description || ""}
                           onChange={(e) => setshort_description(e.target.value)}
                         />
                       </td>
 
-                      <td>
+                      {/* <td>
                         <input
-                          className='new_input_class'
-                          type='number'
-                          placeholder='Total Quantity'
-                          name='quantity'
+                          className="new_input_class"
+                          type="number"
+                          placeholder="Total Quantity"
+                          name="quantity"
                           value={totalQuantity || ""}
                           onChange={(e) => setTotalQuantity(e.target.value)}
                         />
                       </td>
                       <td>
                         <input
-                          className='new_input_class'
-                          type='number'
-                          placeholder='Price'
-                          name='price'
+                          className="new_input_class"
+                          type="number"
+                          placeholder="Price"
+                          name="price"
                           value={price || ""}
                           onChange={(e) => setPrice(e.target.value)}
                         />
                       </td>
                       <td>
                         <input
-                          className='new_input_class'
-                          type='number'
-                          placeholder='GST'
-                          name='gst'
+                          className="new_input_class"
+                          type="number"
+                          placeholder="GST"
+                          name="gst"
                           value={gst || ""}
                           onChange={(e) => setgst(e.target.value)}
                         />
                       </td>
                       <td>
                         <input
-                          className='new_input_class'
-                          type='number'
-                          placeholder='Net Price'
-                          name='net_price'
+                          className="new_input_class"
+                          type="number"
+                          placeholder="Net Price"
+                          name="net_price"
                           value={net_price || ""}
                           onChange={(e) => setNet_price(e.target.value)}
                         />
                       </td>
                       <td>
                         <input
-                          className='new_input_class'
-                          type='number'
-                          placeholder='Extd Gross Price'
-                          name='extd_gross_price'
+                          className="new_input_class"
+                          type="number"
+                          placeholder="Extd Gross Price"
+                          name="extd_gross_price"
                           value={extd_gross_price || ""}
                           onChange={(e) => setExtd_gross_price(e.target.value)}
                         />
-                      </td>
+                      </td> */}
 
                       <td>
                         <button
                           onClick={handleAddPart}
-                          type='button'
-                          className='btn btn-primary rounded-1 py-2 px-4 d-flex justify-content-center align-items-center'
+                          type="button"
+                          className="btn btn-primary rounded-1 py-2 px-4 d-flex justify-content-center align-items-center"
                           disabled={
                             !(
                               short_description ||
@@ -873,7 +916,8 @@ const UpdateOrderDataForm = ({ orderData }) => {
                               net_price ||
                               extd_gross_price
                             )
-                          }>
+                          }
+                        >
                           Add
                         </button>
                       </td>
@@ -889,131 +933,175 @@ const UpdateOrderDataForm = ({ orderData }) => {
         {partsLoading ? (
           <Loader />
         ) : (
-          <div className='table-responsive111'>
+          <div className="table-responsive111">
             {values.parts?.length > 0 ? (
-              <table className='table table-bordered table-responsive-sm111'>
-                <thead>
-                  <tr>
-                    <th scope='col'>Parts No</th>
-                    <th scope='col'>Short Description</th>
-                    <th scope='col'>Quantity</th>
-                    <th scope='col'>Price</th>
-                    <th scope='col'>GST</th>
-                    <th scope='col'>Net Price</th>
-                    <th scope='col'>Extd Gross Price</th>
-                    <th scope='col'>Action</th>
-                  </tr>
-                </thead>
-                {values?.parts?.map((part, index) => {
-                  return (
-                    <tbody key={index}>
-                      <tr>
-                        <td>
-                          <div className='select-port'>
-                            <Select
-                              className='select select-width'
-                              placeholder='Select Part No'
-                              isSearchable
-                              isClearable
-                              value={{
-                                label: part?.parts_id?.part_number,
-                                value: part?.parts_id?.id,
-                              }}
-                              menuPortalTarget={document.querySelector("body")}
-                              options={allParts}
-                              name='part_id'
-                              isLoading={partsLoading}
-                              onChange={(selectedOption) =>
-                                handlePartSelectChange(selectedOption, index)
-                              }
+              <div>
+                <table className="table table-bordered table-responsive-sm111">
+                  <thead>
+                    <tr>
+                      <th scope="col">Parts No</th>
+                      <th scope="col">Short Description</th>
+                      <th scope="col">Quantity</th>
+                      <th scope="col">Price</th>
+                      <th scope="col">GST</th>
+                      <th scope="col">Net Price</th>
+                      <th scope="col">Extd Gross Price</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  {values?.parts?.map((part, index) => {
+                    return (
+                      <tbody key={index}>
+                        <tr>
+                          <td>
+                            <div className="select-port">
+                              <Select
+                                className="select select-width"
+                                placeholder="Select Part No"
+                                isSearchable
+                                isClearable
+                                value={{
+                                  label: part?.parts_id?.part_number,
+                                  value: part?.parts_id?.id,
+                                }}
+                                menuPortalTarget={document.querySelector(
+                                  "body"
+                                )}
+                                options={allParts}
+                                name="part_id"
+                                isLoading={partsLoading}
+                                onChange={(selectedOption) =>
+                                  handlePartSelectChange(selectedOption, index)
+                                }
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <input
+                              className="new_input_class"
+                              type="text"
+                              placeholder="Short Description"
+                              name={`parts[${index}].short_description`}
+                              value={part.short_description}
+                              onChange={handleChange}
                             />
-                          </div>
-                        </td>
-                        <td>
-                          <input
-                            className='new_input_class'
-                            type='text'
-                            placeholder='Short Description'
-                            name={`parts[${index}].short_description`}
-                            value={part.short_description}
-                            onChange={handleChange}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            className='new_input_class'
-                            type='number'
-                            placeholder='Total Quantity'
-                            name={`parts[${index}].quantity`}
-                            value={part.quantity}
-                            onChange={handleChange}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            className='new_input_class'
-                            type='number'
-                            placeholder='Price'
-                            name={`parts[${index}].price`}
-                            value={part?.price}
-                            onChange={handleChange}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            className='new_input_class'
-                            type='number'
-                            placeholder='GST'
-                            name={`parts[${index}].gst`}
-                            value={part?.gst}
-                            onChange={handleChange}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            className='new_input_class'
-                            type='number'
-                            placeholder='Net Price'
-                            name={`parts[${index}].net_price`}
-                            value={part?.net_price}
-                            onChange={handleChange}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            className='new_input_class'
-                            type='number'
-                            placeholder='Extd Gross Price'
-                            name={`parts[${index}].extd_gross_price`}
-                            value={part?.extd_gross_price}
-                            onChange={handleChange}
-                          />
-                        </td>
+                          </td>
+                          <td>
+                            <input
+                              className="new_input_class"
+                              type="number"
+                              placeholder="Total Quantity"
+                              name={`parts[${index}].quantity`}
+                              value={part.quantity}
+                              onChange={(e) => {
+                                handleChange(e);
+                                updateNetPrice(
+                                  index,
+                                  e.target.value,
+                                  "quantity"
+                                ); // Update net_price when unit_cost changes
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className="new_input_class"
+                              type="number"
+                              placeholder="Price"
+                              name={`parts[${index}].price`}
+                              value={part?.price}
+                              onChange={(e) => {
+                                handleChange(e);
+                                updateNetPrice(
+                                  index,
+                                  e.target.value,
+                                  "unit-cost"
+                                ); // Update net_price when unit_cost changes
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className="new_input_class"
+                              type="number"
+                              placeholder="GST"
+                              name={`parts[${index}].gst`}
+                              value={part?.gst}
+                              // onChange={handleChange}
+                              readOnly
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className="new_input_class"
+                              type="number"
+                              placeholder="Net Price"
+                              name={`parts[${index}].net_price`}
+                              value={part?.net_price}
+                              // onChange={handleChange}
+                              readOnly
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className="new_input_class"
+                              type="number"
+                              placeholder="Extd Gross Price"
+                              name={`parts[${index}].extd_gross_price`}
+                              value={part?.extd_gross_price}
+                              // onChange={handleChange}
+                              readOnly
+                            />
+                          </td>
 
-                        <td>
-                          <button
-                            type='button'
-                            className='btn btn-danger btn-sm'
-                            onClick={() => handleRemovePart(index)}>
-                            Remove
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  );
-                })}
-              </table>
+                          <td>
+                            <button
+                              type="button"
+                              className="btn btn-danger btn-sm"
+                              onClick={() => handleRemovePart(index)}
+                            >
+                              Remove
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    );
+                  })}
+                </table>
+
+                {/* comments input */}
+                <div className="w-full">
+                  <TextArea
+                    title="Comments"
+                    type="text"
+                    name="comments"
+                    style={{ minHeight: "60px" }}
+                    placeholder="Type Your Comments"
+                    value={values?.comments}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="w-full">
+                  <InputText
+                    title="Total"
+                    type="number"
+                    name="total"
+                    value={values?.total || ""}
+                    readOnly
+                  />
+                </div>
+              </div>
             ) : (
-              <h3 className='text-center'>No Parts Available</h3>
+              <h3 className="text-center">No Parts Available</h3>
             )}
           </div>
         )}
         {/* Submit Button */}
-        <div className='d-flex justify-content-end my-4'>
+        <div className="d-flex justify-content-end my-4">
           <input
-            className='btn btn-primary btn-common rounded-1'
-            type='submit'
-            value='Update Sales Order'
+            className="btn btn-primary btn-common rounded-1"
+            type="submit"
+            value="Update Sales Order"
           />
         </div>
       </form>
