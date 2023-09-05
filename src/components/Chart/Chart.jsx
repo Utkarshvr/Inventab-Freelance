@@ -13,20 +13,6 @@ import {
 } from "recharts";
 import { getColorForDepartment } from "../../utils/utilityFunc/utilityFunc";
 
-const CustomYAxisTick = (props) => {
-  const { x, y, payload } = props;
-  // Format the Y-Axis label by dividing the payload value by 10000000 and rounding to 2 decimal places
-  const formattedValue = (payload.value / 10000000).toFixed(2);
-
-  return (
-    <g transform={`translate(${x},${y})`}>
-      <text x={0} y={0} dy={16} textAnchor="end" fill="#666">
-        {formattedValue}
-      </text>
-    </g>
-  );
-};
-
 const RevenueChart = ({ chartData }) => {
   console.log(chartData);
   return (
@@ -55,7 +41,12 @@ const RevenueChart = ({ chartData }) => {
           );
         })} */}
         <Bar type="linear" dataKey="total" fill={getColorForDepartment(0)} />
-        <Line type="linear" dataKey="total" stroke="#f39c12" strokeWidth={4} />
+        <Line
+          type="linear"
+          dataKey="cumulativeTotal"
+          stroke="#f39c12"
+          strokeWidth={4}
+        />
       </ComposedChart>
     </ResponsiveContainer>
   );

@@ -213,7 +213,7 @@ utils.formatChartData = (kipPo) => {
       total: item.total,
     };
   });
-
+  console.log({ DATA: data });
   const months = [
     "apr",
     "may",
@@ -240,21 +240,13 @@ utils.formatChartData = (kipPo) => {
     });
     return total;
   };
+
+  let prevTotal = 0;
   const calculateCumulativeData = (data, month) => {
-    let total = 0;
-    const amountsArr = [];
-    // console.log({ DATA: data, month });
-    data?.forEach((department) => {
-      if (department?.name !== "monthly-totals") {
-        if (department[month] !== null) {
-          total += department[month] || 0;
-        }
-      }
-    });
-    // console.log([...amountsArr, total]);
-    // console.log({ month, total });
-    amountsArr.push(total);
-    return total;
+    const total = calculateTotal(data, month); // Total of a particular month
+    prevTotal += total;
+    console.log({ month, total, cumulativeTotal: prevTotal });
+    return prevTotal;
   };
 
   const formattedDataWithTotal = months.map((month) => {
@@ -268,9 +260,9 @@ utils.formatChartData = (kipPo) => {
     entry.total = total; // Add the total for the month
 
     const cumulativeTotal = calculateCumulativeData(data, month); // Add the cumulative figures for the month
-    entry.cumulativeTotal = cumulativeTotal;
+    entry.cumulativeTotal = cumulativeTotal; // apr: apr, may: apr + may, june: apr + may + june
 
-    console.log({ month, total: total, cumulativeTotal });
+    // console.log({ month, total: total, cumulativeTotal });
     return entry;
   });
 
