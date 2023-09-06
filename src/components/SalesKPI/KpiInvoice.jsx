@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
@@ -7,6 +7,7 @@ import {
   kpiEachTotal,
   numDifferentiation,
 } from "../../utils/utilityFunc/utilityFunc";
+import { SelectedYrContext } from "../../context/selectedYrContext";
 
 const KpiInvoice = () => {
   const axios = useAxiosPrivate();
@@ -15,6 +16,7 @@ const KpiInvoice = () => {
   const [loading, setLoading] = useState(false);
   const [invoices, setInvoices] = useState([]);
   const [invoiceTotal, setInvoicesTotal] = useState([]);
+  const { selectedYr } = useContext(SelectedYrContext);
 
   // load kpi invoices
   useEffect(() => {
@@ -26,7 +28,10 @@ const KpiInvoice = () => {
         setLoading(true);
         // 0a055b26-ae15-40a9-8291-25427b94ebb3
         const { data } = await axios.get(
-          `pipo/kpi/list/?org=${orgId}&metric=INVOICE`,
+          `pipo/kpi/list/?org=${orgId}&metric=INVOICE&financial_year=${selectedYr?.label?.replace(
+            /\s/g,
+            ""
+          )}`,
           { signal: controller.signal }
         );
         setLoading(false);
@@ -40,7 +45,7 @@ const KpiInvoice = () => {
     return () => {
       (isMount = false), controller.abort();
     };
-  }, [axios, orgId]);
+  }, [axios, selectedYr, orgId]);
 
   //kpi PO each sub total
   useEffect(() => {
@@ -62,7 +67,7 @@ const KpiInvoice = () => {
         }
       });
       setInvoicesTotal(kpiInvoiceTotalArr);
-    }
+    } else setInvoicesTotal([]);
   }, [invoices, loading]);
 
   //invoice sub total
@@ -76,23 +81,23 @@ const KpiInvoice = () => {
       {loading ? (
         <Loader />
       ) : (
-        <div className='col-xl-6 col-lg-6 col-xxl-6 col-md-12 col-sm-12'>
-          <div className='card rounded-0 h-auto'>
-            <ul className='list-group list-group-flush'>
-              <li className='list-group-item bg-primary rounded-0 text-white d-flex justify-content-between'>
-                <span className='mb-0 fs-4'>KPI-INVOICE </span>
-                <span className='fs-4'>
+        <div className="col-xl-6 col-lg-6 col-xxl-6 col-md-12 col-sm-12">
+          <div className="card rounded-0 h-auto">
+            <ul className="list-group list-group-flush">
+              <li className="list-group-item bg-primary rounded-0 text-white d-flex justify-content-between">
+                <span className="mb-0 fs-4">KPI-INVOICE </span>
+                <span className="fs-4">
                   Total: {numDifferentiation(invoiceSubtotal)}
                 </span>
               </li>
             </ul>
-            <div className='card-body p-0 rounded-0'>
-              <div className='table-responsive'>
-                <table className='table table-bordered'>
+            <div className="card-body p-0 rounded-0">
+              <div className="table-responsive">
+                <table className="table table-bordered">
                   <thead style={{ background: "#343A40" }}>
                     <tr>
-                      <th className='text-light ps-4 fs-5'>Department</th>
-                      <th className='text-light ps-4 fs-5'>Total</th>
+                      <th className="text-light ps-4 fs-5">Department</th>
+                      <th className="text-light ps-4 fs-5">Total</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -100,8 +105,8 @@ const KpiInvoice = () => {
                       invoiceTotal.map((invoice) => {
                         return (
                           <tr key={invoice?.department}>
-                            <td className='ps-4'>{invoice?.department}</td>
-                            <td className='ps-4'>
+                            <td className="ps-4">{invoice?.department}</td>
+                            <td className="ps-4">
                               {numDifferentiation(invoice?.total)}
                             </td>
                           </tr>

@@ -213,7 +213,7 @@ utils.formatChartData = (kipPo) => {
       total: item.total,
     };
   });
-  console.log({ DATA: data });
+  // console.log({ DATA: data });
   const months = [
     "apr",
     "may",
@@ -245,7 +245,7 @@ utils.formatChartData = (kipPo) => {
   const calculateCumulativeData = (data, month) => {
     const total = calculateTotal(data, month); // Total of a particular month
     prevTotal += total;
-    console.log({ month, total, cumulativeTotal: prevTotal });
+    // console.log({ month, total, cumulativeTotal: prevTotal });
     return prevTotal;
   };
 

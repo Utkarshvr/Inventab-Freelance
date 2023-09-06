@@ -14,7 +14,7 @@ import {
 import { getColorForDepartment } from "../../utils/utilityFunc/utilityFunc";
 
 const RevenueChart = ({ chartData }) => {
-  console.log(chartData);
+  // console.log(chartData);
   return (
     <ResponsiveContainer width="100%" height={400}>
       <ComposedChart
