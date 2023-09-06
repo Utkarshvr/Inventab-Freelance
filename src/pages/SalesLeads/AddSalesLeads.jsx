@@ -10,9 +10,11 @@ import { useAuth } from "../../hooks/useAuth";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import Loader from "../../ui/Loader";
 import {
+  calculateTotalExtdGrossPrice,
   calculateTotalNetPrice,
   removeDuplicateObjects,
   removeUndefinedObj,
+  calculateExtdGrossPrice,
 } from "../../utils/utilityFunc/utilityFunc";
 import InputText from "./../../components/Form/InputText";
 import TextArea from "./../../components/Form/TextArea";
@@ -51,15 +53,15 @@ const AddSalesDataForm = () => {
   }, [totalQuantity, unitCost]);
 
   // set extd gross price
-  useEffect(() => {
-    if (net_price && net_price > 0 && gst && gst > 0) {
-      let modifiedGst = parseInt(gst) + 1;
-      let gross_price = modifiedGst * parseInt(net_price);
-      setExtd_gross_price(gross_price);
-    } else {
-      setExtd_gross_price(0);
-    }
-  }, [gst, net_price]);
+  // useEffect(() => {
+  //   if (net_price && net_price > 0 && gst && gst > 0) {
+  //     let modifiedGst = parseInt(gst) + 1;
+  //     let gross_price = modifiedGst * parseInt(net_price);
+  //     setExtd_gross_price(gross_price);
+  //   } else {
+  //     setExtd_gross_price(0);
+  //   }
+  // }, [gst, net_price]);
 
   // load department, Client, sub-organization
   useEffect(() => {
@@ -265,8 +267,10 @@ const AddSalesDataForm = () => {
   // Function to update net_price based on unit_cost and quantity
   const updateNetPrice = (index, value, changedForm) => {
     const part = values.parts[index];
+    console.log({ part });
     let unitCost;
     let quantity;
+    let gst = part.gst;
 
     if (changedForm === "quantity") {
       quantity = parseFloat(value) || 0;
@@ -277,15 +281,23 @@ const AddSalesDataForm = () => {
     }
 
     const netPrice = unitCost * quantity;
-
+    let extd_gross_price = calculateExtdGrossPrice(gst, netPrice);
+    console.log({ extd_gross_price });
     setFieldValue(`parts[${index}].net_price`, netPrice.toFixed(2)); // You can format the net_price as needed
+    setFieldValue(
+      `parts[${index}].extd_gross_price`,
+      extd_gross_price.toFixed(2)
+    ); // You can format the net_price as needed
   };
   useEffect(() => {
-    // console.log({ values, parts: values.parts });
     if (values && values?.parts?.length > 0) {
       // console.log({ TOTAL_NET_PRICE: calculateTotalNetPrice(values.parts) });
       // setTotalQuantity(calculateTotalNetPrice(values.parts));
       setFieldValue("total", calculateTotalNetPrice(values.parts));
+      setFieldValue(
+        "extd_gross_price",
+        calculateTotalExtdGrossPrice(values.parts)
+      );
     }
   }, [values]);
 
@@ -359,10 +371,13 @@ const AddSalesDataForm = () => {
           : { label: "Inactive", value: "Inactive" }
       );
 
-      setNet_price(s?.mrp * 1);
       // Calc GST & NET PRICE
-      setgst(0);
-      setExtd_gross_price(0);
+      const netprice = s?.mrp * 1;
+      setNet_price(netprice);
+      const gst = s?.gst_itm?.country_gst[0]?.gst_percent;
+      setgst(gst);
+      const extdgrossprice = calculateExtdGrossPrice(gst, netprice);
+      setExtd_gross_price(extdgrossprice);
     } else {
       setshort_description("");
     }
@@ -847,8 +862,8 @@ const AddSalesDataForm = () => {
                                       <div className="w-full">
                                         <InputText
                                           type="number"
-                                          name="total"
-                                          value={values?.total || ""}
+                                          name="extd_gross_price"
+                                          value={values?.extd_gross_price || ""}
                                           readOnly
                                         />
                                       </div>

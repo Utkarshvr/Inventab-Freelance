@@ -393,6 +393,25 @@ utils.calculateTotalNetPrice = (items) => {
     return total;
   }, 0);
 };
+utils.calculateTotalExtdGrossPrice = (items) => {
+  return items.reduce((total, item) => {
+    const extdGrossPrice = parseFloat(item.extd_gross_price);
+    if (!isNaN(extdGrossPrice)) {
+      total += extdGrossPrice;
+    }
+    return total;
+  }, 0);
+};
+
+utils.calculateExtdGrossPrice = (gst, net_price) => {
+  if (net_price && net_price > 0 && gst && gst > 0) {
+    let modifiedGst = parseInt(gst) + 1;
+    let gross_price = modifiedGst * parseInt(net_price);
+    return gross_price;
+  } else {
+    return 0;
+  }
+};
 export const {
   removeDuplicateObjects,
   removeUndefinedObj,
@@ -411,4 +430,6 @@ export const {
   calculateMonthlyTotals,
   createYearsUpto2021,
   calculateTotalNetPrice,
+  calculateTotalExtdGrossPrice,
+  calculateExtdGrossPrice,
 } = utils;

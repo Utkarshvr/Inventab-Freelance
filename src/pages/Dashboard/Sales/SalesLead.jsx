@@ -110,7 +110,7 @@ const SalesLead = () => {
     },
     {
       name: "Probabilistic Value",
-      selector: (row) => calcTotalValue(row) * row?.probability,
+      selector: (row) => (calcTotalValue(row) * row?.probability) / 100,
       sortable: true,
     },
     {
