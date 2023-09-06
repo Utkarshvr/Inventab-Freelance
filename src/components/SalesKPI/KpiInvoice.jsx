@@ -87,7 +87,7 @@ const KpiInvoice = () => {
               <li className="list-group-item bg-primary rounded-0 text-white d-flex justify-content-between">
                 <span className="mb-0 fs-4">KPI-INVOICE </span>
                 <span className="fs-4">
-                  Total: {numDifferentiation(invoiceSubtotal)}
+                  Total: {numDifferentiation(invoiceSubtotal) || 0 + " Cr"}
                 </span>
               </li>
             </ul>
@@ -101,7 +101,7 @@ const KpiInvoice = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {invoiceTotal?.length > 0 &&
+                    {invoiceTotal?.length > 0 ? (
                       invoiceTotal.map((invoice) => {
                         return (
                           <tr key={invoice?.department}>
@@ -111,7 +111,13 @@ const KpiInvoice = () => {
                             </td>
                           </tr>
                         );
-                      })}
+                      })
+                    ) : (
+                      <tr>
+                        <td className="ps-4">No Department To Show</td>
+                        <td className="ps-4">0 Cr</td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>

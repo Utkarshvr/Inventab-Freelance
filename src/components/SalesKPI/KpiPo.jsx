@@ -93,7 +93,7 @@ const KpiPo = () => {
               <li className="list-group-item bg-primary rounded-0 text-white d-flex justify-content-between">
                 <span className="mb-0 fs-4">KPI-PO </span>
                 <span className="fs-4">
-                  Total: {numDifferentiation(kpiTotalSub)}
+                  Total: {numDifferentiation(kpiTotalSub) || 0 + " Cr"}
                 </span>
               </li>
             </ul>
@@ -107,7 +107,7 @@ const KpiPo = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {kpiTotal.length > 0 &&
+                    {kpiTotal.length > 0 ? (
                       kpiTotal.map((kpi) => {
                         return (
                           <tr key={kpi.department}>
@@ -117,7 +117,13 @@ const KpiPo = () => {
                             </td>
                           </tr>
                         );
-                      })}
+                      })
+                    ) : (
+                      <tr>
+                        <td className="ps-4">No Department To Show</td>
+                        <td className="ps-4">0 Cr</td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
