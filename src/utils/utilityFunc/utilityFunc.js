@@ -302,7 +302,7 @@ utils.daysLeftForSearchFunc = (targetDate) => {
   const targetDateTime = new Date(targetDate);
 
   // Calculate the difference in milliseconds between the two dates
-  const differenceInMilliseconds = targetDateTime - currentDate;
+  const differenceInMilliseconds = currentDate - targetDateTime;
 
   // Convert the difference to days
   const differenceInDays = differenceInMilliseconds / (24 * 60 * 60 * 1000);
