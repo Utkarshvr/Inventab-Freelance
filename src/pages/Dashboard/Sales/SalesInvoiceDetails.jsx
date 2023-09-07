@@ -52,6 +52,7 @@ const SalesInvoiceDetails = () => {
           { signal: controller.signal }
         );
         setLoading(false);
+        console.log(data?.results[0]);
         isMount && setInvoiceDetails(data?.results[0]);
       } catch (error) {
         setLoading(false);
@@ -106,74 +107,75 @@ const SalesInvoiceDetails = () => {
         <Loader />
       ) : (
         <div>
-          <PageTitle title='Invoices-Details' />
-          <div className='d-flex justify-content-end mb-4'>
+          <PageTitle title="Invoices-Details" />
+          <div className="d-flex justify-content-end mb-4">
             {/* back btn */}
             <Link
-              to='/dashboard/sales-invoices'
-              className='btn btn-primary btn-common rounded-1 me-2'>
-              <BsArrowLeft className='me-2' />
+              to="/dashboard/sales-invoices"
+              className="btn btn-primary btn-common rounded-1 me-2"
+            >
+              <BsArrowLeft className="me-2" />
               Back
             </Link>
             {/* print btn */}
             <ReactToPrint
               trigger={() => (
-                <button className='btn btn-primary text-white rounded-1 border-0 me-2 d-flex justify-content-center align-items-center'>
-                  <AiOutlinePrinter className='fs-4 me-2' />
+                <button className="btn btn-primary text-white rounded-1 border-0 me-2 d-flex justify-content-center align-items-center">
+                  <AiOutlinePrinter className="fs-4 me-2" />
                   Print
                 </button>
               )}
               content={() => printRef.current}
             />
           </div>
-          <div ref={printRef} className='mx-2 print-area'>
-            <img src={logo} alt='' className='logo-position' />
-            <div className='d-flex justify-content-center align-items-center '>
-              <SectionTitle heading='Tax Invoice' />
+          <div ref={printRef} className="mx-2 print-area">
+            <img src={logo} alt="" className="logo-position" />
+            <div className="d-flex justify-content-center align-items-center ">
+              <SectionTitle heading="Tax Invoice" />
             </div>
-            <h4 className='text-center fw-bold'>
+            <h4 className="text-center fw-bold">
               {invoiceDetails?.invoice_number}
             </h4>
             {/* Billing Address Detail & Shipping address Detail including GST*/}
-            <div className='row my-5 row-gap-2'>
+            <div className="row my-5 row-gap-2">
               {/* Billing Address Detail */}
-              <div className='col-12 col-md-6 col-lg-6'>
-                <div className='invoice-details-card'>
-                  <div className='card-body d-flex'>
-                    <div className='me-auto'>
-                      <h4 className='card-title'>Billing Address Detail</h4>
+              <div className="col-12 col-md-6 col-lg-6">
+                <div className="invoice-details-card">
+                  <div className="card-body d-flex">
+                    <div className="me-auto">
+                      <h4 className="card-title">Billing Address Detail</h4>
 
-                      <p className='text-dark fs-4 my-2'>
-                        <span className='fs-5'>
+                      <p className="text-dark fs-4 my-2">
+                        <span className="fs-5">
                           {" "}
                           {invoiceDetails?.billing_address?.org?.company_name}
                         </span>
                       </p>
 
-                      <p className='text-dark fs-4 my-2'>
-                        <span className='fs-5'>
+                      <p className="text-dark fs-4 my-2">
+                        <span className="fs-5">
                           {" "}
                           {invoiceDetails?.billing_address?.address}
                         </span>
                       </p>
 
-                      <p className='text-dark fs-4 my-2'>
-                        <span className='fs-5'>
+                      <p className="text-dark fs-4 my-2">
+                        <span className="fs-5">
                           {" "}
                           {invoiceDetails?.billing_address?.pincode?.pin_code}
                         </span>
                       </p>
 
-                      <p className='text-dark fs-4 my-2'>
-                        <span className='fs-5'>
+                      <p className="text-dark fs-4 my-2">
+                        <span className="fs-5">
                           {" "}
                           {invoiceDetails?.billing_address?.country?.name}
                         </span>
                       </p>
 
-                      <p className='text-dark fs-4 my-2'>
+                      <p className="text-dark fs-4 my-2">
                         GST:
-                        <span className='fs-5'>
+                        <span className="fs-5">
                           {" "}
                           {invoiceDetails?.billing_address?.gst_no}
                         </span>
@@ -184,43 +186,43 @@ const SalesInvoiceDetails = () => {
               </div>
 
               {/* Shipping address Detail including GST */}
-              <div className='col-12 col-md-6 col-lg-6'>
-                <div className='invoice-details-card'>
-                  <div className='card-body'>
-                    <h4 className='card-title'>
+              <div className="col-12 col-md-6 col-lg-6">
+                <div className="invoice-details-card">
+                  <div className="card-body">
+                    <h4 className="card-title">
                       Shipping address Detail including GST
                     </h4>
-                    <p className='text-dark fs-4 my-2'>
-                      <span className='fs-5'>
+                    <p className="text-dark fs-4 my-2">
+                      <span className="fs-5">
                         {" "}
                         {invoiceDetails?.shipping_address?.org?.company_name}
                       </span>
                     </p>
 
-                    <p className='text-dark fs-4 my-2'>
-                      <span className='fs-5'>
+                    <p className="text-dark fs-4 my-2">
+                      <span className="fs-5">
                         {" "}
                         {invoiceDetails?.shipping_address?.address}
                       </span>
                     </p>
 
-                    <p className='text-dark fs-4 my-2'>
-                      <span className='fs-5'>
+                    <p className="text-dark fs-4 my-2">
+                      <span className="fs-5">
                         {" "}
                         {invoiceDetails?.shipping_address?.pincode?.pin_code}
                       </span>
                     </p>
 
-                    <p className='text-dark fs-4 my-2'>
-                      <span className='fs-5'>
+                    <p className="text-dark fs-4 my-2">
+                      <span className="fs-5">
                         {" "}
                         {invoiceDetails?.shipping_address?.country?.name}
                       </span>
                     </p>
 
-                    <p className='text-dark fs-4 my-2 opacity-0'>
+                    <p className="text-dark fs-4 my-2 opacity-0">
                       GST:
-                      <span className='fs-5'>
+                      <span className="fs-5">
                         {" "}
                         {invoiceDetails?.shipping_address?.gst_no || `N/A`}
                       </span>
@@ -230,34 +232,34 @@ const SalesInvoiceDetails = () => {
               </div>
 
               {/* Payment & Delivery Terms  */}
-              <div className='col-12 col-md-6 col-lg-6'>
-                <div className='invoice-details-card'>
-                  <div className='card-body'>
-                    <h4 className='card-title'>Payment & Delivery</h4>
-                    <p className='text-dark fs-4 my-2'>
+              <div className="col-12 col-md-6 col-lg-6">
+                <div className="invoice-details-card">
+                  <div className="card-body">
+                    <h4 className="card-title">Payment & Delivery</h4>
+                    <p className="text-dark fs-4 my-2">
                       Payment Terms:
-                      <span className='fs-5'>
+                      <span className="fs-5">
                         {" "}
                         {invoiceDetails?.payment_term?.term}
                       </span>
                     </p>
-                    <p className='text-dark fs-4 my-2'>
+                    <p className="text-dark fs-4 my-2">
                       Payment Date:
-                      <span className='fs-5'>
+                      <span className="fs-5">
                         {" "}
                         {invoiceDetails?.payment_date}
                       </span>
                     </p>
-                    <p className='text-dark fs-4 my-2'>
+                    <p className="text-dark fs-4 my-2">
                       Delivery Terms:
-                      <span className='fs-5'>
+                      <span className="fs-5">
                         {" "}
                         {invoiceDetails?.delivery_term}
                       </span>
                     </p>
-                    <p className='text-dark fs-4 my-2'>
+                    <p className="text-dark fs-4 my-2">
                       Status:
-                      <span className='fs-5'>
+                      <span className="fs-5">
                         {" "}
                         {invoiceDetails?.status === null
                           ? "------------"
@@ -269,13 +271,13 @@ const SalesInvoiceDetails = () => {
               </div>
 
               {/* Created By Details  */}
-              <div className='col-12 col-md-6 col-lg-6'>
-                <div className='invoice-details-card'>
-                  <div className='card-body'>
-                    <h4 className='card-title'>Contact Details</h4>
-                    <p className='text-dark fs-4 my-2'>
+              <div className="col-12 col-md-6 col-lg-6">
+                <div className="invoice-details-card">
+                  <div className="card-body">
+                    <h4 className="card-title">Contact Details</h4>
+                    <p className="text-dark fs-4 my-2">
                       Created By:
-                      <span className='fs-5'>
+                      <span className="fs-5">
                         {" "}
                         {invoiceDetails?.created_by?.first_name +
                           " " +
@@ -283,25 +285,25 @@ const SalesInvoiceDetails = () => {
                       </span>
                     </p>
 
-                    <p className='text-dark fs-4 my-2'>
+                    <p className="text-dark fs-4 my-2">
                       Email:
-                      <span className='fs-5'>
+                      <span className="fs-5">
                         {" "}
                         {invoiceDetails?.created_by?.email}
                       </span>
                     </p>
 
-                    <p className='text-dark fs-4 my-2'>
+                    <p className="text-dark fs-4 my-2">
                       Mobile:
-                      <span className='fs-5'>
+                      <span className="fs-5">
                         {" "}
                         {invoiceDetails?.created_by?.mobile}
                       </span>
                     </p>
 
-                    <p className='text-dark fs-4 my-2 opacity-0'>
+                    <p className="text-dark fs-4 my-2 opacity-0">
                       Mobile:
-                      <span className='fs-5'>
+                      <span className="fs-5">
                         {" "}
                         {invoiceDetails?.created_by?.mobile}
                       </span>
@@ -312,19 +314,19 @@ const SalesInvoiceDetails = () => {
             </div>
 
             {/* Data Table */}
-            <div className='row'>
-              <div className='col-12'>
-                <div className='card'>
-                  <div className='card-body table-responsive'>
-                    <table className='table table-bordered'>
+            <div className="row">
+              <div className="col-12">
+                <div className="card">
+                  <div className="card-body table-responsive">
+                    <table className="table table-bordered">
                       <thead style={{ background: "#343A40" }}>
                         <tr>
-                          <th className='text-light ps-4 fs-5'>
+                          <th className="text-light ps-4 fs-5">
                             Part No with Desc
                           </th>
-                          <th className='text-light ps-4 fs-5'>Unit Value</th>
-                          <th className='text-light ps-4 fs-5'>Qty</th>
-                          <th className='text-light ps-4 fs-5'>Extd wo Tax</th>
+                          <th className="text-light ps-4 fs-5">Unit Value</th>
+                          <th className="text-light ps-4 fs-5">Qty</th>
+                          <th className="text-light ps-4 fs-5">Extd wo Tax</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -336,15 +338,16 @@ const SalesInvoiceDetails = () => {
                                   {" "}
                                   <td
                                     onClick={() => setSerializedNo(part.id)}
-                                    className='text-primary link_txt'
-                                    data-bs-toggle='modal'
-                                    data-bs-target='#exampleModal'
-                                    style={{ cursor: "pointer" }}>
+                                    className="text-primary link_txt"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal"
+                                    style={{ cursor: "pointer" }}
+                                  >
                                     {part?.short_description}
                                   </td>
                                 </>
                               ) : (
-                                <td className='text-black'>
+                                <td className="text-black">
                                   {part?.short_description}
                                 </td>
                               )}
@@ -362,22 +365,22 @@ const SalesInvoiceDetails = () => {
                           <>
                             {" "}
                             <tr>
-                              <td colSpan='2'></td>
+                              <td colSpan="2"></td>
                               <td>CGST</td>
                               <td>{isSameAddress?.CGST}</td>
                             </tr>
                             <tr>
-                              <td colSpan='2'></td>
+                              <td colSpan="2"></td>
                               <td>SGST</td>
                               <td>{isSameAddress?.SGST}</td>
                             </tr>
                             <tr>
-                              <td colSpan='2'></td>
+                              <td colSpan="2"></td>
                               <td>Shipment Charge</td>
                               <td>{isSameAddress?.shipping}</td>
                             </tr>
                             <tr>
-                              <td colSpan='2'></td>
+                              <td colSpan="2"></td>
                               <td>Gross Total</td>
                               <td>{isSameAddress?.grossTotal}</td>
                             </tr>
@@ -386,19 +389,19 @@ const SalesInvoiceDetails = () => {
                           <>
                             {" "}
                             <tr>
-                              <td colSpan='2'></td>
+                              <td colSpan="2"></td>
 
                               <td>IGST</td>
                               <td>{isDiffAddress?.IGST}</td>
                             </tr>
                             <tr>
-                              <td colSpan='2'></td>
+                              <td colSpan="2"></td>
 
                               <td>Shipment Charge</td>
                               <td>{isDiffAddress?.shipping}</td>
                             </tr>
                             <tr>
-                              <td colSpan='2'></td>
+                              <td colSpan="2"></td>
                               <td>Gross Total</td>
                               <td>{isDiffAddress?.grossTotal}</td>
                             </tr>
@@ -407,11 +410,11 @@ const SalesInvoiceDetails = () => {
                         <tr>
                           {isSameAddress?.grossTotal &&
                           !isDiffAddress?.grossTotal ? (
-                            <td colSpan='4'>{`In words: ${inWords(
+                            <td colSpan="4">{`In words: ${inWords(
                               parseFloat(isSameAddress?.grossTotal)
                             )}`}</td>
                           ) : (
-                            <td colSpan='4'>{`In Words: ${inWords(
+                            <td colSpan="4">{`In Words: ${inWords(
                               parseFloat(isDiffAddress?.grossTotal)
                             )}`}</td>
                           )}
@@ -426,26 +429,28 @@ const SalesInvoiceDetails = () => {
 
           {/* Modal for serial no */}
           <div
-            className='modal fade'
-            id='exampleModal'
-            tabIndex='-1'
-            aria-labelledby='exampleModalLabel'
-            aria-hidden='true'>
-            <div className='modal-dialog modal-dialog-centered modal-dialog-scrollable'>
-              <div className='modal-content'>
-                <div className='modal-header'>
+            className="modal fade"
+            id="exampleModal"
+            tabIndex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+          >
+            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+              <div className="modal-content">
+                <div className="modal-header">
                   <button
-                    type='button'
-                    className='btn-close'
-                    data-bs-dismiss='modal'
-                    aria-label='Close'></button>
+                    type="button"
+                    className="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
                 </div>
-                <div className='table-responsive'>
-                  <table className='table table-bordered text-center'>
+                <div className="table-responsive">
+                  <table className="table table-bordered text-center">
                     <thead style={{ background: "#343A40" }}>
                       <tr>
-                        <th className='text-light ps-4 fs-5'>No</th>
-                        <th className='text-light ps-4 fs-5'>Serial No</th>
+                        <th className="text-light ps-4 fs-5">No</th>
+                        <th className="text-light ps-4 fs-5">Serial No</th>
                       </tr>
                     </thead>
                     <tbody>

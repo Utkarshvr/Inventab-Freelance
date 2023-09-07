@@ -1,19 +1,19 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../../hooks/useAuth";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import PageTitle from "../Shared/PageTitle";
+import { useAuth } from "../hooks/useAuth";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import PageTitle from "./Shared/PageTitle";
 import { Link } from "react-router-dom";
 import { BsArrowLeft } from "react-icons/bs";
 import Select from "react-select";
-import InputText from "../Form/InputText";
+import InputText from "./Form/InputText";
 import {
   removeDuplicateObjects,
   removeUndefinedObj,
-} from "../../utils/utilityFunc/utilityFunc";
-import TextArea from "../Form/TextArea";
+} from "../utils/utilityFunc/utilityFunc";
+import TextArea from "./Form/TextArea";
 import { useFormik } from "formik";
 
-const Project = () => {
+const AddProject = () => {
   const axios = useAxiosPrivate();
   const { auth } = useAuth();
   const { orgId } = auth;
@@ -32,6 +32,7 @@ const Project = () => {
   const [uploadedDocuments, setUploadedDocuments] = useState([]);
   const [document, setDocument] = useState(null);
 
+  console.log({ manager, client, so, currency, budget });
   const handleDocumentUploaded = (files) => {
     const uploadedFiles = Array.from(files);
     setUploadedDocuments([...uploadedDocuments, ...uploadedFiles]);
@@ -158,12 +159,14 @@ const Project = () => {
           label: budget?.project_budget,
           value: budget?.project_budget,
         }));
+        console.log({ budgetArr });
         const processedBudget = removeDuplicateObjects(
           removeUndefinedObj(budgetArr)
         );
 
         if (isMount) {
-          setSo(processedBudget);
+          setBudget(processedBudget);
+          // setSo(processedBudget);
         }
       } catch (error) {
         setLoading(false);
@@ -185,6 +188,7 @@ const Project = () => {
           label: `${manager?.project_manager?.first_name} ${manager?.project_manager?.last_name}`,
           value: manager?.project_manager?.id,
         }));
+        console.log({ managerResuls: data?.results });
         const processedManager = removeDuplicateObjects(
           removeUndefinedObj(managerArr)
         );
@@ -235,8 +239,9 @@ const Project = () => {
         setLoading(false);
         const soArr = data?.results?.map((so) => ({
           label: so?.so?.so_id,
-          value: so?.so?.so_id,
+          value: so?.so?.id,
         }));
+        console.log({ SO_DATA: data?.results });
         const processedSo = removeDuplicateObjects(removeUndefinedObj(soArr));
         if (isMount) {
           setSo(processedSo);
@@ -254,7 +259,7 @@ const Project = () => {
 
   const formik = useFormik({
     initialValues: {
-      project_name: "",
+      // project_name: "",
     },
     onSubmit: async (values) => {
       try {
@@ -262,18 +267,19 @@ const Project = () => {
         //   console.error("Project name is required.");
         //   return;
         // }
+
         const projectData = {
-          project_name: values.project_name,
+          project_name: values.project_name?.label,
           project_budget: parseFloat(values.project_budget) || 34000,
-          budget_currency: values.budget_currency,
+          budget_currency: values.budget_currency?.label,
           saleable: values.saleable,
           description: values.description,
           status: values.status,
           org: orgId,
-          project_manager: values.project_manager,
-          so: values.so?.so_id,
+          project_manager: values.project_manager?.label,
+          so: values.so?.label,
           created_by: auth.userId,
-          client: values.client,
+          client: values.client?.label,
           sub_org: null,
           documents: uploadedDocuments.map((doc) => ({
             name: doc.name,
@@ -281,6 +287,8 @@ const Project = () => {
             document_type: doc.type,
           })),
         };
+        console.log({ projectData });
+
         const response = await axios.post(
           "http://inventab.io/api/v1/projects/create/project/",
           JSON.stringify(projectData)
@@ -291,6 +299,15 @@ const Project = () => {
       }
     },
   });
+  useEffect(() => {
+    console.log({ values: formik.values });
+  }, [formik.values]);
+
+  //update && change select options
+  const handleSelectChange = (selectedOption, name) => {
+    // console.log(selectedOption);
+    formik.setFieldValue(name, selectedOption);
+  };
   return (
     <div>
       <PageTitle title="Add Project" />
@@ -317,8 +334,12 @@ const Project = () => {
                   title="Client"
                   isLoading={loading}
                   placeholder="Select Client"
-                  name="Client"
+                  name="client"
                   options={client}
+                  onChange={(selectedOption) =>
+                    handleSelectChange(selectedOption, "client")
+                  }
+                  value={formik.values.client}
                   isClearable
                   isSearchable
                 />
@@ -330,9 +351,13 @@ const Project = () => {
                 <Select
                   title="SO"
                   placeholder="Enter SO Number"
-                  name="SO_number"
+                  name="so"
                   isLoading={loading}
                   options={so}
+                  onChange={(selectedOption) =>
+                    handleSelectChange(selectedOption, "so")
+                  }
+                  value={formik.values.so}
                   isClearable
                   isSearchable
                 />
@@ -347,7 +372,9 @@ const Project = () => {
                   placeholder="Select Project Name"
                   name="project_name"
                   options={projects}
-                  onChange={formik.handleChange}
+                  onChange={(selectedOption) =>
+                    handleSelectChange(selectedOption, "project_name")
+                  }
                   value={formik.values.project_name}
                   isClearable
                   isSearchable
@@ -371,11 +398,13 @@ const Project = () => {
                 <Select
                   placeholder="Select Project Currency"
                   isLoading={loading}
-                  name="proj_currency"
+                  name="budget_currency"
                   isSearchable
                   options={currencyOptions}
-                  value={currency}
-                  onChange={handleCurrencyChange}
+                  value={formik.values.budget_currency}
+                  onChange={(selectedOption) =>
+                    handleSelectChange(selectedOption, "budget_currency")
+                  }
                 />
               </div>
 
@@ -387,8 +416,12 @@ const Project = () => {
                   title="Manager"
                   isLoading={loading}
                   placeholder="Select Project Manager"
-                  name="Project_manager"
+                  name="project_manager"
                   options={manager}
+                  value={formik.values.project_manager}
+                  onChange={(selectedOption) =>
+                    handleSelectChange(selectedOption, "project_manager")
+                  }
                   isClearable
                   isSearchable
                 />
@@ -460,11 +493,11 @@ const Project = () => {
                                 <Select
                                   placeholder="Select Document Type"
                                   isLoading={loading}
-                                  name="proj_currency"
+                                  name="documents"
                                   isSearchable
                                   options={documentTypeOptions}
                                   value={document}
-                                  onChange={handleCurrencyChange}
+                                  onChange={handleDocumentType}
                                 />
                               </div>
                             </td>
@@ -524,4 +557,4 @@ const Project = () => {
   );
 };
 
-export default Project;
+export default AddProject;
