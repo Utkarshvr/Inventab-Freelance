@@ -42,7 +42,7 @@ const SalesInvoiceDetails = () => {
 
   const printRef = useRef();
 
-  // console.log(invoiceDetails);
+  console.log(invoiceDetails);
 
   // load leads
   useEffect(() => {
@@ -362,7 +362,8 @@ const SalesInvoiceDetails = () => {
                                     data-bs-target="#exampleModal"
                                     style={{ cursor: "pointer" }}
                                   >
-                                    {part?.short_description}
+                                    {/* {`${part?.short_description} (abcdefgh)`} */}
+                                    {`${part?.short_description} (${part?.parts_no?.part_number}) `}
                                   </td>
                                 </>
                               ) : (
@@ -446,6 +447,7 @@ const SalesInvoiceDetails = () => {
             </div>
           </div>
 
+          <h6>Terms & Conditions: {invoiceDetails?.invoice_comment}</h6>
           {/* Modal for serial no */}
           <div
             className="modal fade"
