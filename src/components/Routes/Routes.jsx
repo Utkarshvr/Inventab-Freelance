@@ -62,19 +62,35 @@ const router = createBrowserRouter([
           },
           {
             path: "eng",
-            element: <EngineeringDashboard />,
+            element: (
+              <RoleRequired role={"ENGINEERING"}>
+                <EngineeringDashboard />
+              </RoleRequired>
+            ),
           },
           {
             path: "eng-backlog",
-            element: <Backlog />,
+            element: (
+              <RoleRequired role={"ENGINEERING"}>
+                <Backlog />
+              </RoleRequired>
+            ),
           },
           {
             path: "eng-project",
-            element: <Project />,
+            element: (
+              <RoleRequired role={"ENGINEERING"}>
+                <Project />
+              </RoleRequired>
+            ),
           },
           {
             path: "eng-employeetimesheet",
-            element: <EmployeeTimesheet />,
+            element: (
+              <RoleRequired role={"ENGINEERING"}>
+                <EmployeeTimesheet />
+              </RoleRequired>
+            ),
           },
           {
             path: "sales/add-sales-leads",
