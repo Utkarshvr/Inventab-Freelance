@@ -205,9 +205,7 @@ const SalesInvoiceDetails = () => {
               <div className="col-12 col-md-6 col-lg-6">
                 <div className="invoice-details-card">
                   <div className="card-body">
-                    <h4 className="card-title">
-                      Shipping address Detail including GST
-                    </h4>
+                    <h4 className="card-title">Shipping address</h4>
                     <p className="text-dark fs-4 my-2">
                       <span className="fs-5">
                         {" "}
@@ -251,7 +249,7 @@ const SalesInvoiceDetails = () => {
               <div className="col-12 col-md-6 col-lg-6">
                 <div className="invoice-details-card">
                   <div className="card-body">
-                    <h4 className="card-title">Payment & Delivery</h4>
+                    {/* <h4 className="card-title">Payment & Delivery</h4> */}
                     <p className="text-dark fs-4 my-2">
                       Payment Terms:
                       <span className="fs-5">
@@ -290,9 +288,9 @@ const SalesInvoiceDetails = () => {
               <div className="col-12 col-md-6 col-lg-6">
                 <div className="invoice-details-card">
                   <div className="card-body">
-                    <h4 className="card-title">Contact Details</h4>
+                    {/* <h4 className="card-title">Contact Details</h4> */}
                     <p className="text-dark fs-4 my-2">
-                      Created By:
+                    Contact Name: 
                       <span className="fs-5">
                         {" "}
                         {invoiceDetails?.created_by?.first_name +
