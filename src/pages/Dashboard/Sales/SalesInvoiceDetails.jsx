@@ -36,9 +36,14 @@ const SalesInvoiceDetails = () => {
 
   const [invoiceDetails, setInvoiceDetails] = useState();
 
+  const [serialNumbers, setSerialNumbers] = useState([]);
+
   const [loading, setLoading] = useState(false);
 
   const printRef = useRef();
+
+  // console.log(invoiceDetails);
+
   // load leads
   useEffect(() => {
     // fetch invoiceDetails table data
@@ -52,7 +57,6 @@ const SalesInvoiceDetails = () => {
           { signal: controller.signal }
         );
         setLoading(false);
-        console.log(data?.results[0]);
         isMount && setInvoiceDetails(data?.results[0]);
       } catch (error) {
         setLoading(false);
@@ -101,18 +105,18 @@ const SalesInvoiceDetails = () => {
     }
   }, [invoiceDetails]);
 
-  const fetchSomething = async (index) => {
+  const fetchSerialNumbers = async (index) => {
     const part_number =
       invoiceDetails?.parts_invoice[index]?.parts_no?.part_number;
     const invoice_number = invoiceDetails?.invoice_number;
+
     const { data } = await axios.get(
       `/invoices/fetch/all/invoices/get_serialized_parts/?part_number=${part_number}&invoice_number=${invoice_number}`
     );
-    console.log(
-      `/invoices/fetch/all/invoices/get_serialized_parts/?part_number=${part_number}&invoice_number=${invoice_number}`,
-      data
-    );
+
+    setSerialNumbers(data.serial_numbers);
   };
+  // console.log({ serialNumbers });
   return (
     <>
       {loading ? (
@@ -350,7 +354,7 @@ const SalesInvoiceDetails = () => {
                                   {" "}
                                   <td
                                     onClick={() => {
-                                      fetchSomething(index);
+                                      fetchSerialNumbers(index);
                                       setSerializedNo(part.id);
                                     }}
                                     className="text-primary link_txt"
@@ -469,30 +473,18 @@ const SalesInvoiceDetails = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {invoiceDetails?.parts_invoice?.map((part) => {
-                        if (part?.id === serializedNo) {
-                          return (
-                            <tr key={part?.id}>
-                              <td>
-                                {part?.parts_no?.serialized_parts?.map(
-                                  (sn, index) => {
-                                    return (
-                                      <p key={sn?.id}>{"Sl-" + ++index}</p>
-                                    );
-                                  }
-                                )}
-                              </td>
-                              <td>
-                                {part?.parts_no?.serialized_parts?.map((sn) => {
-                                  return (
-                                    <p key={sn?.id}>{sn?.serial_number}</p>
-                                  );
-                                })}
-                              </td>
-                            </tr>
-                          );
-                        }
-                      })}
+                      <tr>
+                        <td>
+                          {serialNumbers?.map((sn, index) => {
+                            return <p key={sn}>{"Sl-" + ++index}</p>;
+                          })}
+                        </td>
+                        <td>
+                          {serialNumbers?.map((sn) => {
+                            return <p key={sn}>{sn}</p>;
+                          })}
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
