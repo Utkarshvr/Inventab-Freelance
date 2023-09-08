@@ -42,6 +42,7 @@ const SalesInvoices = () => {
             }
           )
         ).data;
+        console.log(response?.results);
         setLoading(false);
         isMount && setInvoice(response?.results);
         isMount && setSearchData(response?.results);
@@ -81,7 +82,7 @@ const SalesInvoices = () => {
 
     {
       name: "Sales Order",
-      selector: (row) => row?.sale_order || "",
+      selector: (row) => row?.sale_order?.so_id || "",
       sortable: true,
     },
 
