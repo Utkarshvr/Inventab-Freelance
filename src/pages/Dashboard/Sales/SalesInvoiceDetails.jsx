@@ -274,10 +274,8 @@ const SalesInvoiceDetails = () => {
                     <p className="text-dark fs-4 my-2">
                       Status:
                       <span className="fs-5">
-                        {" "}
-                        {invoiceDetails?.status === null
-                          ? "------------"
-                          : invoiceDetails?.status}
+                        {invoiceDetails?.sale_order?.ref_po} /
+                        {invoiceDetails?.sale_order?.po_date}
                       </span>
                     </p>
                   </div>
