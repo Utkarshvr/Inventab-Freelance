@@ -363,7 +363,7 @@ const SalesInvoiceDetails = () => {
                                     style={{ cursor: "pointer" }}
                                   >
                                     {/* {`${part?.short_description} (abcdefgh)`} */}
-                                    {`${part?.short_description} (${part?.parts_no?.part_number}) `}
+                                    {`${part?.short_description} (${part?.parts_no?.customer_part_number}) `}
                                   </td>
                                 </>
                               ) : (
