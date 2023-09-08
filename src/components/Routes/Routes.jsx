@@ -164,7 +164,11 @@ const router = createBrowserRouter([
           /* attendance */
           {
             path: "attendance",
-            element: <Attendance />,
+            element: (
+              <RoleRequired role={"SALES"}>
+                <Attendance />
+              </RoleRequired>
+            ),
           },
         ],
       },

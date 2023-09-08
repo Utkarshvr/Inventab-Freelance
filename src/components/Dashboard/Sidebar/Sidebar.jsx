@@ -99,23 +99,25 @@ const Sidebar = () => {
               </li>
             )}
             {/* Support */}
-            <li>
-              <a
-                className="has-arrow ai-icon"
-                href="javascript:void()"
-                aria-expanded="false"
-              >
-                <LiaHandsHelpingSolid className="fs-2" />
-                <span className="nav-text fs-4">Support</span>
-              </a>
-              <ul aria-expanded="false">
-                <li>
-                  <NavLink to="attendance" className="fs-4">
-                    Attendance
-                  </NavLink>
-                </li>
-              </ul>
-            </li>
+            {auth?.dept?.some((r) => r.role.name === "SALES") && (
+              <li>
+                <a
+                  className="has-arrow ai-icon"
+                  href="javascript:void()"
+                  aria-expanded="false"
+                >
+                  <LiaHandsHelpingSolid className="fs-2" />
+                  <span className="nav-text fs-4">Support</span>
+                </a>
+                <ul aria-expanded="false">
+                  <li>
+                    <NavLink to="attendance" className="fs-4">
+                      Attendance
+                    </NavLink>
+                  </li>
+                </ul>
+              </li>
+            )}
           </ul>
         </div>
       </div>
