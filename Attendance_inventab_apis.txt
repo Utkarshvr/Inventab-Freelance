@@ -1,0 +1,48 @@
+Get weeklyoff filter by org_id
+http://127.0.0.1:8000/api/v1/org/get/weeklyoff/?org_id=0884137a-b5dc-4f5b-b64d-9e7baf0d3819
+
+get weeklyoff filter by year_type 
+http://127.0.0.1:8000/api/v1/org/get/weeklyoff/?org_id=0884137a-b5dc-4f5b-b64d-9e7baf0d3819&startyear=2023
+--------------------------------------------------------------------------------------------------------------
+Get Holidaylist filter by org_id
+http://127.0.0.1:8000/api/v1/org/get/holidaylist/?org_id=0884137a-b5dc-4f5b-b64d-9e7baf0d3819
+
+Get holidaylist filter by year_type
+http://127.0.0.1:8000/api/v1/org/get/holidaylist/?startyear=2023
+--------------------------------------------------------------------------------------------------------------
+Get Allowedlist filter by org_id
+http://127.0.0.1:8000/api/v1/org/get/allowedleaves/?org_id=2023
+
+Get Allowedlist filter by calenderyear
+http://127.0.0.1:8000/api/v1/org/get/allowedleaves/?startyear=2023
+-------------------------------------------------------------------------------------
+Create Leave Appln
+http://127.0.0.1:8000/api/v1/org/create/leave-appln/
+{
+            "user": "b0dc311b-2231-4875-bb11-d98a8c2e3f3b",
+            "status": "New",
+            "leave_dates": [
+                {
+                    "date": "2023-08-15",
+                    "type": "Firsthalf/Secondhalf/Full",
+                    "status": "Applied"
+                },
+                {
+                    "date": "2023-08-23",
+                    "type": "Firsthalf",
+                    "status": "Applied"
+                }
+            ]
+        }
+--------------------------------------------------------------------------------------
+Get Own LeaveStatus
+http://127.0.0.1:8000/api/v1/org/get/ownleavestatus/?user_id=b0dc311b-2231-4875-bb11-d98a8c2e3f3b
+-------------------------------------------------------------------------------------------------
+Update Leave Appln Status
+http://127.0.0.1:8000/api/v1/org/update/leaveapplnstatus/5b3bb747-680b-4e37-a881-cb88274da480/
+{
+    "date": "2023-08-23",
+    "type": "Firsthalf",
+    "status": "Approved/Disapproved"
+}
+---------------------------------------------------------------------------------------------------------------

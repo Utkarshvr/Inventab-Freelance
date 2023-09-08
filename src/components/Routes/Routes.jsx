@@ -20,6 +20,7 @@ import PublicRoute from "../PublicRoute/PublicRoute";
 import Backlog from "../EngineeringPages/Backlog";
 import Project from "../EngineeringPages/Project";
 import EmployeeTimesheet from "../EngineeringPages/EmployeeTimesheet";
+import RoleRequired from "../AuthRequired/RoleRequired";
 
 const router = createBrowserRouter([
   {
@@ -53,7 +54,11 @@ const router = createBrowserRouter([
           /* Leads */
           {
             path: "sales-leads",
-            element: <SalesLead />,
+            element: (
+              <RoleRequired role={"SALES"}>
+                <SalesLead />
+              </RoleRequired>
+            ),
           },
           {
             path: "eng",
@@ -73,34 +78,62 @@ const router = createBrowserRouter([
           },
           {
             path: "sales/add-sales-leads",
-            element: <AddSalesLeads />,
+            element: (
+              <RoleRequired role={"SALES"}>
+                <AddSalesLeads />
+              </RoleRequired>
+            ),
           },
           {
             path: "sales/update-sales-leads/:lead_no",
-            element: <UpdateSalesLeads />,
+            element: (
+              <RoleRequired role={"SALES"}>
+                <UpdateSalesLeads />
+              </RoleRequired>
+            ),
           },
           /* Orders */
           {
             path: "sales-orders",
-            element: <SalesOrders />,
+            element: (
+              <RoleRequired role={"SALES"}>
+                <SalesOrders />
+              </RoleRequired>
+            ),
           },
           {
             path: "sales-orders/add-sales-order",
-            element: <AddSalesOrder />,
+            element: (
+              <RoleRequired role={"SALES"}>
+                <AddSalesOrder />
+              </RoleRequired>
+            ),
           },
 
           {
             path: "sales-orders/update-sales-order/:order_id",
-            element: <UpdateSalesOrder />,
+            element: (
+              <RoleRequired role={"SALES"}>
+                <UpdateSalesOrder />
+              </RoleRequired>
+            ),
           },
           /* invoice */
           {
             path: "sales-invoices",
-            element: <SalesInvoices />,
+            element: (
+              <RoleRequired role={"SALES"}>
+                <SalesInvoices />
+              </RoleRequired>
+            ),
           },
           {
             path: "sales-invoices/sales-invoices-details/:invoice_id",
-            element: <SalesInvoiceDetails />,
+            element: (
+              <RoleRequired role={"SALES"}>
+                <SalesInvoiceDetails />
+              </RoleRequired>
+            ),
           },
           /* ar */
           {

@@ -101,6 +101,18 @@ const SalesInvoiceDetails = () => {
     }
   }, [invoiceDetails]);
 
+  const fetchSomething = async (index) => {
+    const part_number =
+      invoiceDetails?.parts_invoice[index]?.parts_no?.part_number;
+    const invoice_number = invoiceDetails?.invoice_number;
+    const { data } = await axios.get(
+      `/invoices/fetch/all/invoices/get_serialized_parts/?part_number=${part_number}&invoice_number=${invoice_number}`
+    );
+    console.log(
+      `/invoices/fetch/all/invoices/get_serialized_parts/?part_number=${part_number}&invoice_number=${invoice_number}`,
+      data
+    );
+  };
   return (
     <>
       {loading ? (
@@ -330,14 +342,17 @@ const SalesInvoiceDetails = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {invoiceDetails?.parts_invoice?.map((part) => {
+                        {invoiceDetails?.parts_invoice?.map((part, index) => {
                           return (
                             <tr key={part?.id}>
-                              {part?.parts_no?.serialized_parts?.length > 0 ? (
+                              {part?.parts_no?.serialization ? (
                                 <>
                                   {" "}
                                   <td
-                                    onClick={() => setSerializedNo(part.id)}
+                                    onClick={() => {
+                                      fetchSomething(index);
+                                      setSerializedNo(part.id);
+                                    }}
                                     className="text-primary link_txt"
                                     data-bs-toggle="modal"
                                     data-bs-target="#exampleModal"

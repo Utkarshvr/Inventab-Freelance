@@ -45,11 +45,13 @@ const LoginForm = () => {
             })
           );
 
+          console.log(data);
           if (data.success) {
             const results = data?.data;
 
             const userObj = {
               accessToken: results?.auth_token?.access,
+              dept: results?.dept,
               userId: results?.user_id,
               orgId: results?.org.id,
               orgName: results?.org?.company_name,
@@ -76,14 +78,14 @@ const LoginForm = () => {
 
   return (
     <>
-      <form className='form' onSubmit={handleSubmit}>
+      <form className="form" onSubmit={handleSubmit}>
         {/* Email */}
-        <div className='mb-4'>
+        <div className="mb-4">
           <TextInput
-            type='email'
-            title='email'
-            name='email'
-            placeholder='Enter your email'
+            type="email"
+            title="email"
+            name="email"
+            placeholder="Enter your email"
             value={values.email}
             onChange={handleChange}
             onBlur={handleBlur}
@@ -93,28 +95,28 @@ const LoginForm = () => {
           ) : null}
         </div>
         {/* Password */}
-        <div className='mb-4 '>
-          <div className='password_field'>
+        <div className="mb-4 ">
+          <div className="password_field">
             <TextInput
               type={`${showPassword ? "text" : "password"}`}
-              title='password'
-              name='password'
-              placeholder='Enter your password'
+              title="password"
+              name="password"
+              placeholder="Enter your password"
               value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
             />
 
-            <div onClick={togglePasswordVisibility} className='eyeIcon'>
+            <div onClick={togglePasswordVisibility} className="eyeIcon">
               {showPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
             </div>
           </div>
           {errors.password && touched.password ? (
             <ErrorMsg subject={errors.password} />
           ) : null}
-          <div className='mt-2 d-flex justify-content-between gap-4 d-none'>
-            <ErrorMsg subject='Password not match' />
-            <Link to='forget-password'>
+          <div className="mt-2 d-flex justify-content-between gap-4 d-none">
+            <ErrorMsg subject="Password not match" />
+            <Link to="forget-password">
               <p>Forget Password?</p>
             </Link>
           </div>
@@ -122,8 +124,8 @@ const LoginForm = () => {
         {/* show error msg */}
 
         {/* Login Button */}
-        <div className='mb-2'>
-          <FormButton type='submit' title='Sign In' />
+        <div className="mb-2">
+          <FormButton type="submit" title="Sign In" />
         </div>
       </form>
     </>
