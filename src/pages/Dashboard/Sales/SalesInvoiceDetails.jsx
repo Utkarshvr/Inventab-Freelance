@@ -290,12 +290,12 @@ const SalesInvoiceDetails = () => {
                   <div className="card-body">
                     {/* <h4 className="card-title">Contact Details</h4> */}
                     <p className="text-dark fs-4 my-2">
-                    Contact Name: 
+                      Contact Name:
                       <span className="fs-5">
                         {" "}
-                        {invoiceDetails?.created_by?.first_name +
+                        {invoiceDetails?.sale_order?.contact_to?.first_name +
                           " " +
-                          invoiceDetails?.created_by?.last_name}
+                          invoiceDetails?.sale_order?.contact_to?.last_name}
                       </span>
                     </p>
 
@@ -303,7 +303,7 @@ const SalesInvoiceDetails = () => {
                       Email:
                       <span className="fs-5">
                         {" "}
-                        {invoiceDetails?.created_by?.email}
+                        {invoiceDetails?.sale_order?.contact_to?.email}
                       </span>
                     </p>
 
@@ -311,7 +311,7 @@ const SalesInvoiceDetails = () => {
                       Mobile:
                       <span className="fs-5">
                         {" "}
-                        {invoiceDetails?.created_by?.mobile}
+                        {invoiceDetails?.sale_order?.contact_to?.mobile}
                       </span>
                     </p>
 
