@@ -153,7 +153,7 @@ const SalesInvoiceDetails = () => {
               {invoiceDetails?.invoice_number}
             </h4>
             {/* Billing Address Detail & Shipping address Detail including GST*/}
-            <div className="row my-5 row-gap-2">
+            <div className="row my-5 row-gap-1">
               {/* Billing Address Detail */}
               <div className="col-12 col-md-6 col-lg-6">
                 <div className="invoice-details-card">
@@ -272,7 +272,7 @@ const SalesInvoiceDetails = () => {
                       </span>
                     </p>
                     <p className="text-dark fs-4 my-2">
-                      Status:
+                      PO Ref:
                       <span className="fs-5">
                         {invoiceDetails?.sale_order?.ref_po} /
                         {invoiceDetails?.sale_order?.po_date}
@@ -326,7 +326,7 @@ const SalesInvoiceDetails = () => {
             </div>
 
             {/* Data Table */}
-            <div className="row">
+            <div style={{ marginTop: "-3em" }} className="row">
               <div className="col-12">
                 <div className="card">
                   <div className="card-body table-responsive">
@@ -441,9 +441,11 @@ const SalesInvoiceDetails = () => {
                 </div>
               </div>
             </div>
+            <h6 style={{ marginTop: "-1.5em" }} className="fw-bold">
+              Terms & Conditions: {invoiceDetails?.invoice_comment}
+            </h6>
           </div>
 
-          <h6>Terms & Conditions: {invoiceDetails?.invoice_comment}</h6>
           {/* Modal for serial no */}
           <div
             className="modal fade"
