@@ -412,6 +412,58 @@ utils.calculateExtdGrossPrice = (gst, net_price) => {
     return 0;
   }
 };
+
+utils.extractDateInNums = (dateString) => {
+  const parts = dateString.split("-");
+
+  const year = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10);
+  const day = parseInt(parts[2], 10);
+
+  return { year, month, day };
+};
+utils.generateCustomClassNames = (holidays) => {
+  const year = new Date().getFullYear(); // 2023
+  const month = new Date().getMonth() + 1; // September
+
+  const resultArray = [];
+
+  // Calculate the number of days in the month
+  const daysInMonth = new Date(year, month, 0).getDate();
+
+  // Find all Sundays in the month
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month - 1, day);
+    if (date.getDay() === 0) {
+      resultArray.push({ year, month, day, className: "custom-weekly-offs" });
+    }
+  }
+
+  // Find the first Saturday of the month
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month - 1, day);
+    if (date.getDay() === 6) {
+      resultArray.push({ year, month, day, className: "custom-weekly-offs" });
+      break;
+    }
+  }
+
+  // Find the last Saturday of the month
+  for (let day = daysInMonth; day >= 1; day--) {
+    const date = new Date(year, month - 1, day);
+    if (date.getDay() === 6) {
+      resultArray.push({ year, month, day, className: "custom-weekly-offs" });
+      break;
+    }
+  }
+
+  const holidaysCustomClassnames = holidays.map((holiday) => {
+    const dateObj = extractDateInNums(holiday.date);
+    return { ...dateObj, className: "custom-holidays" };
+  });
+
+  return [...resultArray, ...holidaysCustomClassnames];
+};
 export const {
   removeDuplicateObjects,
   removeUndefinedObj,
@@ -432,4 +484,6 @@ export const {
   calculateTotalNetPrice,
   calculateTotalExtdGrossPrice,
   calculateExtdGrossPrice,
+  generateCustomClassNames,
+  extractDateInNums
 } = utils;

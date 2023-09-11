@@ -21,6 +21,8 @@ import Backlog from "../EngineeringPages/Backlog";
 import Project from "../EngineeringPages/Project";
 import EmployeeTimesheet from "../EngineeringPages/EmployeeTimesheet";
 import RoleRequired from "../AuthRequired/RoleRequired";
+import AddProject from "../engg/Project";
+import UpdateProject from "../engg/UpdateProject";
 
 const router = createBrowserRouter([
   {
@@ -67,6 +69,14 @@ const router = createBrowserRouter([
                 <EngineeringDashboard />
               </RoleRequired>
             ),
+          },
+          {
+            path: "engg",
+            element: <AddProject />,
+          },
+          {
+            path: "engg/update-project/:id",
+            element: <UpdateProject />,
           },
           {
             path: "eng-backlog",
