@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import Select from "react-select";
 import { Calendar } from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import { useEffect, useState } from "react";
@@ -25,9 +26,13 @@ const Attendance = () => {
   const [allowedList, setAllowedList] = useState({});
   const [ownLeaves, setOwnLeaves] = useState([]);
   const [customDaysClassName, setCustomDaysClassName] = useState([]);
+  const [isReporty, setIsReporty] = useState(false);
 
+  const handleToggle = () => {
+    setIsReporty(!isReporty);
+  };
   // LOGS
-  console.log({ ownLeaves });
+  // console.log({ ownLeaves });
 
   // EFFECTS
   useEffect(() => {
@@ -79,16 +84,63 @@ const Attendance = () => {
         <div className="card-body">
           <div className="d-flex align-items-center justify-content-between mb-3">
             <h1>Attendance Page</h1>
-            {/* <!-- Button trigger modal --> */}
-            <button
-              type="button"
-              className="btn btn-primary btn-common rounded-1"
-              data-bs-toggle="modal"
-              data-bs-target="#exampleModal"
+
+            {/* Self Or Reportees SWITCH */}
+
+            <div
+              style={{
+                display: "flex",
+                gap: "1em",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              Leave Application
-            </button>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "1em",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "0.5em 1em",
+                }}
+              >
+                <h6 style={{ margin: "auto" }}>Self</h6>
+                <div
+                  className={`sliding-toggle-switch ${
+                    isReporty ? "active" : ""
+                  }`}
+                  onClick={handleToggle}
+                >
+                  <div className="toggle-dot"></div>
+                </div>
+                <h6 style={{ margin: "auto" }}>Reportees</h6>
+              </div>
+
+              {/* <!-- Button trigger modal --> */}
+              {isReporty ? (
+                <Select
+                  placeholder="Select Employee"
+                  isSearchable
+                  isClearable
+                  name="empoyee"
+                  className="p-2"
+                  // options={soStatus}
+                  // value={values.so_status}
+                  // onChange={(option) => setFieldValue("so_status", option)}
+                />
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn-primary btn-common rounded-1"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal"
+                >
+                  Leave Application
+                </button>
+              )}
+            </div>
           </div>
+
           <section>
             <div className="row">
               <section className="col-md-6">
