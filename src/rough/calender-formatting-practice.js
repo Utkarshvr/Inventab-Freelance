@@ -67,30 +67,85 @@ const weeklyOffs = [
   },
 ];
 
-// TO CREATE:
-const EXAMPLE = [
+const ownLeaves = [
   {
-    // Define the date you want to highlight
-    year: 2023,
-    month: 9,
-    day: 13,
-    className: "custom-highlighted-day", // Add custom class name
+    id: "6ca4a16b-d525-435d-af8c-60210d7e7d57",
+    user: "c0a6fa60-a5af-43af-918b-993ef01bd56e",
+    status: "New",
+    leave_dates: [
+      {
+        id: "7017faef-c932-4665-aaea-9189602cfad4",
+        date: "2023-09-16",
+        type: "Secondhalf",
+        status: "Applied",
+      },
+      {
+        id: "fc281334-45f8-40aa-931d-532699890808",
+        date: "2023-08-29",
+        type: "Secondhalf",
+        status: "Applied",
+      },
+    ],
+  },
+  {
+    id: "2e75f977-6cfd-4c48-9fed-a7666044b671",
+    user: "c0a6fa60-a5af-43af-918b-993ef01bd56e",
+    status: "New",
+    leave_dates: [
+      {
+        id: "03ac9738-6a30-4831-898e-1d479f67a581",
+        date: "2023-09-16",
+        type: "Secondhalf",
+        status: "Applied",
+      },
+      {
+        id: "1bffbf6a-79f1-4c7c-9f08-05c3508ee8af",
+        date: "2023-08-29",
+        type: "Secondhalf",
+        status: "Applied",
+      },
+    ],
+  },
+  {
+    id: "3facdfcf-8f8a-4b8a-9832-4853da1554f7",
+    user: "c0a6fa60-a5af-43af-918b-993ef01bd56e",
+    status: "New",
+    leave_dates: [
+      {
+        id: "ff453d05-6f04-4ea9-9db6-05fb0f83e92a",
+        date: "2023-09-13",
+        type: "Secondhalf",
+        status: "Applied",
+      },
+      {
+        id: "911a682c-cf24-47b3-ac5f-ec6f3856eb57",
+        date: "2023-09-07",
+        type: "Secondhalf",
+        status: "Applied",
+      },
+    ],
+  },
+  {
+    id: "adfda643-7499-4395-b4b3-21c3bb61a758",
+    user: "c0a6fa60-a5af-43af-918b-993ef01bd56e",
+    status: "New",
+    leave_dates: [
+      {
+        id: "da538bc4-16a8-4964-8145-60614aeed1d5",
+        date: "2023-09-13",
+        type: "Secondhalf",
+        status: "Applied",
+      },
+      {
+        id: "8df4c08a-2d0b-4602-a697-3a3815f34b6a",
+        date: "2023-09-07",
+        type: "Secondhalf",
+        status: "Applied",
+      },
+    ],
   },
 ];
 
-function xyz() {
-  const newArray = weeklyOffs?.map((entry) => {
-    const { day, type } = entry;
-    const year = new Date().getFullYear(); // 2023
-    const month = new Date().getMonth() + 1; // 8 + 1 = 9
-
-    console.log({ year, month });
-
-    return { className: "custom-weekly-offs" };
-  });
-}
-
-// xyz();
 const extractDateInNums = (dateString) => {
   const parts = dateString.split("-");
 
@@ -100,49 +155,95 @@ const extractDateInNums = (dateString) => {
 
   return { year, month, day };
 };
-function generateCustomClassNames(holidays) {
-  const year = new Date().getFullYear(); // 2023
-  const month = new Date().getMonth() + 1; // September
+const generateWeeklyOffs = () => {
+  const currentYear = new Date().getFullYear(); // 2023
 
   const resultArray = [];
 
-  // Calculate the number of days in the month
-  const daysInMonth = new Date(year, month, 0).getDate();
+  const startYear = 2020;
 
-  // Find all Sundays in the month
-  for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(year, month - 1, day);
-    if (date.getDay() === 0) {
-      resultArray.push({ year, month, day, className: "custom-weekly-offs" });
+  for (let year = startYear; year <= currentYear; year++) {
+    for (let month = 1; month <= 12; month++) {
+      // Calculate the number of days in the month
+      const daysInMonth = new Date(year, month, 0).getDate();
+
+      // Find all Sundays in the month
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month - 1, day);
+        if (date.getDay() === 0) {
+          resultArray.push({
+            year,
+            month,
+            day,
+            className: "custom-weekly-offs",
+          });
+        }
+      }
+
+      // Find the first Saturday of the month
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month - 1, day);
+        if (date.getDay() === 6) {
+          resultArray.push({
+            year,
+            month,
+            day,
+            className: "custom-weekly-offs",
+          });
+          break;
+        }
+      }
+
+      // Find the last Saturday of the month
+      for (let day = daysInMonth; day >= 1; day--) {
+        const date = new Date(year, month - 1, day);
+        if (date.getDay() === 6) {
+          resultArray.push({
+            year,
+            month,
+            day,
+            className: "custom-weekly-offs",
+          });
+          break;
+        }
+      }
     }
   }
 
-  // Find the first Saturday of the month
-  for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(year, month - 1, day);
-    if (date.getDay() === 6) {
-      resultArray.push({ year, month, day, className: "custom-weekly-offs" });
-      break;
-    }
-  }
+  return resultArray;
+};
+const generateOwnLeavesClassnames = (ownLeaves) => {
+  let ownLeavesClassnames = [];
+  ownLeaves.forEach((leave) => {
+    leave.leave_dates.forEach((leave_date) => {
+      const dateObj = extractDateInNums(leave_date.date);
 
-  // Find the last Saturday of the month
-  for (let day = daysInMonth; day >= 1; day--) {
-    const date = new Date(year, month - 1, day);
-    if (date.getDay() === 6) {
-      resultArray.push({ year, month, day, className: "custom-weekly-offs" });
-      break;
-    }
-  }
+      let className;
+
+      if (leave.status === "New") className = "custom-leaves-applied-new";
+      else if (leave.status === "Disapproved")
+        className = "custom-leaves-applied-disapproved";
+      else if (leave.status === "Approved")
+        className = "custom-leaves-applied-approved";
+
+      ownLeavesClassnames.push({ ...dateObj, className });
+    });
+    return ownLeavesClassnames;
+  });
+
+  return ownLeavesClassnames;
+};
+
+const generateCustomClassNames = (holidays, ownLeaves) => {
+  // const weeklyOffs = generateWeeklyOffs();
+  const weeklyOffs = [];
 
   const holidaysCustomClassnames = holidays.map((holiday) => {
     const dateObj = extractDateInNums(holiday.date);
-    console.log(dateObj);
     return { ...dateObj, className: "custom-holidays" };
   });
 
-  return [...resultArray, ...holidaysCustomClassnames];
-}
-
-const dateArray = generateCustomClassNames(holidays);
-console.log(dateArray);
+  const ownLeavesClassnames = generateOwnLeavesClassnames(ownLeaves);
+  return [...weeklyOffs, ...holidaysCustomClassnames, ...ownLeavesClassnames];
+};
+console.log(generateCustomClassNames(holidays));

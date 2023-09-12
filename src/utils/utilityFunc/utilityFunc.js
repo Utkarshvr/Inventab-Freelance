@@ -422,47 +422,95 @@ utils.extractDateInNums = (dateString) => {
 
   return { year, month, day };
 };
-utils.generateCustomClassNames = (holidays) => {
-  const year = new Date().getFullYear(); // 2023
-  const month = new Date().getMonth() + 1; // September
+utils.generateWeeklyOffs = () => {
+  const currentYear = new Date().getFullYear(); // 2023
 
   const resultArray = [];
 
-  // Calculate the number of days in the month
-  const daysInMonth = new Date(year, month, 0).getDate();
+  const startYear = 2020;
 
-  // Find all Sundays in the month
-  for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(year, month - 1, day);
-    if (date.getDay() === 0) {
-      resultArray.push({ year, month, day, className: "custom-weekly-offs" });
+  for (let year = startYear; year <= currentYear; year++) {
+    for (let month = 1; month <= 12; month++) {
+      // Calculate the number of days in the month
+      const daysInMonth = new Date(year, month, 0).getDate();
+
+      // Find all Sundays in the month
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month - 1, day);
+        if (date.getDay() === 0) {
+          resultArray.push({
+            year,
+            month,
+            day,
+            className: "custom-weekly-offs",
+          });
+        }
+      }
+
+      // Find the first Saturday of the month
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month - 1, day);
+        if (date.getDay() === 6) {
+          resultArray.push({
+            year,
+            month,
+            day,
+            className: "custom-weekly-offs",
+          });
+          break;
+        }
+      }
+
+      // Find the last Saturday of the month
+      for (let day = daysInMonth; day >= 1; day--) {
+        const date = new Date(year, month - 1, day);
+        if (date.getDay() === 6) {
+          resultArray.push({
+            year,
+            month,
+            day,
+            className: "custom-weekly-offs",
+          });
+          break;
+        }
+      }
     }
   }
 
-  // Find the first Saturday of the month
-  for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(year, month - 1, day);
-    if (date.getDay() === 6) {
-      resultArray.push({ year, month, day, className: "custom-weekly-offs" });
-      break;
-    }
-  }
+  return resultArray;
+};
+utils.generateOwnLeavesClassnames = (ownLeaves) => {
+  let ownLeavesClassnames = [];
+  ownLeaves.forEach((leave) => {
+    leave.leave_dates.forEach((leave_date) => {
+      const dateObj = extractDateInNums(leave_date.date);
 
-  // Find the last Saturday of the month
-  for (let day = daysInMonth; day >= 1; day--) {
-    const date = new Date(year, month - 1, day);
-    if (date.getDay() === 6) {
-      resultArray.push({ year, month, day, className: "custom-weekly-offs" });
-      break;
-    }
-  }
+      let className;
+
+      if (leave.status === "New") className = "custom-leaves-applied-new";
+      else if (leave.status === "Disapproved")
+        className = "custom-leaves-applied-disapproved";
+      else if (leave.status === "Approved")
+        className = "custom-leaves-applied-approved";
+
+      ownLeavesClassnames.push({ ...dateObj, className });
+    });
+    return ownLeavesClassnames;
+  });
+
+  return ownLeavesClassnames;
+};
+
+utils.generateCustomClassNames = (holidays, ownLeaves) => {
+  const weeklyOffs = utils.generateWeeklyOffs();
 
   const holidaysCustomClassnames = holidays.map((holiday) => {
     const dateObj = extractDateInNums(holiday.date);
     return { ...dateObj, className: "custom-holidays" };
   });
 
-  return [...resultArray, ...holidaysCustomClassnames];
+  const ownLeavesClassnames = utils.generateOwnLeavesClassnames(ownLeaves);
+  return [...weeklyOffs, ...holidaysCustomClassnames, ...ownLeavesClassnames];
 };
 export const {
   removeDuplicateObjects,
@@ -485,5 +533,5 @@ export const {
   calculateTotalExtdGrossPrice,
   calculateExtdGrossPrice,
   generateCustomClassNames,
-  extractDateInNums
+  extractDateInNums,
 } = utils;

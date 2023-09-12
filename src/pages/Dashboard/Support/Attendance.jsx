@@ -8,18 +8,8 @@ import "./Attendance.css";
 import { useAuth } from "../../../hooks/useAuth";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { generateCustomClassNames } from "../../../utils/utilityFunc/utilityFunc";
+import AttendanceModal from "./AttendanceModal";
 
-// EXAMPLE
-// [
-//   {
-//     // Define the date you want to highlight
-//     year: 2023,
-//     month: 9,
-//     day: 13,
-//     className: "custom-highlighted-day", // Add custom class names
-//   },
-//   // You can add more objects for other dates and custom class names
-// ]
 const Attendance = () => {
   const axios = useAxiosPrivate();
   const { auth } = useAuth();
@@ -33,14 +23,11 @@ const Attendance = () => {
   const [weeklyOffs, setWeeklyOffs] = useState([]);
   const [holidays, setHolidays] = useState([]);
   const [allowedList, setAllowedList] = useState({});
-  const [ownLeaves, setOwnLeaves] = useState({
-    sick: 0,
-    casual: 0,
-  });
+  const [ownLeaves, setOwnLeaves] = useState([]);
   const [customDaysClassName, setCustomDaysClassName] = useState([]);
 
   // LOGS
-  console.log({ weeklyOffs, holidays });
+  console.log({ ownLeaves });
 
   // EFFECTS
   useEffect(() => {
@@ -71,7 +58,7 @@ const Attendance = () => {
         const { data: ownLeavesData } = await axios.get(
           `org/get/ownleavestatus/?user_id=${userId}`
         );
-        console.log({ ownLeavesData });
+        setOwnLeaves(ownLeavesData?.results);
       } catch (error) {
         console.log(error);
       }
@@ -79,13 +66,11 @@ const Attendance = () => {
   }, [axios, orgId]);
 
   useEffect(() => {
-    if (weeklyOffs.length > 0 && holidays.length > 0) {
-      // Create the array for custom class names
-      const arr = generateCustomClassNames(holidays);
-      console.log({ arr });
-      setCustomDaysClassName(arr);
-    }
-  }, [weeklyOffs, holidays]);
+    // Create the array for custom class names
+    const arr = generateCustomClassNames(holidays, ownLeaves);
+    console.log({ arr });
+    setCustomDaysClassName(arr);
+  }, [weeklyOffs, holidays, ownLeaves]);
   return (
     <div>
       <PageTitle title="Attendance Page" />
@@ -109,14 +94,18 @@ const Attendance = () => {
               <section className="col-md-6">
                 <div className="border border-dark mb-3 p-2 rounded-2">
                   <p className="text-dark fs-4">
-                    Total Leaves: {ownLeaves?.sick + ownLeaves?.casual} /{" "}
-                    {allowedList?.casual + allowedList?.sick}
+                    Total Leaves:{" "}
+                    {/* {ownLeaves?.forEach((ownLeave) => {
+                      if (ownLeave.status === "New") return 0;
+                      else return ownLeaves?.length;
+                    })} */}
+                    0 / {allowedList?.casual + allowedList?.sick}
                   </p>
                   <p className="text-dark fs-4">
-                    Casual Leaves: {ownLeaves?.casual} / {allowedList?.casual}
+                    Casual Leaves: 0 / {allowedList?.casual}
                   </p>
                   <p className="text-dark fs-4">
-                    Sick: {ownLeaves?.sick} / {allowedList?.sick}
+                    Sick: 0 / {allowedList?.sick}
                   </p>
                 </div>
                 <div className="border border-dark mb-3 rounded-2">
@@ -210,161 +199,7 @@ const Attendance = () => {
             {/* modal section */}
             <div>
               {/* <!-- Modal --> */}
-              <div
-                className="modal fade"
-                id="exampleModal"
-                tabIndex="-1"
-                aria-labelledby="exampleModalLabel"
-                aria-hidden="true"
-              >
-                <div className="modal-dialog modal-lg modal-dialog-centered">
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h1 className="modal-title fs-4" id="exampleModalLabel">
-                        Leave Application
-                      </h1>
-                      <button
-                        type="button"
-                        className="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      ></button>
-                    </div>
-                    <form>
-                      <div className="modal-body">
-                        <div className="row">
-                          {/* left */}
-                          <div className="col-md-6 col-sm-12 mb-3">
-                            <p className="text-dark fs-5">
-                              Total Leaves: Taken / Available
-                            </p>
-                            <p className="text-dark fs-5">
-                              Casual Leaves: Taken / Available
-                            </p>
-                            <p className="text-dark fs-5">
-                              Sick: Taken / Available
-                            </p>
-                          </div>
-                          {/* right */}
-                          <div className="col-md-6 col-sm-12 mb-3">
-                            <select className="w-100 h-25" name="appln-status">
-                              <option
-                                disabled
-                                value="Select Appln Status"
-                                selected
-                              >
-                                Select Appln Status
-                              </option>
-                              <option value="1">1</option>
-                              <option value="2">2</option>
-                              <option value="3">3</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div className="row">
-                          {/* form date input */}
-
-                          <label>From:</label>
-                          <div className="col-md-4 col-sm-12 ">
-                            <input
-                              type="date"
-                              name="from"
-                              placeholder="Select date"
-                              id="from"
-                              className="w-100 h-75 m-2 rounded-1"
-                            />
-                          </div>
-
-                          {/* Half or Full Day select */}
-                          <div className="col-md-4 col-sm-12 ">
-                            <select
-                              name="day"
-                              className="w-100 h-75 m-2 rounded-1"
-                            >
-                              <option disabled value="Select Day" selected>
-                                Select Day
-                              </option>
-                              <option value="First Half">First Half</option>
-                              <option value="Second Half">Second Half</option>
-                              <option value="Full Day">Full Day</option>
-                            </select>
-                          </div>
-
-                          {/* select status */}
-                          <div className="col-md-4 col-sm-12 ">
-                            <select
-                              className="w-100 h-75 m-2 rounded-1"
-                              name="status"
-                            >
-                              <option disabled value="Select Status" selected>
-                                Select Status
-                              </option>
-                              <option value="1">1</option>
-                              <option value="2">2</option>
-                              <option value="3">3</option>
-                            </select>
-                          </div>
-
-                          {/* To Date button */}
-                          <label>To:</label>
-                          <div className="col-md-4 col-sm-12 ">
-                            <input
-                              type="date"
-                              name="to"
-                              id="to"
-                              className="w-100 h-75 m-2 rounded-1"
-                            />
-                          </div>
-
-                          {/* Half/Full Day select */}
-                          <div className="col-md-4 col-sm-12 ">
-                            <select
-                              name="day"
-                              className="w-100 h-75 m-2 rounded-1"
-                            >
-                              <option disabled value="Select Day" selected>
-                                Select Day
-                              </option>
-                              <option value="First Half">First Half</option>
-                              <option value="Second Half">Second Half</option>
-                              <option value="Full Day">Full Day</option>
-                            </select>
-                          </div>
-
-                          {/* select status */}
-                          <div className="col-md-4 col-sm-12 ">
-                            <select
-                              className="w-100 h-75 m-2 rounded-1"
-                              name="status"
-                            >
-                              <option disabled value="Select Status" selected>
-                                Select Status
-                              </option>
-                              <option value="1">1</option>
-                              <option value="2">2</option>
-                              <option value="3">3</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="modal-footer">
-                        <button
-                          type="button"
-                          className="btn btn-secondary rounded-1"
-                          data-bs-dismiss="modal"
-                        >
-                          Close
-                        </button>
-                        <input
-                          type="submit"
-                          value="Submit"
-                          className="btn btn-primary rounded-1"
-                        />
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
+              <AttendanceModal />
             </div>
           </section>
         </div>

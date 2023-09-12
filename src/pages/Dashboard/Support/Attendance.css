@@ -30,6 +30,11 @@ Applied leaves - approved (green)
   border: 1px solid #0062ff !important;
 }
 
+.custom-leaves-applied-new {
+  color: #fff200 !important;
+  border: 1px solid #fff200 !important;
+}
+
 .custom-leaves-applied-disapproved {
   color: #ff0000 !important;
   border: 1px solid #ff0000 !important;
