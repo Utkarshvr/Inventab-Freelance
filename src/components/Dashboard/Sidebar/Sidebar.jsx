@@ -25,6 +25,12 @@ const Sidebar = () => {
                   <NavLink to="/dashboard" className="fs-4">
                     Sales Dashboard
                   </NavLink>
+                  <NavLink to="/dashboard/warehouse" className="fs-4">
+                    Warehousing
+                  </NavLink>
+                  <NavLink to="/dashboard/accounting" className="fs-4">
+                    Accounting
+                  </NavLink>
                   {auth?.dept?.some((r) => r.role.name === "ENGINEERING") && (
                     <NavLink to="/dashboard/eng" className="fs-4">
                       Engineering
@@ -62,6 +68,31 @@ const Sidebar = () => {
                   </li>
                   <li>
                     <NavLink to="ar" className="fs-4">
+                      AR
+                    </NavLink>
+                  </li>
+                </ul>
+              </li>
+            ) : null}
+            {/* ACCOUNTING */}
+            {auth?.dept?.some((r) => r.role.name === "SALES") ? (
+              <li>
+                <a
+                  className="has-arrow ai-icon"
+                  href="javascript:void()"
+                  aria-expanded="false"
+                >
+                  <LiaChartBarSolid className="fs-2" />
+                  <span className="nav-text fs-4">Accounting</span>
+                </a>
+                <ul aria-expanded="false">
+                  <li>
+                    <NavLink to="/dashboard/accounting/invoices" className="fs-4">
+                      Invoices
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/dashboard/accounting/ar" className="fs-4">
                       AR
                     </NavLink>
                   </li>

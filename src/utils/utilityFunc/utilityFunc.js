@@ -512,6 +512,82 @@ utils.generateCustomClassNames = (holidays, ownLeaves) => {
   const ownLeavesClassnames = utils.generateOwnLeavesClassnames(ownLeaves);
   return [...weeklyOffs, ...holidaysCustomClassnames, ...ownLeavesClassnames];
 };
+
+utils.formateReportsForTable = (reports) => {
+  let results;
+  // push age property in every report object
+  results = reports?.map((report) => {
+    let date = utils.dueDate(report);
+    let age = utils.daysLeftForSearchFunc(date);
+    return { ...report, age };
+  });
+
+  const DEPS = ["SLS-KAM-WEST", "SLS-KAM-NORTH", "SLS-KAM-SOUTH"];
+  const formateReports = [];
+  DEPS.forEach((name) => {
+    const overDueMT30Days = results.filter(
+      (result) => result.age >= 30 && result.dept.name === name
+    ).length;
+
+    const overDueMT15Days = results.filter(
+      (result) =>
+        result.age < 30 && result.age >= 15 && result.dept.name === name
+    ).length;
+
+    const overDueLT15Days = results.filter(
+      (result) => result.age > 0 && result.age < 15 && result.dept.name === name
+    ).length;
+
+    const dueIn15Days = results.filter(
+      (result) =>
+        result.age < 0 && result.age >= -15 && result.dept.name === name
+    ).length;
+
+    const dueIn30Days = results.filter(
+      (result) =>
+        result.age < -15 && result.age >= -30 && result.dept.name === name
+    ).length;
+
+    const dueInMT30Days = results.filter(
+      (result) => result.age < -30 && result.dept.name === name
+    ).length;
+    formateReports.push({
+      name,
+      overDueMT30Days,
+      overDueMT15Days,
+      overDueLT15Days,
+      dueIn15Days,
+      dueIn30Days,
+      dueInMT30Days,
+    });
+  });
+
+  // Initialize totals with zeros
+  const totals = {
+    name: "Total",
+    overDueMT30Days: 0,
+    overDueMT15Days: 0,
+    overDueLT15Days: 0,
+    dueIn15Days: 0,
+    dueIn30Days: 0,
+    dueInMT30Days: 0,
+  };
+
+  // Calculate the totals
+  formateReports.forEach((item) => {
+    for (const key in totals) {
+      if (key !== "name") {
+        totals[key] += item[key] || 0;
+      }
+    }
+  });
+
+  // Add the totals object to the data array
+  formateReports.push(totals);
+
+  return formateReports;
+};
+
 export const {
   removeDuplicateObjects,
   removeUndefinedObj,
@@ -534,4 +610,5 @@ export const {
   calculateExtdGrossPrice,
   generateCustomClassNames,
   extractDateInNums,
+  formateReportsForTable,
 } = utils;

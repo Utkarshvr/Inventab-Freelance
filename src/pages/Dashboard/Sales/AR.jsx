@@ -41,6 +41,7 @@ const AR = () => {
           })
         ).data;
         setLoading(false);
+        console.log(response?.results);
         isMount && setReports(response?.results);
         isMount && setSearchData(response?.results);
       } catch (error) {
@@ -220,12 +221,12 @@ const AR = () => {
   // console.log(selectedOptions);
   return (
     <div>
-      <PageTitle title='AR' />
-      <SectionTitle title='AR' />
-      <div className='row'>
-        <div className='col-12'>
-          <div className='card'>
-            <div className='card-body'>
+      <PageTitle title="AR" />
+      <SectionTitle title="AR" />
+      <div className="row">
+        <div className="col-12">
+          <div className="card">
+            <div className="card-body">
               {loading ? (
                 <Loader />
               ) : (
@@ -248,11 +249,11 @@ const AR = () => {
                   }}
                   noContextMenu
                   fixedHeader
-                  fixedHeaderScrollHeight='550px'
+                  fixedHeaderScrollHeight="550px"
                   pagination
                   subHeaderComponent={
                     <Select
-                      className='text-start w-75 select-ar'
+                      className="text-start w-75 select-ar"
                       closeMenuOnSelect={false}
                       hideSelectedOptions={true}
                       isMulti
@@ -271,21 +272,22 @@ const AR = () => {
                   highlightOnHover
                   subHeader
                   actions={
-                    <div className='d-flex align-items-center column-gap-4'>
+                    <div className="d-flex align-items-center column-gap-4">
                       <CSVLink
                         enclosingCharacter={` `}
                         data={csv}
                         filename={`Invoices-${new Date(
                           Date.now()
                         ).toLocaleDateString("en-IN")}`}
-                        className='bg-primary btn text-white rounded-1  border-0 d-flex align-items-center'
-                        onClick={exportAsCsv}>
-                        <FiDownload className='fs-4 me-2' />
+                        className="bg-primary btn text-white rounded-1  border-0 d-flex align-items-center"
+                        onClick={exportAsCsv}
+                      >
+                        <FiDownload className="fs-4 me-2" />
                         Download
                       </CSVLink>
                     </div>
                   }
-                  subHeaderAlign='left'
+                  subHeaderAlign="left"
                 />
               )}
             </div>

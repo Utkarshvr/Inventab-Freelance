@@ -13,7 +13,7 @@ import {
 import RevenueChart from "../../Chart/Chart";
 import { SelectedYrContext } from "../../../context/selectedYrContext";
 
-export default function KPIInvoice() {
+export default function KPIInvoice({ dontShowGraph }) {
   const { selectedYr } = useContext(SelectedYrContext);
   const axios = useAxiosPrivate();
   const { auth } = useAuth();
@@ -161,7 +161,7 @@ export default function KPIInvoice() {
       ) : (
         <>
           <h1 className="text-center">KPI Invoice</h1>
-          <RevenueChart chartData={kpiInvoiceChart} />
+          {dontShowGraph ? null : <RevenueChart chartData={kpiInvoiceChart} />}
           <DataTable
             data={kipInvoice}
             columns={columns}

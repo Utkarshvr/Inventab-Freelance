@@ -23,6 +23,9 @@ import EmployeeTimesheet from "../EngineeringPages/EmployeeTimesheet";
 import RoleRequired from "../AuthRequired/RoleRequired";
 import AddProject from "../engg/Project";
 import UpdateProject from "../engg/UpdateProject";
+import AccountingPage from "../../pages/Accounting/AccountingPage";
+import AccountingAR from "../Accounting/AccountingAR";
+import AccountingInvoices from "../Accounting/AccountingInvoices";
 
 const router = createBrowserRouter([
   {
@@ -62,6 +65,32 @@ const router = createBrowserRouter([
               </RoleRequired>
             ),
           },
+          /* Accounting */
+          {
+            path: "accounting",
+            element: (
+              <RoleRequired role={"SALES"}>
+                <AccountingPage />
+              </RoleRequired>
+            ),
+          },
+          {
+            path: "accounting/invoices",
+            element: (
+              <RoleRequired role={"SALES"}>
+                <AccountingInvoices />
+              </RoleRequired>
+            ),
+          },
+          {
+            path: "accounting/ar",
+            element: (
+              <RoleRequired role={"SALES"}>
+                <AccountingAR />
+              </RoleRequired>
+            ),
+          },
+
           {
             path: "eng",
             element: (
