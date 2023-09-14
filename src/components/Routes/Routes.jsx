@@ -26,6 +26,11 @@ import UpdateProject from "../engg/UpdateProject";
 import AccountingPage from "../../pages/Accounting/AccountingPage";
 import AccountingAR from "../Accounting/AccountingAR";
 import AccountingInvoices from "../Accounting/AccountingInvoices";
+import BacklogOthersWork from "../other/BacklogOthersWork";
+import WarehousePage from "../../pages/Warehouse/WarehousePage";
+import WarehouseInvoices from "../Warehouse/WarehouseInvoices";
+import WarehouseStock from "../Warehouse/WarehouseStock";
+import WarehouseGRN from "../Warehouse/WarehouseGRN";
 
 const router = createBrowserRouter([
   {
@@ -65,6 +70,14 @@ const router = createBrowserRouter([
               </RoleRequired>
             ),
           },
+          {
+            path: "others/backlog",
+            element: (
+              <RoleRequired role={"SALES"}>
+                <BacklogOthersWork />
+              </RoleRequired>
+            ),
+          },
           /* Accounting */
           {
             path: "accounting",
@@ -90,7 +103,40 @@ const router = createBrowserRouter([
               </RoleRequired>
             ),
           },
-
+          /* Warehouse */
+          {
+            path: "warehouse",
+            element: (
+              <RoleRequired role={"SALES"}>
+                <WarehousePage />
+              </RoleRequired>
+            ),
+          },
+          {
+            path: "warehouse/invoices",
+            element: (
+              <RoleRequired role={"SALES"}>
+                <WarehouseInvoices />
+              </RoleRequired>
+            ),
+          },
+          {
+            path: "warehouse/grn",
+            element: (
+              <RoleRequired role={"SALES"}>
+                <WarehouseGRN />
+              </RoleRequired>
+            ),
+          },
+          {
+            path: "warehouse/stock",
+            element: (
+              <RoleRequired role={"SALES"}>
+                <WarehouseStock />
+              </RoleRequired>
+            ),
+          },
+          // ENGINEERING
           {
             path: "eng",
             element: (

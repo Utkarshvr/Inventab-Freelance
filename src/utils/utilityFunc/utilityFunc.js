@@ -525,32 +525,53 @@ utils.formateReportsForTable = (reports) => {
   const DEPS = ["SLS-KAM-WEST", "SLS-KAM-NORTH", "SLS-KAM-SOUTH"];
   const formateReports = [];
   DEPS.forEach((name) => {
-    const overDueMT30Days = results.filter(
-      (result) => result.age >= 30 && result.dept.name === name
-    ).length;
+    const overDueMT30Days = results
+      .filter((result) => result.age >= 30 && result.dept.name === name)
+      .reduce((total, invoice) => {
+        return total + invoice.amount_paid;
+      }, 0);
 
-    const overDueMT15Days = results.filter(
-      (result) =>
-        result.age < 30 && result.age >= 15 && result.dept.name === name
-    ).length;
+    const overDueMT15Days = results
+      .filter(
+        (result) =>
+          result.age < 30 && result.age >= 15 && result.dept.name === name
+      )
+      .reduce((total, invoice) => {
+        return total + invoice.amount_paid;
+      }, 0);
 
-    const overDueLT15Days = results.filter(
-      (result) => result.age > 0 && result.age < 15 && result.dept.name === name
-    ).length;
+    const overDueLT15Days = results
+      .filter(
+        (result) =>
+          result.age > 0 && result.age < 15 && result.dept.name === name
+      )
+      .reduce((total, invoice) => {
+        return total + invoice.amount_paid;
+      }, 0);
 
-    const dueIn15Days = results.filter(
-      (result) =>
-        result.age < 0 && result.age >= -15 && result.dept.name === name
-    ).length;
+    const dueIn15Days = results
+      .filter(
+        (result) =>
+          result.age < 0 && result.age >= -15 && result.dept.name === name
+      )
+      .reduce((total, invoice) => {
+        return total + invoice.amount_paid;
+      }, 0);
 
-    const dueIn30Days = results.filter(
-      (result) =>
-        result.age < -15 && result.age >= -30 && result.dept.name === name
-    ).length;
+    const dueIn30Days = results
+      .filter(
+        (result) =>
+          result.age < -15 && result.age >= -30 && result.dept.name === name
+      )
+      .reduce((total, invoice) => {
+        return total + invoice.amount_paid;
+      }, 0);
 
-    const dueInMT30Days = results.filter(
-      (result) => result.age < -30 && result.dept.name === name
-    ).length;
+    const dueInMT30Days = results
+      .filter((result) => result.age < -30 && result.dept.name === name)
+      .reduce((total, invoice) => {
+        return total + invoice.amount_paid;
+      }, 0);
     formateReports.push({
       name,
       overDueMT30Days,

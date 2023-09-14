@@ -41,6 +41,8 @@ export default function ARGraph({ dontShowGraph }) {
         const formattedReports = formateReportsForTable(response?.results);
         console.log({ formattedReports });
 
+        console.log(response?.results);
+
         isMount && setReports(formattedReports);
       } catch (error) {
         setLoading(true);
@@ -63,32 +65,32 @@ export default function ARGraph({ dontShowGraph }) {
     },
     {
       name: "Due in > 30 Days",
-      selector: (row) => row?.dueInMT30Days,
+      selector: (row) => row?.dueInMT30Days + " Cr  ",
       sortable: true,
     },
     {
       name: "Due in 30 Days",
-      selector: (row) => row?.dueIn30Days,
+      selector: (row) => row?.dueIn30Days + " Cr  ",
       sortable: true,
     },
     {
       name: "Due in 15 Days",
-      selector: (row) => row?.dueIn15Days,
+      selector: (row) => row?.dueIn15Days + " Cr  ",
       sortable: true,
     },
     {
       name: "Overdue (<15days)",
-      selector: (row) => row?.overDueLT15Days,
+      selector: (row) => row?.overDueLT15Days + " Cr  ",
       sortable: true,
     },
     {
       name: "Overdue (>15days)",
-      selector: (row) => row?.overDueMT15Days,
+      selector: (row) => row?.overDueMT15Days + " Cr  ",
       sortable: true,
     },
     {
       name: "Overdue (>30 days)",
-      selector: (row) => row?.overDueMT30Days,
+      selector: (row) => row?.overDueMT30Days + " Cr  ",
       sortable: true,
     },
   ];
