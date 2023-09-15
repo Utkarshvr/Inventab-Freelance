@@ -5,11 +5,10 @@ import { useAuth } from "../../hooks/useAuth";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import Loader from "../../ui/Loader";
 import {
-  formatChartData,
   numDifferentiation,
   formateReportsForTable,
 } from "../../utils/utilityFunc/utilityFunc";
-import RevenueChart from "../Chart/Chart";
+import ARChart from "../Chart/ARChart";
 import { SelectedYrContext } from "../../context/selectedYrContext";
 
 export default function ARGraph({ dontShowGraph }) {
@@ -17,10 +16,9 @@ export default function ARGraph({ dontShowGraph }) {
   const axios = useAxiosPrivate();
   const { auth } = useAuth();
   const { orgId } = auth;
-  const [reports, setReports] = useState([]);
-  const [reportsChart, setReportsChart] = useState({});
-
   const [loading, setLoading] = useState(false);
+
+  const [reports, setReports] = useState([]);
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
@@ -111,7 +109,7 @@ export default function ARGraph({ dontShowGraph }) {
       ) : (
         <>
           <h1 className="text-center">AR</h1>
-          {/* {dontShowGraph ? null : <RevenueChart chartData={kpiInvoiceChart} />} */}
+          <ARChart chartData={reports} />
           <DataTable
             data={reports}
             columns={columns}
