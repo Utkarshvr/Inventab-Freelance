@@ -25,6 +25,12 @@ const types = [
 const formateARChartData = (chartData) => {
   const formattedData = [];
 
+  let prevTotal = 0;
+  const calculateCumulativeData = (Total) => {
+    prevTotal += Total;
+    return prevTotal;
+  };
+
   types.forEach((type) => {
     const entry = { type };
 
@@ -47,6 +53,9 @@ const formateARChartData = (chartData) => {
 
       entry[data.name] = data[prop];
     });
+
+    const cumulativeTotal = calculateCumulativeData(entry.Total); // Add the cumulative figures for the
+    entry["Cumulative Total"] = cumulativeTotal;
 
     formattedData.push(entry);
   });
@@ -81,6 +90,14 @@ export default function ARChart({ chartData }) {
           yAxisId="left"
           tickFormatter={(value) => (value / 10000000).toFixed(2) + " Cr"}
         />
+
+        {/* Right Y-Axis for Lines */}
+        <YAxis
+          yAxisId="right"
+          orientation="right" // This places the axis on the right side
+          tickFormatter={(value) => (value / 10000000).toFixed(2) + " Cr"}
+        />
+
         <Tooltip formatter={(value) => (value / 10000000).toFixed(2) + " Cr"} />
         <Legend />
 
@@ -97,6 +114,14 @@ export default function ARChart({ chartData }) {
             );
           }
         )}
+
+        <Line
+          type="linear"
+          dataKey="Cumulative Total"
+          stroke="#f39c12"
+          strokeWidth={4}
+          yAxisId="right" // Associate this Line series with the right Y-Axis
+        />
       </ComposedChart>
     </ResponsiveContainer>
   );

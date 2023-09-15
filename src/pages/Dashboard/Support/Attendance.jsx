@@ -10,12 +10,12 @@ import { useAuth } from "../../../hooks/useAuth";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { generateCustomClassNames } from "../../../utils/utilityFunc/utilityFunc";
 import AttendanceModal from "./AttendanceModal";
+import Loader from "../../../ui/Loader";
 
 const Attendance = () => {
   const axios = useAxiosPrivate();
   const { auth } = useAuth();
   const { orgId, userId } = auth;
-console.log({userId})
   // STATES
   const [selectedDayRange, setSelectedDayRange] = useState({
     from: null,
@@ -27,16 +27,16 @@ console.log({userId})
   const [ownLeaves, setOwnLeaves] = useState([]);
   const [customDaysClassName, setCustomDaysClassName] = useState([]);
   const [isReporty, setIsReporty] = useState(false);
-
-  const handleToggle = () => {
-    setIsReporty(!isReporty);
-  };
-  // LOGS
-  // console.log({ ownLeaves });
+  const [reportees, setReportees] = useState([]);
+  const [reporteesOption, setReporteesOption] = useState([]);
+  const [selectedManager, setSelectedManager] = useState(null);
+  const [selectedUserId, setSelectedUserId] = useState(userId);
+  const [loading, setLoading] = useState(true);
 
   // EFFECTS
   useEffect(() => {
     (async () => {
+      setLoading(true);
       try {
         // weeklyOffs
         const { data: weeklyOffsData } = await axios.get(
@@ -61,14 +61,15 @@ console.log({userId})
 
         // Get  Own LeaveStatus
         const { data: ownLeavesData } = await axios.get(
-          `org/get/ownleavestatus/?user_id=${userId}`
+          `org/get/ownleavestatus/?user_id=${selectedUserId}`
         );
         setOwnLeaves(ownLeavesData?.results);
       } catch (error) {
         console.log(error);
       }
+      setLoading(false);
     })();
-  }, [axios, orgId]);
+  }, [axios, selectedUserId, orgId]);
 
   useEffect(() => {
     // Create the array for custom class names
@@ -81,16 +82,33 @@ console.log({userId})
       (async () => {
         try {
           // Get Reporting_Manager Users Reports
-          const { data: Reporting_ManagersData } = await axios.get(
-            `/org/get/user/report/?reporting_manager={reporting_manager_uuid}`
+          const { data: ReporteesData } = await axios.get(
+            `/org/get/user/report/?reporting_manager=${userId}`
           );
-          console.log(Reporting_ManagersData);
+          const results = ReporteesData?.results;
+          const options = results?.map((manager) => ({
+            label: `${manager?.first_name} ${manager?.last_name}`,
+            value: manager?.id,
+          }));
+
+          setReportees(results);
+          setReporteesOption(options);
         } catch (error) {
           console.log(error);
         }
       })();
+    } else {
+      setSelectedManager(null);
+      setSelectedUserId(userId);
     }
   }, [isReporty]);
+
+  useEffect(() => {
+    if (selectedManager) setSelectedUserId(selectedManager?.value);
+    else setSelectedUserId(userId);
+  }, [selectedManager]);
+
+  if (loading) return <Loader />;
   return (
     <div>
       <PageTitle title="Attendance Page" />
@@ -124,7 +142,7 @@ console.log({userId})
                   className={`sliding-toggle-switch ${
                     isReporty ? "active" : ""
                   }`}
-                  onClick={handleToggle}
+                  onClick={() => setIsReporty(!isReporty)}
                 >
                   <div className="toggle-dot"></div>
                 </div>
@@ -139,9 +157,9 @@ console.log({userId})
                   isClearable
                   name="empoyee"
                   className="p-2"
-                  // options={soStatus}
-                  // value={values.so_status}
-                  // onChange={(option) => setFieldValue("so_status", option)}
+                  options={reporteesOption}
+                  value={selectedManager}
+                  onChange={(option) => setSelectedManager(option)}
                 />
               ) : (
                 <button
