@@ -46,3 +46,6 @@ http://127.0.0.1:8000/api/v1/org/update/leaveapplnstatus/5b3bb747-680b-4e37-a881
     "status": "Approved/Disapproved"
 }
 ---------------------------------------------------------------------------------------------------------------
+
+Get Reporting_Manager Users Reports
+/org/get/user/report/?reporting_manager={reporting_manager_uuid}

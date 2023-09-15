@@ -15,7 +15,7 @@ const Attendance = () => {
   const axios = useAxiosPrivate();
   const { auth } = useAuth();
   const { orgId, userId } = auth;
-
+console.log({userId})
   // STATES
   const [selectedDayRange, setSelectedDayRange] = useState({
     from: null,
@@ -73,9 +73,24 @@ const Attendance = () => {
   useEffect(() => {
     // Create the array for custom class names
     const arr = generateCustomClassNames(holidays, ownLeaves);
-    console.log({ arr });
     setCustomDaysClassName(arr);
   }, [weeklyOffs, holidays, ownLeaves]);
+
+  useEffect(() => {
+    if (isReporty) {
+      (async () => {
+        try {
+          // Get Reporting_Manager Users Reports
+          const { data: Reporting_ManagersData } = await axios.get(
+            `/org/get/user/report/?reporting_manager={reporting_manager_uuid}`
+          );
+          console.log(Reporting_ManagersData);
+        } catch (error) {
+          console.log(error);
+        }
+      })();
+    }
+  }, [isReporty]);
   return (
     <div>
       <PageTitle title="Attendance Page" />
