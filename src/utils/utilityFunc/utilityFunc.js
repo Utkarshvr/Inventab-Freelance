@@ -16,10 +16,7 @@ utils.removeDuplicateObjects = (arr) => {
 };
 
 // @desc number Differentiation [only core]
-utils.numDifferentiation = (value) => {
-  const val = Math.abs(value);
-  if (val) return `${(value / 10000000).toFixed(2)} Cr`;
-};
+utils.numDifferentiation = (value) => `${(value / 10000000).toFixed(2)} Cr`;
 
 // @desc kpi Each total
 utils.kpiEachTotal = (kpi) => {
@@ -527,8 +524,15 @@ utils.formateReportsForTable = (reports) => {
   DEPS.forEach((name) => {
     const overDueMT30Days = results
       .filter((result) => result.age >= 30 && result.dept.name === name)
-      .reduce((total, invoice) => {
-        return total + invoice.amount_paid;
+      ?.reduce((acc, report) => {
+        const reportTotal = report?.parts_invoice?.reduce(
+          (totalAmount, invoice) => {
+            return totalAmount + invoice?.price * invoice?.quantity;
+          },
+          0
+        );
+
+        return acc + reportTotal;
       }, 0);
 
     const overDueMT15Days = results
@@ -536,8 +540,15 @@ utils.formateReportsForTable = (reports) => {
         (result) =>
           result.age < 30 && result.age >= 15 && result.dept.name === name
       )
-      .reduce((total, invoice) => {
-        return total + invoice.amount_paid;
+      ?.reduce((acc, report) => {
+        const reportTotal = report?.parts_invoice?.reduce(
+          (totalAmount, invoice) => {
+            return totalAmount + invoice?.price * invoice?.quantity;
+          },
+          0
+        );
+
+        return acc + reportTotal;
       }, 0);
 
     const overDueLT15Days = results
@@ -545,8 +556,15 @@ utils.formateReportsForTable = (reports) => {
         (result) =>
           result.age > 0 && result.age < 15 && result.dept.name === name
       )
-      .reduce((total, invoice) => {
-        return total + invoice.amount_paid;
+      ?.reduce((acc, report) => {
+        const reportTotal = report?.parts_invoice?.reduce(
+          (totalAmount, invoice) => {
+            return totalAmount + invoice?.price * invoice?.quantity;
+          },
+          0
+        );
+
+        return acc + reportTotal;
       }, 0);
 
     const dueIn15Days = results
@@ -554,8 +572,15 @@ utils.formateReportsForTable = (reports) => {
         (result) =>
           result.age < 0 && result.age >= -15 && result.dept.name === name
       )
-      .reduce((total, invoice) => {
-        return total + invoice.amount_paid;
+      ?.reduce((acc, report) => {
+        const reportTotal = report?.parts_invoice?.reduce(
+          (totalAmount, invoice) => {
+            return totalAmount + invoice?.price * invoice?.quantity;
+          },
+          0
+        );
+
+        return acc + reportTotal;
       }, 0);
 
     const dueIn30Days = results
@@ -563,14 +588,28 @@ utils.formateReportsForTable = (reports) => {
         (result) =>
           result.age < -15 && result.age >= -30 && result.dept.name === name
       )
-      .reduce((total, invoice) => {
-        return total + invoice.amount_paid;
+      ?.reduce((acc, report) => {
+        const reportTotal = report?.parts_invoice?.reduce(
+          (totalAmount, invoice) => {
+            return totalAmount + invoice?.price * invoice?.quantity;
+          },
+          0
+        );
+
+        return acc + reportTotal;
       }, 0);
 
     const dueInMT30Days = results
       .filter((result) => result.age < -30 && result.dept.name === name)
-      .reduce((total, invoice) => {
-        return total + invoice.amount_paid;
+      ?.reduce((acc, report) => {
+        const reportTotal = report?.parts_invoice?.reduce(
+          (totalAmount, invoice) => {
+            return totalAmount + invoice?.price * invoice?.quantity;
+          },
+          0
+        );
+
+        return acc + reportTotal;
       }, 0);
     formateReports.push({
       name,

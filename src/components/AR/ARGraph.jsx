@@ -22,7 +22,6 @@ export default function ARGraph({ dontShowGraph }) {
 
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
-  //   console.log(reports);
 
   useEffect(() => {
     // fetch table
@@ -39,9 +38,19 @@ export default function ARGraph({ dontShowGraph }) {
         setLoading(false);
 
         const formattedReports = formateReportsForTable(response?.results);
-        console.log({ formattedReports });
 
-        console.log(response?.results);
+        formattedReports?.forEach((report) => {
+          if (report.name === "Total") {
+            const acc =
+              report.dueIn15Days +
+              report.dueIn30Days +
+              report.dueInMT30Days +
+              report.overDueLT15Days +
+              report.overDueMT15Days +
+              report.overDueMT30Days;
+            setTotal(acc);
+          }
+        });
 
         isMount && setReports(formattedReports);
       } catch (error) {
@@ -65,32 +74,32 @@ export default function ARGraph({ dontShowGraph }) {
     },
     {
       name: "Due in > 30 Days",
-      selector: (row) => row?.dueInMT30Days + " Cr  ",
+      selector: (row) => numDifferentiation(row?.dueInMT30Days),
       sortable: true,
     },
     {
       name: "Due in 30 Days",
-      selector: (row) => row?.dueIn30Days + " Cr  ",
+      selector: (row) => numDifferentiation(row?.dueIn30Days),
       sortable: true,
     },
     {
       name: "Due in 15 Days",
-      selector: (row) => row?.dueIn15Days + " Cr  ",
+      selector: (row) => numDifferentiation(row?.dueIn15Days),
       sortable: true,
     },
     {
       name: "Overdue (<15days)",
-      selector: (row) => row?.overDueLT15Days + " Cr  ",
+      selector: (row) => numDifferentiation(row?.overDueLT15Days),
       sortable: true,
     },
     {
       name: "Overdue (>15days)",
-      selector: (row) => row?.overDueMT15Days + " Cr  ",
+      selector: (row) => numDifferentiation(row?.overDueMT15Days),
       sortable: true,
     },
     {
       name: "Overdue (>30 days)",
-      selector: (row) => row?.overDueMT30Days + " Cr  ",
+      selector: (row) => numDifferentiation(row?.overDueMT30Days),
       sortable: true,
     },
   ];
@@ -130,7 +139,7 @@ export default function ARGraph({ dontShowGraph }) {
             actions={
               <>
                 <h3 className="bg-primary text-white rounded-0 p-3">
-                  Total:{numDifferentiation(total)}
+                  Total: {numDifferentiation(total)}
                 </h3>
               </>
             }
