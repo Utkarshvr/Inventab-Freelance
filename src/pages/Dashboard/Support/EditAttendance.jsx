@@ -141,18 +141,37 @@ export default function EditAttendance({
                     <div key={index} className="row mb-2">
                       <div
                         style={{ display: "flex", alignItems: "center" }}
-                        className="col-md-4 col-sm-12"
+                        className={`${
+                          isReporty ? " col-md-4 " : "col-md-6"
+                        } col-sm-12 `}
                       >
                         <InputText
                           value={form?.date}
                           type="date"
                           placeholder="Select date"
-                          readOnly
+                          readOnly={isReporty}
+                          onChange={(e) =>
+                            !isReporty
+                              ? setFormData((prev) => {
+                                  const newArray = [...prev];
+                                  newArray[index] = {
+                                    ...newArray[index], // Copy the previous object at the specified index
+                                    date: e.target.value.toString(), // Update the date property
+                                  };
+                                  // console.log(newArray);
+                                  return newArray;
+                                })
+                              : null
+                          }
                         />
                       </div>
 
                       {/* Half or Full Day select */}
-                      <div className="col-md-4 col-sm-12 ">
+                      <div
+                        className={`${
+                          isReporty ? " col-md-4 " : "col-md-6"
+                        } col-sm-12 `}
+                      >
                         <Select
                           placeholder="Select Day"
                           options={[
@@ -161,33 +180,50 @@ export default function EditAttendance({
                             { label: "Full Day", value: "Full" },
                           ]}
                           value={form.day}
-                          readOnly
+                          readOnly={isReporty}
+                          onChange={(e) =>
+                            !isReporty
+                              ? setFormData((prev) => {
+                                  const newArray = [...prev];
+                                  newArray[index] = {
+                                    ...newArray[index], // Copy the previous object at the specified index
+                                    day: e, // Update the date property
+                                  };
+                                  // console.log(newArray);
+                                  return newArray;
+                                })
+                              : null
+                          }
                         />
                       </div>
 
                       {/* select status */}
-                      <div className="col-md-4 col-sm-12 ">
-                        <Select
-                          placeholder="Select Status"
-                          name="user"
-                          options={[
-                            { label: "Approved", value: true },
-                            { label: "Disapproved", value: false },
-                          ]}
-                          value={form.status}
-                          onChange={(e) =>
-                            setFormData((prev) => {
-                              const newArray = [...prev];
-                              newArray[index] = {
-                                ...newArray[index], // Copy the previous object at the specified index
-                                status: e, // Update the date property
-                              };
-                              // console.log(newArray);
-                              return newArray;
-                            })
-                          }
-                        />
-                      </div>
+                      {isReporty ? (
+                        <div className={`col-md-4 col-sm-12 `}>
+                          <Select
+                            placeholder="Select Status"
+                            name="user"
+                            options={[
+                              { label: "Approved", value: true },
+                              { label: "Disapproved", value: false },
+                            ]}
+                            value={form.status}
+                            onChange={(e) =>
+                              isReporty
+                                ? setFormData((prev) => {
+                                    const newArray = [...prev];
+                                    newArray[index] = {
+                                      ...newArray[index], // Copy the previous object at the specified index
+                                      status: e, // Update the date property
+                                    };
+                                    // console.log(newArray);
+                                    return newArray;
+                                  })
+                                : null
+                            }
+                          />
+                        </div>
+                      ) : null}
                     </div>
                   );
                 })}
