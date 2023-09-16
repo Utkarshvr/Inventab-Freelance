@@ -31,6 +31,8 @@ import WarehousePage from "../../pages/Warehouse/WarehousePage";
 import WarehouseInvoices from "../Warehouse/WarehouseInvoices";
 import WarehouseStock from "../Warehouse/WarehouseStock";
 import WarehouseGRN from "../Warehouse/WarehouseGRN";
+import AddBacklogDataForm from "../other/AddBacklogDataForm";
+import BacklogTable from "../other/BacklogTable";
 
 const router = createBrowserRouter([
   {
@@ -72,11 +74,11 @@ const router = createBrowserRouter([
           },
           {
             path: "others/backlog",
-            element: (
-              <RoleRequired role={"SALES"}>
-                <BacklogOthersWork />
-              </RoleRequired>
-            ),
+            element: <BacklogTable />,
+          },
+          {
+            path: "others/backlog/:id",
+            element: <AddBacklogDataForm />,
           },
           /* Accounting */
           {

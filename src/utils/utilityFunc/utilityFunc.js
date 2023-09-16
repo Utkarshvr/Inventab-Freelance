@@ -484,10 +484,10 @@ utils.generateOwnLeavesClassnames = (ownLeaves) => {
 
       let className;
 
-      if (leave.status === "New") className = "custom-leaves-applied-new";
-      else if (leave.status === "Disapproved")
+      if (leave_date.status === "Applied") className = "custom-leaves-applied-new";
+      else if (leave_date.status === "Disapproved")
         className = "custom-leaves-applied-disapproved";
-      else if (leave.status === "Approved")
+      else if (leave_date.status === "Approved")
         className = "custom-leaves-applied-approved";
 
       ownLeavesClassnames.push({ ...dateObj, className });
@@ -509,7 +509,15 @@ utils.generateCustomClassNames = (holidays, ownLeaves) => {
   const ownLeavesClassnames = utils.generateOwnLeavesClassnames(ownLeaves);
   return [...weeklyOffs, ...holidaysCustomClassnames, ...ownLeavesClassnames];
 };
-
+utils.statusColor = (status) => {
+  if (status === "Applied") {
+    return "#ffb300";
+  } else if (status === "Approved") {
+    return "#1aff00";
+  } else if (status === "Disapproved") {
+    return "#ff0000";
+  }
+};
 utils.formateReportsForTable = (reports) => {
   let results;
   // push age property in every report object
@@ -671,4 +679,5 @@ export const {
   generateCustomClassNames,
   extractDateInNums,
   formateReportsForTable,
+  statusColor,
 } = utils;

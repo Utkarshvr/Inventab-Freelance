@@ -8,9 +8,14 @@ import SectionTitle from "../../../components/Shared/SectionTitle";
 import "./Attendance.css";
 import { useAuth } from "../../../hooks/useAuth";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import { generateCustomClassNames } from "../../../utils/utilityFunc/utilityFunc";
-import AttendanceModal from "./AttendanceModal";
+import {
+  generateCustomClassNames,
+  statusColor,
+} from "../../../utils/utilityFunc/utilityFunc";
+import AddAttendance from "./AddAttendance";
 import Loader from "../../../ui/Loader";
+import { BsPencilSquare } from "react-icons/bs";
+import EditAttendance from "./EditAttendance";
 
 const Attendance = () => {
   const axios = useAxiosPrivate();
@@ -33,6 +38,10 @@ const Attendance = () => {
   const [selectedUserId, setSelectedUserId] = useState(userId);
   const [loading, setLoading] = useState(true);
 
+  const [editModalData, setEditModalData] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  console.log(ownLeaves);
   // EFFECTS
   useEffect(() => {
     (async () => {
@@ -193,53 +202,62 @@ const Attendance = () => {
                     Sick: 0 / {allowedList?.sick}
                   </p>
                 </div>
-                <div className="border border-dark mb-3 rounded-2">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th scope="col" className="text-dark fs-4">
-                          Leave Type
-                        </th>
-                        <th scope="col" className="text-dark fs-4">
-                          Applied Date
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td className="text-dark fs-4">
-                          From – To (No of days)
-                        </td>
-                        <td className="text-dark fs-4">Status</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div className="border border-dark mb-3 rounded-2">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th className="text-dark fs-4" scope="col">
-                          Leave Type
-                        </th>
-                        <th className="text-dark fs-4" scope="col">
-                          Applied Date
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td className="text-dark fs-4">
-                          From – To (No of days)
-                        </td>
-                        <td className="text-dark fs-4">Status</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                {ownLeaves.map((leave, index) => (
+                  <div className="border border-dark mb-3 rounded-2">
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th scope="col" className="text-dark fs-4">
+                            Leave Date
+                          </th>
+                          <th scope="col" className="text-dark fs-4">
+                            Leave Type
+                          </th>
+                          <th scope="col" className="text-dark fs-4">
+                            Status
+                          </th>
+                        </tr>
+                      </thead>
+                      {leave?.leave_dates?.map((date) => (
+                        <tbody>
+                          <tr>
+                            <td className="text-dark fs-4">{date?.date}</td>
+                            <td className="text-dark fs-4">{date?.type}</td>
+                            <td
+                              style={{
+                                color: statusColor(date?.status),
+                              }}
+                              className="fs-4"
+                            >
+                              {date?.status}
+                            </td>
+                          </tr>
+                        </tbody>
+                      ))}
+                    </table>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                        width: "100%",
+                        padding: "1em",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        setIsEditModalOpen(true);
+                        setEditModalData({
+                          ownLeave: ownLeaves[index],
+                        });
+                      }}
+                    >
+                      <BsPencilSquare size={28} />
+                    </div>
+                  </div>
+                ))}
               </section>
               <section className="col-md-6">
-                <div className="d-flex align-items-center justify-content-center h-100">
+                <div className="d-flex align-items-start justify-content-center h-100">
                   <Calendar
                     value={selectedDayRange}
                     onChange={setSelectedDayRange}
@@ -284,7 +302,18 @@ const Attendance = () => {
             {/* modal section */}
             <div>
               {/* <!-- Modal --> */}
-              <AttendanceModal />
+              <AddAttendance />
+            </div>
+            <div>
+              {/* <!-- Modal --> */}
+              {isEditModalOpen ? (
+                <EditAttendance
+                  isReporty={isReporty}
+                  editModalData={editModalData}
+                  setIsEditModalOpen={setIsEditModalOpen}
+                  isEditModalOpen={isEditModalOpen}
+                />
+              ) : null}
             </div>
           </section>
         </div>
