@@ -6,7 +6,11 @@ import Select from "react-select";
 
 const initialDate = { date: "", day: "", status: "" };
 
-export default function AddAttendance({ isAddModalOpen, setIsAddModalOpen }) {
+export default function AddAttendance({
+  isAddModalOpen,
+  setIsAddModalOpen,
+  setFetchLeavesToggle,
+}) {
   const axios = useAxiosPrivate();
   const { auth } = useAuth();
   const { userId } = auth;
@@ -31,6 +35,8 @@ export default function AddAttendance({ isAddModalOpen, setIsAddModalOpen }) {
         };
         const { data } = await axios.post(`/org/create/leave-appln/`, payload);
         setIsAddModalOpen(false);
+        setFetchLeavesToggle((prev) => !prev);
+
         console.log({ payload, data });
       } catch (error) {
         console.log(error);

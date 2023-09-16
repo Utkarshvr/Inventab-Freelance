@@ -42,7 +42,8 @@ const Attendance = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  console.log(ownLeaves);
+  const [fetchLeavesToggle, setFetchLeavesToggle] = useState(false);
+
   // EFFECTS
   useEffect(() => {
     (async () => {
@@ -79,7 +80,7 @@ const Attendance = () => {
       }
       setLoading(false);
     })();
-  }, [axios, selectedUserId, orgId]);
+  }, [axios, selectedUserId, fetchLeavesToggle, orgId]);
 
   useEffect(() => {
     // Create the array for custom class names
@@ -306,6 +307,7 @@ const Attendance = () => {
                 <AddAttendance
                   isAddModalOpen={isAddModalOpen}
                   setIsAddModalOpen={setIsAddModalOpen}
+                  setFetchLeavesToggle={setFetchLeavesToggle}
                 />
               ) : null}
             </div>
@@ -317,6 +319,7 @@ const Attendance = () => {
                   editModalData={editModalData}
                   setIsEditModalOpen={setIsEditModalOpen}
                   isEditModalOpen={isEditModalOpen}
+                  setFetchLeavesToggle={setFetchLeavesToggle}
                 />
               ) : null}
             </div>

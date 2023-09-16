@@ -11,6 +11,7 @@ export default function EditAttendance({
   editModalData,
   setIsEditModalOpen,
   isEditModalOpen,
+  setFetchLeavesToggle,
 }) {
   const axios = useAxiosPrivate();
   const userId = editModalData?.ownLeave?.user;
@@ -45,6 +46,7 @@ export default function EditAttendance({
           payload
         );
         setIsEditModalOpen(false);
+        setFetchLeavesToggle((prev) => !prev);
         console.log({ data, payload });
       } catch (error) {
         console.log(error);
