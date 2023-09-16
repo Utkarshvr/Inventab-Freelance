@@ -40,6 +40,7 @@ const Attendance = () => {
 
   const [editModalData, setEditModalData] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   console.log(ownLeaves);
   // EFFECTS
@@ -174,8 +175,7 @@ const Attendance = () => {
                 <button
                   type="button"
                   className="btn btn-primary btn-common rounded-1"
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
+                  onClick={() => setIsAddModalOpen(true)}
                 >
                   Leave Application
                 </button>
@@ -302,7 +302,12 @@ const Attendance = () => {
             {/* modal section */}
             <div>
               {/* <!-- Modal --> */}
-              <AddAttendance />
+              {isAddModalOpen ? (
+                <AddAttendance
+                  isAddModalOpen={isAddModalOpen}
+                  setIsAddModalOpen={setIsAddModalOpen}
+                />
+              ) : null}
             </div>
             <div>
               {/* <!-- Modal --> */}
