@@ -30,6 +30,7 @@ export default function AddAttendance({ isAddModalOpen, setIsAddModalOpen }) {
           })),
         };
         const { data } = await axios.post(`/org/create/leave-appln/`, payload);
+        setIsAddModalOpen(false);
         console.log({ payload, data });
       } catch (error) {
         console.log(error);
