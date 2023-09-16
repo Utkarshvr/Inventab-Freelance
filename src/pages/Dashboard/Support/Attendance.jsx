@@ -184,146 +184,151 @@ const Attendance = () => {
             </div>
           </div>
 
-          <section>
-            <div className="row">
-              <section className="col-md-6">
-                <div className="border border-dark mb-3 p-2 rounded-2">
-                  <p className="text-dark fs-4">
-                    Total Leaves:{" "}
-                    {/* {ownLeaves?.forEach((ownLeave) => {
+          {!isReporty || selectedManager ? (
+            <section>
+              <div className="row">
+                <section className="col-md-6">
+                  <div className="border border-dark mb-3 p-2 rounded-2">
+                    <p className="text-dark fs-4">
+                      Total Leaves:{" "}
+                      {/* {ownLeaves?.forEach((ownLeave) => {
                       if (ownLeave.status === "New") return 0;
                       else return ownLeaves?.length;
                     })} */}
-                    0 / {allowedList?.casual + allowedList?.sick}
-                  </p>
-                  <p className="text-dark fs-4">
-                    Casual Leaves: 0 / {allowedList?.casual}
-                  </p>
-                  <p className="text-dark fs-4">
-                    Sick: 0 / {allowedList?.sick}
-                  </p>
-                </div>
-                {ownLeaves.map((leave, index) => (
-                  <div className="border border-dark mb-3 rounded-2">
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th scope="col" className="text-dark fs-4">
-                            Leave Date
-                          </th>
-                          <th scope="col" className="text-dark fs-4">
-                            Leave Type
-                          </th>
-                          <th scope="col" className="text-dark fs-4">
-                            Status
-                          </th>
-                        </tr>
-                      </thead>
-                      {leave?.leave_dates?.map((date) => (
-                        <tbody>
-                          <tr>
-                            <td className="text-dark fs-4">{date?.date}</td>
-                            <td className="text-dark fs-4">{date?.type}</td>
-                            <td
-                              style={{
-                                color: statusColor(date?.status),
-                              }}
-                              className="fs-4"
-                            >
-                              {date?.status}
-                            </td>
-                          </tr>
-                        </tbody>
-                      ))}
-                    </table>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-end",
-                        width: "100%",
-                        padding: "1em",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => {
-                        setIsEditModalOpen(true);
-                        setEditModalData({
-                          ownLeave: ownLeaves[index],
-                        });
-                      }}
-                    >
-                      <BsPencilSquare size={28} />
-                    </div>
+                      0 / {allowedList?.casual + allowedList?.sick}
+                    </p>
+                    <p className="text-dark fs-4">
+                      Casual Leaves: 0 / {allowedList?.casual}
+                    </p>
+                    <p className="text-dark fs-4">
+                      Sick: 0 / {allowedList?.sick}
+                    </p>
                   </div>
-                ))}
-              </section>
-              <section className="col-md-6">
-                <div className="d-flex align-items-start justify-content-center h-100">
-                  <Calendar
-                    value={selectedDayRange}
-                    onChange={setSelectedDayRange}
-                    customDaysClassName={customDaysClassName}
-                    shouldHighlightWeekends
-                    calendarClassName="custom-calendar"
-                    calendarTodayClassName="custom-today-day"
-                    renderFooter={() => (
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          padding: "1rem 2rem",
-                        }}
-                      >
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSelectedDayRange({
-                              from: null,
-                              to: null,
-                            });
-                          }}
+                  {ownLeaves.map((leave, index) => (
+                    <div className="border border-dark mb-3 rounded-2">
+                      <table className="table">
+                        <thead>
+                          <tr>
+                            <th scope="col" className="text-dark fs-4">
+                              Leave Date
+                            </th>
+                            <th scope="col" className="text-dark fs-4">
+                              Leave Type
+                            </th>
+                            <th scope="col" className="text-dark fs-4">
+                              Status
+                            </th>
+                            <th
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "flex-end",
+                              }}
+                              scope="col"
+                            >
+                              <BsPencilSquare
+                                style={{ cursor: "pointer" }}
+                                onClick={() => {
+                                  setIsEditModalOpen(true);
+                                  setEditModalData({
+                                    ownLeave: ownLeaves[index],
+                                  });
+                                }}
+                                size={28}
+                              />
+                            </th>
+                          </tr>
+                        </thead>
+                        {leave?.leave_dates?.map((date) => (
+                          <tbody>
+                            <tr>
+                              <td className="text-dark fs-4">{date?.date}</td>
+                              <td className="text-dark fs-4">{date?.type}</td>
+                              <td
+                                style={{
+                                  color: statusColor(date?.status),
+                                }}
+                                className="fs-4"
+                              >
+                                {date?.status}
+                              </td>
+                            </tr>
+                          </tbody>
+                        ))}
+                      </table>
+                    </div>
+                  ))}
+                </section>
+                <section className="col-md-6">
+                  <div className="d-flex align-items-start justify-content-center h-100">
+                    <Calendar
+                      value={selectedDayRange}
+                      onChange={setSelectedDayRange}
+                      customDaysClassName={customDaysClassName}
+                      shouldHighlightWeekends
+                      calendarClassName="custom-calendar"
+                      calendarTodayClassName="custom-today-day"
+                      renderFooter={() => (
+                        <div
                           style={{
-                            background: "red",
-                            fontSize: "15px",
-                            border: "#0fbcf9",
-                            color: "#fff",
-                            borderRadius: "0.5rem",
+                            display: "flex",
+                            justifyContent: "center",
                             padding: "1rem 2rem",
                           }}
                         >
-                          Reset Value!
-                        </button>
-                      </div>
-                    )}
-                  />
-                </div>
-              </section>
-            </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedDayRange({
+                                from: null,
+                                to: null,
+                              });
+                            }}
+                            style={{
+                              background: "red",
+                              fontSize: "15px",
+                              border: "#0fbcf9",
+                              color: "#fff",
+                              borderRadius: "0.5rem",
+                              padding: "1rem 2rem",
+                            }}
+                          >
+                            Reset Value!
+                          </button>
+                        </div>
+                      )}
+                    />
+                  </div>
+                </section>
+              </div>
 
-            {/* modal section */}
-            <div>
-              {/* <!-- Modal --> */}
-              {isAddModalOpen ? (
-                <AddAttendance
-                  isAddModalOpen={isAddModalOpen}
-                  setIsAddModalOpen={setIsAddModalOpen}
-                  setFetchLeavesToggle={setFetchLeavesToggle}
-                />
-              ) : null}
-            </div>
-            <div>
-              {/* <!-- Modal --> */}
-              {isEditModalOpen ? (
-                <EditAttendance
-                  isReporty={isReporty}
-                  editModalData={editModalData}
-                  setIsEditModalOpen={setIsEditModalOpen}
-                  isEditModalOpen={isEditModalOpen}
-                  setFetchLeavesToggle={setFetchLeavesToggle}
-                />
-              ) : null}
-            </div>
-          </section>
+              {/* modal section */}
+              <div>
+                {/* <!-- Modal --> */}
+                {isAddModalOpen ? (
+                  <AddAttendance
+                    isAddModalOpen={isAddModalOpen}
+                    setIsAddModalOpen={setIsAddModalOpen}
+                    setFetchLeavesToggle={setFetchLeavesToggle}
+                  />
+                ) : null}
+              </div>
+              <div>
+                {/* <!-- Modal --> */}
+                {isEditModalOpen ? (
+                  <EditAttendance
+                    isReporty={isReporty}
+                    editModalData={editModalData}
+                    setIsEditModalOpen={setIsEditModalOpen}
+                    isEditModalOpen={isEditModalOpen}
+                    setFetchLeavesToggle={setFetchLeavesToggle}
+                  />
+                ) : null}
+              </div>
+            </section>
+          ) : (
+            <h4>Select an Employee to see the data</h4>
+          )}
         </div>
       </div>
     </div>
