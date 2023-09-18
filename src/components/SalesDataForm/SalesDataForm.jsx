@@ -460,7 +460,15 @@ export default function SalesDataForm(props) {
               type="number"
               name="probability"
               value={values?.probability}
-              onChange={handleChange}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (
+                  value === "" ||
+                  (/^\d+$/.test(value) && parseInt(value) <= 100)
+                ) {
+                  handleChange(e);
+                }
+              }}
             />
           </div>
 
