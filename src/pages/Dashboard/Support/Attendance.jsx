@@ -129,8 +129,10 @@ const Attendance = () => {
       const sick = [];
       ownLeaves.forEach((leave) => {
         leave?.leave_dates?.forEach((date) => {
-          if (date?.leave_type === "Casual") casual.push(date);
-          else if (date?.leave_type === "Sick") sick.push(date);
+          if (date?.status === "Approved" && date?.leave_type === "Casual")
+            casual.push(date);
+          else if (date?.status === "Approved" && date?.leave_type === "Sick")
+            sick.push(date);
         });
         setCasualLeaves(casual.length);
         setSickLeave(sick.length);
