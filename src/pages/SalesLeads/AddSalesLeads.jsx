@@ -42,7 +42,6 @@ const AddSalesDataForm = () => {
   const [net_price, setNet_price] = useState(0);
   const [extd_gross_price, setExtd_gross_price] = useState(0);
 
-  console.log({ selectPart });
   // set net price
   useEffect(() => {
     if (totalQuantity && totalQuantity > 0 && unitCost && unitCost > 0) {
@@ -281,7 +280,7 @@ const AddSalesDataForm = () => {
     }
 
     const netPrice = unitCost * quantity;
-    let extd_gross_price = calculateExtdGrossPrice(gst, netPrice);
+    let extd_gross_price = calculateExtdGrossPrice(gst, netPrice, quantity);
     console.log({ extd_gross_price });
     setFieldValue(`parts[${index}].net_price`, netPrice.toFixed(2)); // You can format the net_price as needed
     setFieldValue(
@@ -292,7 +291,7 @@ const AddSalesDataForm = () => {
   useEffect(() => {
     if (values && values?.parts?.length > 0) {
       // console.log({ TOTAL_NET_PRICE: calculateTotalNetPrice(values.parts) });
-      // setTotalQuantity(calculateTotalNetPrice(values.parts));
+      console.log({ parrts: values.parts });
       setFieldValue("total", calculateTotalNetPrice(values.parts));
       setFieldValue(
         "extd_gross_price",
@@ -308,7 +307,7 @@ const AddSalesDataForm = () => {
     const newPart = {
       part_id: {
         id: selectPart?.value,
-        part_number: selectPart.label,
+        part_number: selectPart?.label,
       },
       short_description,
       quantity: totalQuantity,
@@ -316,7 +315,7 @@ const AddSalesDataForm = () => {
       status: status?.value,
       gst,
       net_price,
-      extd_gross_price,
+      extd_gross_price: calculateExtdGrossPrice(gst, net_price, totalQuantity),
     };
 
     setFieldValue("parts", [...values.parts, newPart]);

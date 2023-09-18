@@ -389,7 +389,7 @@ export default function DataForm() {
     }
 
     const netPrice = unitCost * quantity;
-    let extd_gross_price = calculateExtdGrossPrice(gst, netPrice);
+    let extd_gross_price = calculateExtdGrossPrice(gst, netPrice, quantity);
     console.log({ extd_gross_price });
     setFieldValue(`parts[${index}].net_price`, netPrice.toFixed(2)); // You can format the net_price as needed
     setFieldValue(
@@ -474,7 +474,7 @@ export default function DataForm() {
       price: parseFloat(price),
       gst: parseFloat(gst),
       net_price: parseFloat(net_price),
-      extd_gross_price: parseFloat(extd_gross_price),
+      extd_gross_price: calculateExtdGrossPrice(gst, net_price, totalQuantity),
     };
 
     setFieldValue("parts", [...values.parts, newPart]);
