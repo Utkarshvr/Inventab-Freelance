@@ -4,7 +4,7 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import InputText from "../../../components/Form/InputText";
 import Select from "react-select";
 
-const initialDate = { id: "", date: "", day: "", status: "" };
+const initialDate = { id: "", date: "", leave_type: "", day: "", status: "" };
 
 export default function EditAttendance({
   isReporty,
@@ -38,6 +38,7 @@ export default function EditAttendance({
             date: form.date,
             type: form.day?.value,
             status: form.status?.label,
+            leave_type: form.leave_type?.label,
           })),
         };
         console.log(payload);
@@ -69,6 +70,10 @@ export default function EditAttendance({
           return {
             date: leaveDate?.date,
             day,
+            leave_type: {
+              label: leaveDate?.leave_type,
+              value: leaveDate?.leave_type,
+            },
             status:
               leaveDate?.status === "Applied"
                 ? null
@@ -144,7 +149,7 @@ export default function EditAttendance({
                       <div
                         style={{ display: "flex", alignItems: "center" }}
                         className={`${
-                          isReporty ? " col-md-4 " : "col-md-6"
+                          isReporty ? " col-md-3 " : "col-md-4"
                         } col-sm-12 `}
                       >
                         <InputText
@@ -171,7 +176,7 @@ export default function EditAttendance({
                       {/* Half or Full Day select */}
                       <div
                         className={`${
-                          isReporty ? " col-md-4 " : "col-md-6"
+                          isReporty ? " col-md-3 " : "col-md-4"
                         } col-sm-12 `}
                       >
                         <Select
@@ -198,10 +203,37 @@ export default function EditAttendance({
                           }
                         />
                       </div>
-
+                      <div
+                        className={`${
+                          isReporty ? " col-md-3 " : "col-md-4"
+                        } col-sm-12 `}
+                      >
+                        <Select
+                          placeholder="Leave Type"
+                          options={[
+                            { label: "Casual", value: "Casual" },
+                            { label: "Sick", value: "Sick" },
+                          ]}
+                          value={form.leave_type}
+                          onChange={(e) =>
+                            !isReporty
+                              ? setFormData((prev) => {
+                                  const newArray = [...prev];
+                                  newArray[index] = {
+                                    ...newArray[index], // Copy the previous object at the specified index
+                                    leave_type: e, // Update the date property
+                                  };
+                                  // console.log(newArray);
+                                  return newArray;
+                                })
+                              : null
+                          }
+                          readOnly
+                        />
+                      </div>
                       {/* select status */}
                       {isReporty ? (
-                        <div className={`col-md-4 col-sm-12 `}>
+                        <div className={`col-md-3 col-sm-12 `}>
                           <Select
                             placeholder="Select Status"
                             name="user"

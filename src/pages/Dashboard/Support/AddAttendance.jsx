@@ -4,7 +4,7 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import InputText from "../../../components/Form/InputText";
 import Select from "react-select";
 
-const initialDate = { date: "", day: "", status: "" };
+const initialDate = { date: "", leave_type: "", day: "", status: "" };
 
 export default function AddAttendance({
   isAddModalOpen,
@@ -148,31 +148,29 @@ export default function AddAttendance({
                       </div>
 
                       {/* select status */}
-                      {/* <div className="col-md-4 col-sm-12 ">
-                      <Select
-                        placeholder="Select Status"
-                        name="user"
-                        options={[
-                          { label: "Approve", value: true },
-                          { label: "Dissaprove", value: false },
-                        ]}
-                        value={form.status}
-                        onChange={(e) =>
-                          setFormData((prev) => {
-                            const newArray = [...prev];
-                            newArray[index] = {
-                              ...newArray[index], // Copy the previous object at the specified index
-                              status: e, // Update the date property
-                            };
-                            // console.log(newArray);
-                            return newArray;
-                          })
-                        }
-                        readOnly
-                      />
-                    </div> */}
+                      <div className="col-md-4 col-sm-12 ">
+                        <Select
+                          placeholder="Leave Type"
+                          options={[
+                            { label: "Casual", value: "Casual" },
+                            { label: "Sick", value: "Sick" },
+                          ]}
+                          value={form.leave_type}
+                          onChange={(e) =>
+                            setFormData((prev) => {
+                              const newArray = [...prev];
+                              newArray[index] = {
+                                ...newArray[index], // Copy the previous object at the specified index
+                                leave_type: e, // Update the date property
+                              };
+                              // console.log(newArray);
+                              return newArray;
+                            })
+                          }
+                          readOnly
+                        />
+                      </div>
                       <div
-                        className="col-md-4 col-sm-12 "
                         style={{
                           display: "flex",
                           alignItems: "center",
@@ -180,19 +178,18 @@ export default function AddAttendance({
                           marginTop: "4px",
                         }}
                       >
-                        {index === 0 ? null : (
+                        {formData.length === 1 ? null : (
                           <button
                             onClick={() => {
                               setFormData((prev) =>
                                 prev.filter((_, i) => i !== index)
                               );
                             }}
-                            disabled={index === 0}
+                            disabled={formData.length === 1}
                             type="button"
                             style={{
-                              width: "16px",
-                              height: "16px",
-                              borderRadius: "100%",
+                              width: "12px",
+                              height: "12px",
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",

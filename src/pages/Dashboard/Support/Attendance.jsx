@@ -30,6 +30,9 @@ const Attendance = () => {
   const [holidays, setHolidays] = useState([]);
   const [allowedList, setAllowedList] = useState({});
   const [ownLeaves, setOwnLeaves] = useState([]);
+  const [casualLeaves, setCasualLeaves] = useState(0);
+  const [sickLeave, setSickLeave] = useState(0);
+
   const [customDaysClassName, setCustomDaysClassName] = useState([]);
   const [isReporty, setIsReporty] = useState(false);
   const [reportees, setReportees] = useState([]);
@@ -44,6 +47,7 @@ const Attendance = () => {
 
   const [fetchLeavesToggle, setFetchLeavesToggle] = useState(false);
 
+  console.log(ownLeaves);
   // EFFECTS
   useEffect(() => {
     (async () => {
@@ -119,6 +123,21 @@ const Attendance = () => {
     else setSelectedUserId(userId);
   }, [selectedManager]);
 
+  useEffect(() => {
+    if (ownLeaves.length > 0) {
+      const casual = [];
+      const sick = [];
+      ownLeaves.forEach((leave) => {
+        leave?.leave_dates?.forEach((date) => {
+          if (date?.leave_type === "Casual") casual.push(date);
+          else if (date?.leave_type === "Sick") sick.push(date);
+        });
+        setCasualLeaves(casual.length);
+        setSickLeave(sick.length);
+      });
+    }
+  }, [ownLeaves]);
+
   if (loading) return <Loader />;
   return (
     <div>
@@ -190,18 +209,14 @@ const Attendance = () => {
                 <section className="col-md-6">
                   <div className="border border-dark mb-3 p-2 rounded-2">
                     <p className="text-dark fs-4">
-                      Total Leaves:{" "}
-                      {/* {ownLeaves?.forEach((ownLeave) => {
-                      if (ownLeave.status === "New") return 0;
-                      else return ownLeaves?.length;
-                    })} */}
-                      0 / {allowedList?.casual + allowedList?.sick}
+                      Total Leaves: {casualLeaves + sickLeave} /{" "}
+                      {allowedList?.casual + allowedList?.sick}
                     </p>
                     <p className="text-dark fs-4">
-                      Casual Leaves: 0 / {allowedList?.casual}
+                      Casual Leaves: {casualLeaves} / {allowedList?.casual}
                     </p>
                     <p className="text-dark fs-4">
-                      Sick: 0 / {allowedList?.sick}
+                      Sick: {sickLeave} / {allowedList?.sick}
                     </p>
                   </div>
                   {ownLeaves.map((leave, index) => (
@@ -214,6 +229,9 @@ const Attendance = () => {
                             </th>
                             <th scope="col" className="text-dark fs-4">
                               Leave Type
+                            </th>
+                            <th scope="col" className="text-dark fs-4">
+                              Day
                             </th>
                             <th scope="col" className="text-dark fs-4">
                               Status
@@ -243,6 +261,9 @@ const Attendance = () => {
                           <tbody>
                             <tr>
                               <td className="text-dark fs-4">{date?.date}</td>
+                              <td className="text-dark fs-4">
+                                {date?.leave_type || "Casual"}
+                              </td>
                               <td className="text-dark fs-4">{date?.type}</td>
                               <td
                                 style={{
