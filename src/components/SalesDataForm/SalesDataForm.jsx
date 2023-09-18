@@ -185,46 +185,6 @@ export default function SalesDataForm(props) {
     };
   }, [orgId, axios]);
 
-  // ==============================table stuff start==============
-
-  const handleTable = (event) => {
-    event.preventDefault();
-
-    const newPart = {
-      part_id: {
-        id: selectPart?.value,
-        part_number: selectPart.label,
-      },
-      short_description,
-      quantity: totalQuantity,
-      unit_cost: unitCost,
-      status: status?.value,
-      gst,
-      net_price,
-      extd_gross_price,
-    };
-
-    setFieldValue("parts", [...values.parts, newPart]);
-    // clear input field
-    setSelectPart("");
-    setshort_description("");
-    setTotalQuantity(0);
-    setUnitCost(0);
-    setstatus(null);
-    setgst(0);
-    setNet_price(0);
-    setExtd_gross_price(0);
-  };
-
-  // remove row
-  const handleRemovePart = (index) => {
-    const updatedParts = [...values.parts];
-    updatedParts.splice(index, 1); // Remove the object at the specified index
-    setFieldValue("parts", updatedParts);
-  };
-
-  // ==============================table stuff end==============
-
   // handle update form
   const { values, handleSubmit, handleChange, setFieldValue } = useFormik({
     initialValues: {
@@ -253,7 +213,7 @@ export default function SalesDataForm(props) {
       mobile,
       description,
       total,
-      parts,
+      parts: parts || [],
     },
 
     onSubmit: async (values) => {
@@ -308,6 +268,46 @@ export default function SalesDataForm(props) {
       }
     },
   });
+
+  // ==============================table stuff start==============
+
+  const handleTable = (event) => {
+    event.preventDefault();
+
+    const newPart = {
+      part_id: {
+        id: selectPart?.value,
+        part_number: selectPart.label,
+      },
+      short_description,
+      quantity: totalQuantity,
+      unit_cost: unitCost,
+      status: status?.value,
+      gst,
+      net_price,
+      extd_gross_price,
+    };
+
+    setFieldValue("parts", [...values.parts, newPart]);
+    // clear input field
+    setSelectPart("");
+    setshort_description("");
+    setTotalQuantity(0);
+    setUnitCost(0);
+    setstatus(null);
+    setgst(0);
+    setNet_price(0);
+    setExtd_gross_price(0);
+  };
+
+  // remove row
+  const handleRemovePart = (index) => {
+    const updatedParts = [...values.parts];
+    updatedParts.splice(index, 1); // Remove the object at the specified index
+    setFieldValue("parts", updatedParts);
+  };
+
+  // ==============================table stuff end==============
 
   // Function to update net_price based on unit_cost and quantity
   const updateNetPrice = (index, value, changedForm) => {
@@ -738,8 +738,8 @@ export default function SalesDataForm(props) {
                     {values?.parts?.map((part, index) => {
                       return (
                         <>
-                          <tbody>
-                            <tr key={index + 1}>
+                          <tbody key={index + 1}>
+                            <tr>
                               <td>
                                 <div className="select-port">
                                   <Select
