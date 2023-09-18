@@ -400,10 +400,10 @@ utils.calculateTotalExtdGrossPrice = (items) => {
   }, 0);
 };
 
-utils.calculateExtdGrossPrice = (gst, net_price) => {
+utils.calculateExtdGrossPrice = (gst, net_price, quantity) => {
   if (net_price && net_price > 0 && gst && gst > 0) {
-    let modifiedGst = parseInt(gst) + 1;
-    let gross_price = modifiedGst * parseInt(net_price);
+    let modifiedGst = parseInt(gst) + parseInt(quantity);
+    let gross_price = (parseInt(net_price) * modifiedGst) / 100;
     return gross_price;
   } else {
     return 0;
@@ -484,7 +484,8 @@ utils.generateOwnLeavesClassnames = (ownLeaves) => {
 
       let className;
 
-      if (leave_date.status === "Applied") className = "custom-leaves-applied-new";
+      if (leave_date.status === "Applied")
+        className = "custom-leaves-applied-new";
       else if (leave_date.status === "Disapproved")
         className = "custom-leaves-applied-disapproved";
       else if (leave_date.status === "Approved")
