@@ -13,7 +13,7 @@ import Loader from "../../../ui/Loader";
 import "./sales.css";
 import { createYearsUpto2021 } from "../../../utils/utilityFunc/utilityFunc";
 
-const SalesInvoices = () => {
+const SalesInvoices = ({ to }) => {
   const { auth } = useAuth();
   const axios = useAxiosPrivate();
   const [search, setSearch] = useState("");
@@ -66,7 +66,11 @@ const SalesInvoices = () => {
         return (
           <Link
             className="text-center text-info dk_theme_text"
-            to={`/dashboard/sales-invoices/sales-invoices-details/${row?.id}`}
+            to={
+              to
+                ? `${to}/${row.id}?invoice_no=${row?.invoice_number}`
+                : `/dashboard/sales-invoices/sales-invoices-details/${row?.id}`
+            }
           >
             {row?.invoice_number}
           </Link>
