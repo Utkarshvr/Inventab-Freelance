@@ -125,8 +125,8 @@ const Attendance = () => {
 
   useEffect(() => {
     if (ownLeaves.length > 0) {
-      const casual = [];
-      const sick = [];
+      let casual = [];
+      let sick = [];
       ownLeaves.forEach((leave) => {
         leave?.leave_dates?.forEach((date) => {
           if (date?.status === "Approved" && date?.leave_type === "Casual")
@@ -137,6 +137,9 @@ const Attendance = () => {
         setCasualLeaves(casual.length);
         setSickLeave(sick.length);
       });
+    } else {
+      setCasualLeaves(0);
+      setSickLeave(0);
     }
   }, [ownLeaves]);
 
