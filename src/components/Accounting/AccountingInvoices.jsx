@@ -12,7 +12,7 @@ export default function AccountingInvoices() {
         <div className="col-12 my-4">
           <div className="card">
             <div className="card-body">
-              <KPIInvoice dontShowGraph={true} />
+              <KPIInvoice />
             </div>
           </div>
         </div>
