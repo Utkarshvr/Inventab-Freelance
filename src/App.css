@@ -26342,6 +26342,8 @@ input[type="number"]::-webkit-outer-spin-button {
 [data-theme-version="dark"] .authentication_row {
   background: url("/login-img.jpg");
   border: none !important;
+  background-repeat:no-repeat;
+  background-size:cover;
 
 }
 
