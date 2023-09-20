@@ -14,7 +14,7 @@ import ErrorMsg from "./ErrorMsg";
 import FormButton from "./FormButton";
 import TextInput from "./TextInput";
 
-const LoginForm = ({ setActiveFormType }) => {
+const RenewPasswordForm = ({ setActiveFormType }) => {
   const { setAuth } = useAuth();
   let location = useLocation();
 
@@ -180,4 +180,4 @@ const LoginForm = ({ setActiveFormType }) => {
   );
 };
 
-export default LoginForm;
+export default RenewPasswordForm;

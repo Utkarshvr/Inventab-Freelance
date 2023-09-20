@@ -35,6 +35,9 @@ import AddBacklogDataForm from "../other/AddBacklogDataForm";
 import BacklogTable from "../other/BacklogTable";
 import AccountingInvoiceDetails from "../Accounting/AccountingInvoiceDetails";
 import WarehouseInvoiceDetails from "../Warehouse/WarehouseInvoiceDetails";
+import LoginForm from "../Form/LoginForm";
+import RenewPasswordForm from "../Form/RenewPasswordForm";
+import RegistrationForm from "../Form/RegistrationForm";
 
 const router = createBrowserRouter([
   {
@@ -46,8 +49,22 @@ const router = createBrowserRouter([
         element: <PublicRoute />,
         children: [
           {
-            path: "/",
+            path: "/auth",
             element: <LogIn />,
+            children: [
+              {
+                path: "login",
+                element: <LoginForm />,
+              },
+              {
+                path: "register",
+                element: <RegistrationForm />,
+              },
+              {
+                path: "forget-password",
+                element: <RenewPasswordForm />,
+              },
+            ],
           },
         ],
       },

@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
-import LoginForm from "../../components/Form/LoginForm";
+// import LoginForm from "../../components/Form/LoginForm";
 import PageTitle from "../../components/Shared/PageTitle";
 import { useAuth } from "../../hooks/useAuth";
 import Logo from "./../../assets/images/main-logo.png";
 import "./Login.css";
+import { Outlet } from "react-router-dom";
 
 const LogIn = () => {
   // session expired message ['it's not necessary , if user don't want to show the S.E. msg then remove useAuth & useEffect hook']
@@ -48,7 +49,8 @@ const LogIn = () => {
                   </div>
 
                   {/* Form Area*/}
-                  <LoginForm />
+                  {/* <LoginForm /> */}
+                  <Outlet />
                 </div>
               </div>
 
