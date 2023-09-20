@@ -89,6 +89,12 @@ const LoginForm = () => {
             value={values.email}
             onChange={handleChange}
             onBlur={handleBlur}
+            style={{
+              background: "#fff",
+              border: "1px solid #212130",
+              color: "#212130",
+              "::placeholder": { color: "#212130" },
+            }}
           />
           {errors.email && touched.email ? (
             <ErrorMsg subject={errors.email} />
@@ -105,6 +111,11 @@ const LoginForm = () => {
               value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
+              style={{
+                background: "#fff",
+                border: "1px solid #212130",
+                color: "#212130",
+              }}
             />
 
             <div onClick={togglePasswordVisibility} className="eyeIcon">
@@ -114,10 +125,12 @@ const LoginForm = () => {
           {errors.password && touched.password ? (
             <ErrorMsg subject={errors.password} />
           ) : null}
-          <div className="mt-2 d-flex justify-content-between gap-4 d-none">
-            <ErrorMsg subject="Password not match" />
-            <Link to="forget-password">
-              <p>Forget Password?</p>
+          <div className="mt-2 d-flex justify-content-between gap-4 ">
+            <Link style={{ color: "#212130" }} to="register">
+              Register
+            </Link>
+            <Link style={{ color: "#212130" }} to="forget-password">
+              Forget Password?
             </Link>
           </div>
         </div>
@@ -128,6 +141,37 @@ const LoginForm = () => {
           <FormButton type="submit" title="Sign In" />
         </div>
       </form>
+      <div className="mt-3">
+        <p
+          style={{
+            color: "#212130",
+            fontWeight: "600",
+            fontSize: "1.5em",
+            textAlign: "center",
+            marginTop: "-12px",
+          }}
+        >
+          powered by
+        </p>
+        <div
+          className="d-flex align-content-center justify-content-center"
+          style={{
+            marginTop: "-30px",
+          }}
+        >
+          <img src="/wikitech-black.png" alt="WIITECK" />
+        </div>
+        <p
+          style={{
+            color: "#212130",
+            fontWeight: "600",
+            fontSize: "1.5em",
+            textAlign: "center",
+          }}
+        >
+          Connect with us for any support at support@wikitek.in
+        </p>
+      </div>
     </>
   );
 };
