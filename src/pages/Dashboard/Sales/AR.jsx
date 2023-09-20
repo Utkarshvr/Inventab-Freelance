@@ -150,7 +150,10 @@ const AR = () => {
         row?.parts_invoice.forEach((part) => {
           total += part?.price * part?.quantity;
         });
-        return total - row?.amount_paid;
+        return (
+          total - reportsWithPaidAmount.find((e) => e.id === row?.id)?.total ||
+          0
+        );
       },
       sortable: true,
     },
