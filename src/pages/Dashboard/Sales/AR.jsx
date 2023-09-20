@@ -23,9 +23,24 @@ const AR = () => {
   const { auth } = useAuth();
   const [reports, setReports] = useState([]);
   const [searchData, setSearchData] = useState([]);
+  const [reportsWithPaidAmount, setReportsWithPaidAmount] = useState([]);
   const [loading, setLoading] = useState(false);
   const [csv, setCsv] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
+
+  console.log(reportsWithPaidAmount);
+
+  const fetchPaymentRecords = async (invoice_id) => {
+    try {
+      const { data } = await axios.get(
+        `invoices/get/payment/?invoice=${invoice_id}`
+      );
+      return data?.results;
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
 
   // load reports
   useEffect(() => {
@@ -55,6 +70,39 @@ const AR = () => {
       (isMount = false), controller.abort();
     };
   }, [auth?.orgId, axios]);
+
+  useEffect(() => {
+    if (reports.length > 0) {
+      // Use Promise.all to wait for all the promises to resolve.
+      Promise.all(
+        reports.map(async (report) => {
+          const id = report?.id;
+          try {
+            const paymentRecord = await fetchPaymentRecords(id);
+            const total = paymentRecord?.reduce(
+              (accumulator, record) => accumulator + (record?.amount || 0),
+              0
+            );
+            return { total, id };
+          } catch (error) {
+            // Handle individual errors here if needed.
+            console.error(
+              `Error fetching payment records for report with id ${id}:`,
+              error
+            );
+            return { total: 0, id }; // Or some other default behavior for failed requests.
+          }
+        })
+      )
+        .then((paymentRecords) => {
+          setReportsWithPaidAmount(paymentRecords);
+        })
+        .catch((error) => {
+          // Handle errors from Promise.all, if necessary.
+          console.error("Error in Promise.all:", error);
+        });
+    }
+  }, [reports]);
 
   // columns
   const columns = [
@@ -90,7 +138,8 @@ const AR = () => {
 
     {
       name: "Paid",
-      selector: (row) => row?.amount_paid || 0,
+      selector: (row) =>
+        reportsWithPaidAmount.find((e) => e.id === row?.id)?.total || 0,
       sortable: true,
     },
 

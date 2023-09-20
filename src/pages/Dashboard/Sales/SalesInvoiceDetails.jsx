@@ -12,8 +12,9 @@ import Loader from "../../../ui/Loader";
 import { calculateGST, inWords } from "../../../utils/utilityFunc/utilityFunc";
 import logo from "./../../../assets/images/favicon.ico";
 import "./sales.css";
+import PaymentRecordsModal from "../../../components/Modal/paymentRecordsModal";
 
-const SalesInvoiceDetails = () => {
+const SalesInvoiceDetails = ({ hasPaymentButton, back }) => {
   const [serializedNo, setSerializedNo] = useState("");
   // same address
   const [isSameAddress, setIsSameAddress] = useState({
@@ -41,6 +42,8 @@ const SalesInvoiceDetails = () => {
   const [loading, setLoading] = useState(false);
 
   const printRef = useRef();
+
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
   console.log(invoiceDetails);
 
@@ -124,15 +127,25 @@ const SalesInvoiceDetails = () => {
       ) : (
         <div>
           <PageTitle title="Invoices-Details" />
-          <div className="d-flex justify-content-end mb-4">
+          <div className="d-flex justify-content-end gap-3 mb-4">
             {/* back btn */}
+
             <Link
-              to="/dashboard/sales-invoices"
-              className="btn btn-primary btn-common rounded-1 me-2"
+              to={back ? back : "/dashboard/sales-invoices"}
+              className="btn btn-primary btn-common rounded-1"
             >
               <BsArrowLeft className="me-2" />
               Back
             </Link>
+            {hasPaymentButton ? (
+              <button
+                type="button"
+                className="btn btn-primary rounded-1"
+                onClick={() => setIsPaymentModalOpen(true)}
+              >
+                PAYMENT
+              </button>
+            ) : null}
             {/* print btn */}
             <ReactToPrint
               trigger={() => (
@@ -491,6 +504,12 @@ const SalesInvoiceDetails = () => {
               </div>
             </div>
           </div>
+          {/* Modal For Payment */}
+          {hasPaymentButton && isPaymentModalOpen ? (
+            <PaymentRecordsModal
+              setIsPaymentModalOpen={setIsPaymentModalOpen}
+            />
+          ) : null}
         </div>
       )}
     </>

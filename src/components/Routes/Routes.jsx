@@ -117,7 +117,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "accounting/invoices/:id",
+            path: "accounting/invoices/:invoice_id",
             element: (
               <RoleRequired role={"SALES"}>
                 <AccountingInvoiceDetails />
