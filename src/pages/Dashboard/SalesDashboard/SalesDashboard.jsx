@@ -71,7 +71,16 @@ const SalesDashboard = () => {
           </div>
         </div>
 
-        {/*  */}
+        {/* New AR Graph */}
+        <div className="col-12 my-4">
+          <div className="card">
+            <div className="card-body">
+              <ARGraph />
+            </div>
+          </div>
+        </div>
+
+        {/* Sales Funnel */}
         <div className="col-12 my-4">
           <div className="card">
             <div className="card-body">

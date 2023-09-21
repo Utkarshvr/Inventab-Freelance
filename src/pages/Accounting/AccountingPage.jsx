@@ -1,5 +1,6 @@
 import ARGraph from "../../components/AR/ARGraph";
 import KPIInvoice from "../../components/KPI/KPI-Invoice/KPIInvoice";
+import MetricInvoice from "../../components/Metric/MetricInvoice/MetricInvoice";
 import SectionTitle from "../../components/Shared/SectionTitle";
 
 export default function AccountingPage() {
@@ -8,6 +9,15 @@ export default function AccountingPage() {
       <SectionTitle heading="Accounting" />
 
       <div className="row">
+        {/* New AR Graph */}
+        <div className="col-12 my-4">
+          <div className="card">
+            <div className="card-body">
+              <ARGraph />
+            </div>
+          </div>
+        </div>
+
         {/* KPI Invoice section */}
         <div className="col-12 my-4">
           <div className="card">
@@ -16,10 +26,12 @@ export default function AccountingPage() {
             </div>
           </div>
         </div>
+
+        {/* Metric Invoice section */}
         <div className="col-12 my-4">
           <div className="card">
             <div className="card-body">
-              <ARGraph />
+              <MetricInvoice />
             </div>
           </div>
         </div>
