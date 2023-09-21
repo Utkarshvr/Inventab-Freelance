@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../utils/axios/axios";
@@ -43,14 +43,13 @@ export default function OTPForm({ regEmail, renewPass }) {
   }
 
   const navigate = useNavigate();
-  // otp submition
+  // otp submission
   const { values, handleChange, handleSubmit } = useFormik({
     initialValues,
     onSubmit: async (values) => {
       try {
         if (renewPass && values.password !== values.confirmPassword) {
           toast.error("Password didn't match", { duration: 2000 });
-
           return;
         }
         let payload;
@@ -83,13 +82,25 @@ export default function OTPForm({ regEmail, renewPass }) {
       }
     },
   });
+  const handleOtpChange = (index, value, event) => {
+    if (value >= 0 && value <= 9) {
+      handleChange(event);
+      // Move focus to the next input field
+      const nextIndex = index + 1;
+      console.log(nextIndex);
+      if (nextIndex < otpForm.length) {
+        document.getElementById(`otp-form ${nextIndex}`).focus();
+      }
+    }
+  };
+
   return (
     <form className="form my-8" onSubmit={handleSubmit}>
       {/* Form */}
       <div className="row">
         {renewPass
           ? formsForRenewing.map(({ name, placeholder, type }, i) => (
-              <div className={`col-12 mb-2 d-flex`}>
+              <div className={`col-12 mb-2 d-flex`} key={name}>
                 <TextInput
                   type={type}
                   name={name}
@@ -107,16 +118,14 @@ export default function OTPForm({ regEmail, renewPass }) {
             ))
           : null}
         {otpForm.map(({ name, placeholder, type }, i) => (
-          <div className={`col-3 d-flex`}>
+          <div className={`col-3 d-flex`} key={name}>
             <TextInput
               type={type}
               name={name}
               placeholder={placeholder}
+              id={`otp-form ${i}`}
               value={values[name]}
-              onChange={(e) => {
-                if (e.target.value < 0 || e.target.value > 9) {
-                } else handleChange(e);
-              }}
+              onChange={(e) => handleOtpChange(i, e.target.value, e)}
               style={{
                 background: "#fff",
                 border: "1px solid #212130",
