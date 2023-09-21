@@ -81,7 +81,11 @@ const RenewPasswordForm = () => {
           </div>
         </form>
       ) : (
-        <OTPForm regEmail={regEmail} renewPass={true} />
+        <OTPForm
+          regEmail={regEmail}
+          renewPass={true}
+          OtpPayload={{ email: regEmail }}
+        />
       )}
       <div className="mt-3">
         <p

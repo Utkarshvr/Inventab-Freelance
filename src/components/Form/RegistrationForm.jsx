@@ -59,6 +59,7 @@ const RegistrationForm = () => {
   const [isOtpFormOpen, setIsOtpFormOpen] = useState(false);
   const [regEmail, setRegEmail] = useState("");
   const [orgs, setOrgs] = useState([]);
+  const [OtpPayload, setOtpPayload] = useState(null);
 
   // password show & hide
   const togglePasswordVisibility = () => {
@@ -97,6 +98,7 @@ const RegistrationForm = () => {
 
         setRegEmail(data?.email);
         setIsOtpFormOpen(true);
+        setOtpPayload(payload);
 
         toast.success("Registered successfull", { duration: 2000 });
       } catch (error) {
@@ -207,7 +209,7 @@ const RegistrationForm = () => {
           </div>
         </form>
       ) : (
-        <OTPForm regEmail={regEmail} />
+        <OTPForm regEmail={regEmail} OtpPayload={OtpPayload} />
       )}
       <div className="mt-3">
         <p
