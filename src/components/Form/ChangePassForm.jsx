@@ -1,9 +1,10 @@
 import { useFormik } from "formik";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { axiosInstance } from "../../utils/axios/axios";
 import FormButton from "./FormButton";
 import TextInput from "./TextInput";
+import { UserProfileModalContext } from "../../context/UserProfileModalContext";
 
 const otpForm = [
   { type: "number", name: "otp_digit_1", placeholder: 0, title: "Digit 1" },
@@ -24,6 +25,7 @@ const formsForRenewing = [
 const resendTime = (1 * 60 * 1000) / 4; // 15 secs
 
 export default function ChangePassForm({ regEmail, OtpPayload }) {
+  const { setIsUserProfileModalOpen } = useContext(UserProfileModalContext);
   const [timeLeftToRegenOtp, setTimeLeftToRegenOtp] = useState(resendTime);
   const renewPass = true;
 
@@ -76,6 +78,7 @@ export default function ChangePassForm({ regEmail, OtpPayload }) {
 
         const { data } = await axiosInstance.post(apiRoute, payload);
 
+        setIsUserProfileModalOpen(false);
         toast.success("Password Changed", { duration: 2000 });
       } catch (error) {
         toast.error(error?.message, { duration: 2000 });
