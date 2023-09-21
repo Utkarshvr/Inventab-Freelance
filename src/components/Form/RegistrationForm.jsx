@@ -169,13 +169,10 @@ const RegistrationForm = () => {
                           border: "1px solid #212130",
                           borderRadius: 24,
                           color: "#212130",
-                          ValueContainer2: (provided) => ({
-                            ...provided,
-                            singleValue: (provided) => ({
-                              ...provided,
-                              color: "#212130",
-                            }),
-                          }),
+                        }),
+                        singleValue: (provided) => ({
+                          ...provided,
+                          color: "#212130",
                         }),
                         placeholder: (provided) => ({
                           ...provided,
