@@ -16326,6 +16326,12 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
 
 .email-filter .input-group .form-control::placeholder {
   font-size: 0.875rem;
+  /* color: #89879f; */
+}
+.lightPlaceholder::placeholder{
+  color: #fff;
+}
+.darkPlaceholder::placeholder{
   color: #89879f;
 }
 

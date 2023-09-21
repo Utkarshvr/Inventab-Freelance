@@ -1,15 +1,30 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserProfileModalContext } from "../../context/UserProfileModalContext";
 import { useAuth } from "../../hooks/useAuth";
-import { Link } from "react-router-dom";
+import ChangePassForm from "../Form/ChangePassForm";
+import { axiosInstance } from "../../utils/axios/axios";
 
 export default function UserProfileModal() {
   const { isUserProfileModalOpen, setIsUserProfileModalOpen } = useContext(
     UserProfileModalContext
   );
-  console.log(isUserProfileModalOpen);
+
+  const [isOtpFormOpen, setIsOtpFormOpen] = useState(false);
 
   const { auth } = useAuth();
+
+  const sendReq = async () => {
+    const payload = {
+      email: auth?.email,
+    };
+
+    const { data } = await axiosInstance.post(
+      "/users/forgot/password/",
+      payload
+    );
+
+    setIsOtpFormOpen(true);
+  };
 
   if (isUserProfileModalOpen)
     return (
@@ -37,17 +52,26 @@ export default function UserProfileModal() {
               </div>
             </div>
             {/* Content */}
-            <div className="p-5" >
-              <div className="d-flex gap-2 mb-2" style={{ flexDirection: "column" }}>
-                <h5>User Id: {auth?.userId}</h5>
+            <div className="p-5">
+              <div
+                className="d-flex gap-2 mb-2"
+                style={{ flexDirection: "column" }}
+              >
                 <h5>Name: {auth?.firstname + auth?.lastname}</h5>
                 <h5>Phone: {auth?.phone}</h5>
                 <h5>Email: {auth?.email}</h5>
                 <h5>Organisation: {auth?.orgName}</h5>
               </div>
-              <Link to={"/user/renew-password"} className="btn btn-primary">
-                Change Password
-              </Link>
+              {!isOtpFormOpen ? (
+                <button onClick={sendReq} className="btn btn-primary">
+                  Change Password
+                </button>
+              ) : (
+                <ChangePassForm
+                  regEmail={auth?.email}
+                  OtpPayload={{ email: auth?.email }}
+                />
+              )}
             </div>
           </div>
         </div>
