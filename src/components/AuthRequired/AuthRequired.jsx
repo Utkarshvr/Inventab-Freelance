@@ -19,7 +19,7 @@ const AuthRequired = () => {
   if (loading) return <PreLoader />;
 
   if (auth?.isLoggedIn) return <Outlet />;
-  return <Navigate to='/' state={{ from: location }} replace />;
+  return <Navigate to='/auth/login' state={{ from: location }} replace />;
 };
 
 export default AuthRequired;
