@@ -127,13 +127,13 @@ const LoginForm = ({ setActiveFormType }) => {
           ) : null}
         </div>
         <div className="mb-4 d-flex justify-content-between gap-4 ">
-          <Link className="btn" style={{ color: "#212130" }} to="register">
+          <Link className="btn" style={{ color: "#212130" }} to="/auth/register">
             Register
           </Link>
           <Link
             className="btn"
             style={{ color: "#212130" }}
-            to="forget-password"
+            to="/auth/forget-password"
           >
             Forget Password?
           </Link>

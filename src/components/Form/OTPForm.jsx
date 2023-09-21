@@ -128,18 +128,17 @@ export default function OTPForm({ regEmail, renewPass }) {
         ))}
       </div>
 
-      {/* Login Button */}
-      <div className="mb-2">
-        <FormButton type="submit" title="Submit" />
-      </div>
-
       <div className="my-2 d-flex flex-column align-items-center justify-content-center ">
         <p style={{ margin: "0" }}>Resend OTP after xxx seconds</p>
         <button className="btn btn-outline-primary px-2 py-1">
           Resend OTP
         </button>
       </div>
-      {/* show error msg */}
+
+      {/* Login Button */}
+      <div className="mb-2">
+        <FormButton type="submit" title="Submit" />
+      </div>
     </form>
   );
 }
