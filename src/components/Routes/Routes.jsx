@@ -68,6 +68,21 @@ const router = createBrowserRouter([
           },
         ],
       },
+      {
+        element: <AuthRequired />,
+        children: [
+          {
+            path: "/user",
+            element: <LogIn />,
+            children: [
+              {
+                path: "renew-password",
+                element: <RenewPasswordForm />,
+              },
+            ],
+          },
+        ],
+      },
     ],
   },
   {

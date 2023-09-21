@@ -45,7 +45,7 @@ export default function UserProfileModal() {
                 <h5>Email: {auth?.email}</h5>
                 <h5>Organisation: {auth?.orgName}</h5>
               </div>
-              <Link to={"/auth/forget-password"} className="btn btn-primary">
+              <Link to={"/user/renew-password"} className="btn btn-primary">
                 Change Password
               </Link>
             </div>
