@@ -34,7 +34,7 @@ const RenewPasswordForm = () => {
         };
 
         const { data } = await axiosInstance.post(
-          "/accounts/forgot/password/",
+          "/users/forgot/password/",
           payload
         );
 
@@ -55,7 +55,7 @@ const RenewPasswordForm = () => {
           <div className="row">
             {forms.map(({ name, placeholder, type }, i) => {
               return (
-                <div className={`${i <= 1 ? "col-6" : "col-12"} mb-2 d-flex`}>
+                <div className={`col-12 mb-4 d-flex`}>
                   (
                   <TextInput
                     type={type}
@@ -77,11 +77,11 @@ const RenewPasswordForm = () => {
 
           {/* Login Button */}
           <div className="mb-2">
-            <FormButton type="submit" title="Register" />
+            <FormButton type="submit" title="Submit" />
           </div>
         </form>
       ) : (
-        <OTPForm regEmail={regEmail} />
+        <OTPForm regEmail={regEmail} renewPass={true} />
       )}
       <div className="mt-3">
         <p
