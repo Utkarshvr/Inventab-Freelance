@@ -9855,7 +9855,7 @@ label {
 textarea.form-control {
   min-height: auto !important;
   height: auto !important;
-  padding: 25px;
+  padding: 1em;
 }
 
 .border-left-end {
@@ -17482,9 +17482,8 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
 .form-control {
   background: #fff;
   border: 0.0625rem solid #e6e6e6;
-  padding: 0.3125rem 1.25rem;
+  padding: 0.5em 1em;
   color: #6e6e6e;
-  height: 3.5rem;
   border-radius: 1rem;
   /* @include respond('laptop') {
 		height: 2.5rem;

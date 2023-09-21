@@ -80,7 +80,7 @@ const LoginForm = ({ setActiveFormType }) => {
     <>
       <form className="form" onSubmit={handleSubmit}>
         {/* Email */}
-        <div className="mb-4">
+        <div className="mb-2">
           <TextInput
             type="email"
             title="email"

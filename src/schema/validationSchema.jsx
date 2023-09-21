@@ -9,3 +9,11 @@ export const signInSchema = Yup.object({
     .required("Email required"),
   password: Yup.string().required("Password required"),
 });
+
+// login schema
+export const emailSchema = Yup.object({
+  email: Yup.string()
+    .email()
+    .matches(emailRules, { message: "Field should contain a valid e-mail" })
+    .required("Email required"),
+});
