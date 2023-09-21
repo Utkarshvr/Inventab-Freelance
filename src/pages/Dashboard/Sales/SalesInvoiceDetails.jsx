@@ -14,7 +14,14 @@ import logo from "./../../../assets/images/favicon.ico";
 import "./sales.css";
 import PaymentRecordsModal from "../../../components/Modal/paymentRecordsModal";
 
-const SalesInvoiceDetails = ({ hasPaymentButton, back }) => {
+const SalesInvoiceDetails = ({
+  paymentRecords,
+  total,
+  hasPaymentButton,
+  back,
+  isPaymentFormActive,
+  setIsPaymentFormActive,
+}) => {
   const [serializedNo, setSerializedNo] = useState("");
   // same address
   const [isSameAddress, setIsSameAddress] = useState({
@@ -143,7 +150,7 @@ const SalesInvoiceDetails = ({ hasPaymentButton, back }) => {
                 className="btn btn-primary rounded-1"
                 onClick={() => setIsPaymentModalOpen(true)}
               >
-                PAYMENT
+                PAYMENT: ₹{total}
               </button>
             ) : null}
             {/* print btn */}
@@ -507,7 +514,10 @@ const SalesInvoiceDetails = ({ hasPaymentButton, back }) => {
           {/* Modal For Payment */}
           {hasPaymentButton && isPaymentModalOpen ? (
             <PaymentRecordsModal
+              paymentRecords={paymentRecords}
               setIsPaymentModalOpen={setIsPaymentModalOpen}
+              isPaymentFormActive={isPaymentFormActive}
+              setIsPaymentFormActive={setIsPaymentFormActive}
             />
           ) : null}
         </div>

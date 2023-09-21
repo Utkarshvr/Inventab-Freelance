@@ -1,35 +1,15 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import Loader from "../../ui/Loader";
 import { BsArrowLeftCircle, BsPlusCircle } from "react-icons/bs";
 import PaymentRecordsTable from "../Table/PaymentRecordsTable";
 import PaymentForm from "../Form/PaymentForm";
 
-export default function PaymentRecordsModal({ setIsPaymentModalOpen }) {
-  const [loading, setLoading] = useState(false);
-  const [paymentRecords, setPaymentRecords] = useState([]);
-  const [isPaymentFormActive, setIsPaymentFormActive] = useState(false);
-  const { invoice_id } = useParams();
-
-  const axios = useAxiosPrivate();
-
-  useEffect(() => {
-    const fetchPaymentRecords = async () => {
-      try {
-        setLoading(true);
-        const { data } = await axios.get(
-          `invoices/get/payment/?invoice=${invoice_id}`
-        );
-        setLoading(false);
-        setPaymentRecords(data?.results);
-      } catch (error) {
-        setLoading(false);
-        console.log(error);
-      }
-    };
-    if (!isPaymentFormActive) fetchPaymentRecords();
-  }, [isPaymentFormActive]);
+export default function PaymentRecordsModal({
+  paymentRecords,
+  setIsPaymentModalOpen,
+  isPaymentFormActive,
+  setIsPaymentFormActive,
+}) {
+  console.log(paymentRecords);
 
   return (
     <div
@@ -70,11 +50,7 @@ export default function PaymentRecordsModal({ setIsPaymentModalOpen }) {
             </div>
           </div>
           {!isPaymentFormActive ? (
-            loading ? (
-              <Loader />
-            ) : (
-              <PaymentRecordsTable paymentRecords={paymentRecords} />
-            )
+            <PaymentRecordsTable paymentRecords={paymentRecords} />
           ) : (
             <PaymentForm setIsPaymentFormActive={setIsPaymentFormActive} />
           )}
