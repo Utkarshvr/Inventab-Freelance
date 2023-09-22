@@ -26,12 +26,16 @@ const Sidebar = () => {
                     <NavLink to="/dashboard" className="fs-4">
                       Sales Dashboard
                     </NavLink>
-                    <NavLink to="/dashboard/warehouse" className="fs-4">
-                      Warehousing
-                    </NavLink>
-                    <NavLink to="/dashboard/accounting" className="fs-4">
-                      Accounting
-                    </NavLink>
+                    {auth?.dept?.some((r) => r.role.name === "WAREHOUSE") && (
+                      <NavLink to="/dashboard/warehouse" className="fs-4">
+                        Warehousing
+                      </NavLink>
+                    )}
+                    {auth?.dept?.some((r) => r.role.name === "ACCOUNTING") && (
+                      <NavLink to="/dashboard/accounting" className="fs-4">
+                        Accounting
+                      </NavLink>
+                    )}
                     {auth?.dept?.some((r) => r.role.name === "ENGINEERING") && (
                       <NavLink to="/dashboard/eng" className="fs-4">
                         Engineering
@@ -77,7 +81,7 @@ const Sidebar = () => {
               </li>
             ) : null}
             {/* ACCOUNTING */}
-            {auth?.dept?.some((r) => r.role.name === "SALES") ? (
+            {auth?.dept?.some((r) => r.role.name === "ACCOUNTING") ? (
               <li>
                 <a
                   className="has-arrow ai-icon"
@@ -104,7 +108,8 @@ const Sidebar = () => {
                 </ul>
               </li>
             ) : null}
-            {auth?.dept?.some((r) => r.role.name === "SALES") ? (
+            {/* WAREHOUSE */}
+            {auth?.dept?.some((r) => r.role.name === "WAREHOUSE") ? (
               <li>
                 <a
                   className="has-arrow ai-icon"

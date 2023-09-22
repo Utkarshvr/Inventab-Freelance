@@ -114,7 +114,7 @@ const router = createBrowserRouter([
           {
             path: "accounting",
             element: (
-              <RoleRequired role={"SALES"}>
+              <RoleRequired role={"ACCOUNTING"}>
                 <AccountingPage />
               </RoleRequired>
             ),
@@ -122,7 +122,7 @@ const router = createBrowserRouter([
           {
             path: "accounting/invoices",
             element: (
-              <RoleRequired role={"SALES"}>
+              <RoleRequired role={"ACCOUNTING"}>
                 <AccountingInvoices />
               </RoleRequired>
             ),
@@ -130,7 +130,7 @@ const router = createBrowserRouter([
           {
             path: "accounting/invoices/:invoice_id",
             element: (
-              <RoleRequired role={"SALES"}>
+              <RoleRequired role={"ACCOUNTING"}>
                 <AccountingInvoiceDetails />
               </RoleRequired>
             ),
@@ -138,7 +138,7 @@ const router = createBrowserRouter([
           {
             path: "accounting/ar",
             element: (
-              <RoleRequired role={"SALES"}>
+              <RoleRequired role={"ACCOUNTING"}>
                 <AccountingAR />
               </RoleRequired>
             ),
@@ -147,7 +147,7 @@ const router = createBrowserRouter([
           {
             path: "warehouse",
             element: (
-              <RoleRequired role={"SALES"}>
+              <RoleRequired role={"WAREHOUSE"}>
                 <WarehousePage />
               </RoleRequired>
             ),
@@ -155,7 +155,7 @@ const router = createBrowserRouter([
           {
             path: "warehouse/invoices",
             element: (
-              <RoleRequired role={"SALES"}>
+              <RoleRequired role={"WAREHOUSE"}>
                 <WarehouseInvoices />
               </RoleRequired>
             ),
@@ -163,7 +163,7 @@ const router = createBrowserRouter([
           {
             path: "warehouse/invoices/:id",
             element: (
-              <RoleRequired role={"SALES"}>
+              <RoleRequired role={"WAREHOUSE"}>
                 <WarehouseInvoiceDetails />
               </RoleRequired>
             ),
@@ -171,7 +171,7 @@ const router = createBrowserRouter([
           {
             path: "warehouse/grn",
             element: (
-              <RoleRequired role={"SALES"}>
+              <RoleRequired role={"WAREHOUSE"}>
                 <WarehouseGRN />
               </RoleRequired>
             ),
@@ -179,7 +179,7 @@ const router = createBrowserRouter([
           {
             path: "warehouse/stock",
             element: (
-              <RoleRequired role={"SALES"}>
+              <RoleRequired role={"WAREHOUSE"}>
                 <WarehouseStock />
               </RoleRequired>
             ),
