@@ -29,6 +29,7 @@ const AR = () => {
   const [selectedOptions, setSelectedOptions] = useState([]);
 
   console.log(reportsWithPaidAmount);
+  console.log(searchData);
 
   const fetchPaymentRecords = async (invoice_id) => {
     try {
