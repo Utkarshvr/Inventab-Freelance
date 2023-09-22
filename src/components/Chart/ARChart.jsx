@@ -101,7 +101,7 @@ export default function ARChart({ chartData }) {
         <Tooltip formatter={(value) => (value / 10000000).toFixed(2) + " Cr"} />
         <Legend />
 
-        {["SLS-KAM-WEST", "SLS-KAM-SOUTH", "SLS-KAM-NORTH"]?.map(
+        {["SLS-KAM-WEST1", "SLS-KAM-SOUTH", "SLS-KAM-NORTH"]?.map(
           (departmentName, index) => {
             return (
               <Bar
