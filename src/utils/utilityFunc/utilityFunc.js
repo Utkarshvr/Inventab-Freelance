@@ -401,11 +401,11 @@ utils.calculateTotalExtdGrossPrice = (items) => {
   }, 0);
 };
 
-utils.calculateExtdGrossPrice = (gst, net_price, quantity) => {
+utils.calculateExtdGrossPrice = (gst, net_price) => {
   if (net_price && net_price > 0 && gst && gst > 0) {
-    let modifiedGst = parseInt(gst) + parseInt(quantity);
-    let gross_price = (parseInt(net_price) * modifiedGst) / 100;
-    return gross_price;
+    // NET Price * (1 + (gst / 100))
+    let gross_price = parseInt(net_price) * (1 + parseInt(gst) / 100);
+    return parseFloat(gross_price)?.toFixed(2);
   } else {
     return 0;
   }
