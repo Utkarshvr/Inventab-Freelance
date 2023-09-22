@@ -127,7 +127,7 @@ export default function SalesDataForm(props) {
       try {
         setLoading(true);
         const { data } = await axios.get(
-          `http://inventab.io/api/v1/organizations/get/suborg/?org=${orgId}` /*  0a055b26-ae15-40a9-8291-25427b94ebb3 ==> prev org id*/,
+          `/organizations/get/suborg/?org=${orgId}` /*  0a055b26-ae15-40a9-8291-25427b94ebb3 ==> prev org id*/,
           {
             signal: controller.signal,
           }

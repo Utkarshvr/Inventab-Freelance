@@ -224,7 +224,7 @@ const UpdateSalesLeads = () => {
       try {
         setLoading(true);
         const { data } = await axios.get(
-          `http://inventab.io/api/v1/pipo/sales/lead/?lead_no=${lead_no}`
+          `/pipo/sales/lead/?lead_no=${lead_no}`
         );
         setLoading(false);
         console.log(data?.results);
