@@ -88,29 +88,35 @@ const SalesInvoiceDetails = ({
     ) {
       // calculate gst
       let result = calculateGST(invoiceDetails);
-
+      console.log({ invoiceDetails });
       // shipping charge
       let shippingCharge = invoiceDetails?.shipment_charges;
-
+      const netPrice = invoiceDetails?.parts_invoice?.reduce(
+        (acc, part) => acc + part?.price * part?.quantity,
+        0
+      );
       //set data for same address ['CGST', "SGST"]
       setIsSameAddress({
         CGST: parseFloat(result / 2).toFixed(2),
         SGST: parseFloat(result / 2).toFixed(2),
         IGST: 0,
         shipping: parseFloat(shippingCharge).toFixed(2),
-        grossTotal: parseFloat(result + shippingCharge).toFixed(2),
+        grossTotal: parseFloat(result + shippingCharge + netPrice).toFixed(2),
       });
     } else {
       // calculate gst
       let result = calculateGST(invoiceDetails);
       // shipping charge
       let shippingCharge = invoiceDetails?.shipment_charges;
-
+      const netPrice = invoiceDetails?.parts_invoice?.reduce(
+        (acc, part) => acc + part?.price * part?.quantity,
+        0
+      );
       //set data for diff address ['IGST']
       setIsDiffAddress({
         IGST: parseFloat(result).toFixed(2),
         shipping: parseFloat(shippingCharge).toFixed(2),
-        grossTotal: parseFloat(result + shippingCharge).toFixed(2),
+        grossTotal: parseFloat(result + shippingCharge + netPrice).toFixed(2),
       });
     }
   }, [invoiceDetails]);
