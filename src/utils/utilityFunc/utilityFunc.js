@@ -16,7 +16,8 @@ utils.removeDuplicateObjects = (arr) => {
 };
 
 // @desc number Differentiation [only core]
-utils.numDifferentiation = (value) => `${(value / 10000000).toFixed(2)} Cr`;
+utils.numDifferentiation = (value) =>
+  value ? `${(value / 10000000).toFixed(2)} Cr` : `0 Cr`;
 
 // @desc kpi Each total
 utils.kpiEachTotal = (kpi) => {
