@@ -95,7 +95,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: "/dashboard",
-            element: <SalesDashboard />,
+            element: (
+              <RoleRequired role={"SALES"}>
+                <SalesDashboard />
+              </RoleRequired>
+            ),
           },
           /* Leads */
           {
@@ -105,14 +109,6 @@ const router = createBrowserRouter([
                 <SalesLead />
               </RoleRequired>
             ),
-          },
-          {
-            path: "others/backlog",
-            element: <BacklogTable />,
-          },
-          {
-            path: "others/backlog/:id",
-            element: <AddBacklogDataForm />,
           },
           /* Accounting */
           {
@@ -199,11 +195,11 @@ const router = createBrowserRouter([
           },
           {
             path: "engg",
-            element: <AddProject />,
+            element: <AddProject role={"ENGINEERING"} />,
           },
           {
             path: "engg/update-project/:id",
-            element: <UpdateProject />,
+            element: <UpdateProject role={"ENGINEERING"} />,
           },
           {
             path: "eng-backlog",

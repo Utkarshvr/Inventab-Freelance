@@ -11,34 +11,36 @@ const Sidebar = () => {
         <div className="dlabnav-scroll">
           <ul className="metismenu" id="menu">
             {/* Sales Dashboard */}
-            <li>
-              <a
-                className="has-arrow ai-icon"
-                href="javascript:void()"
-                aria-expanded="false"
-              >
-                <LuLayoutDashboard className="fs-2" />
-                <span className="nav-text fs-4"> Dashboard</span>
-              </a>
-              <ul aria-expanded="false">
-                <li>
-                  <NavLink to="/dashboard" className="fs-4">
-                    Sales Dashboard
-                  </NavLink>
-                  <NavLink to="/dashboard/warehouse" className="fs-4">
-                    Warehousing
-                  </NavLink>
-                  <NavLink to="/dashboard/accounting" className="fs-4">
-                    Accounting
-                  </NavLink>
-                  {auth?.dept?.some((r) => r.role.name === "ENGINEERING") && (
-                    <NavLink to="/dashboard/eng" className="fs-4">
-                      Engineering
+            {auth?.dept?.some((r) => r.role.name === "SALES") ? (
+              <li>
+                <a
+                  className="has-arrow ai-icon"
+                  href="javascript:void()"
+                  aria-expanded="false"
+                >
+                  <LuLayoutDashboard className="fs-2" />
+                  <span className="nav-text fs-4"> Dashboard</span>
+                </a>
+                <ul aria-expanded="false">
+                  <li>
+                    <NavLink to="/dashboard" className="fs-4">
+                      Sales Dashboard
                     </NavLink>
-                  )}
-                </li>
-              </ul>
-            </li>
+                    <NavLink to="/dashboard/warehouse" className="fs-4">
+                      Warehousing
+                    </NavLink>
+                    <NavLink to="/dashboard/accounting" className="fs-4">
+                      Accounting
+                    </NavLink>
+                    {auth?.dept?.some((r) => r.role.name === "ENGINEERING") && (
+                      <NavLink to="/dashboard/eng" className="fs-4">
+                        Engineering
+                      </NavLink>
+                    )}
+                  </li>
+                </ul>
+              </li>
+            ) : null}
             {/* sales */}
             {auth?.dept?.some((r) => r.role.name === "SALES") ? (
               <li>
