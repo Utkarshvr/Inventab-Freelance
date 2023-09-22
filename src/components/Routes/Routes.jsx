@@ -114,7 +114,7 @@ const router = createBrowserRouter([
           {
             path: "accounting",
             element: (
-              <RoleRequired role={"PURCHASE"}>
+              <RoleRequired role={"FINANCE"}>
                 <AccountingPage />
               </RoleRequired>
             ),
@@ -122,7 +122,7 @@ const router = createBrowserRouter([
           {
             path: "accounting/invoices",
             element: (
-              <RoleRequired role={"PURCHASE"}>
+              <RoleRequired role={"FINANCE"}>
                 <AccountingInvoices />
               </RoleRequired>
             ),
@@ -130,7 +130,7 @@ const router = createBrowserRouter([
           {
             path: "accounting/invoices/:invoice_id",
             element: (
-              <RoleRequired role={"PURCHASE"}>
+              <RoleRequired role={"FINANCE"}>
                 <AccountingInvoiceDetails />
               </RoleRequired>
             ),
@@ -138,7 +138,7 @@ const router = createBrowserRouter([
           {
             path: "accounting/ar",
             element: (
-              <RoleRequired role={"PURCHASE"}>
+              <RoleRequired role={"FINANCE"}>
                 <AccountingAR />
               </RoleRequired>
             ),

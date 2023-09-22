@@ -31,7 +31,7 @@ const Sidebar = () => {
                         Warehousing
                       </NavLink>
                     )}
-                    {auth?.dept?.some((r) => r.role.name === "PURCHASE") && (
+                    {auth?.dept?.some((r) => r.role.name === "FINANCE") && (
                       <NavLink to="/dashboard/accounting" className="fs-4">
                         Accounting
                       </NavLink>
@@ -81,7 +81,7 @@ const Sidebar = () => {
               </li>
             ) : null}
             {/* ACCOUNTING */}
-            {auth?.dept?.some((r) => r.role.name === "PURCHASE") ? (
+            {auth?.dept?.some((r) => r.role.name === "FINANCE") ? (
               <li>
                 <a
                   className="has-arrow ai-icon"
