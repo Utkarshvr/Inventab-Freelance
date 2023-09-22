@@ -331,7 +331,7 @@ export default function SalesDataForm(props) {
     setFieldValue(`parts[${index}].net_price`, netPrice.toFixed(2)); // You can format the net_price as needed
     setFieldValue(
       `parts[${index}].extd_gross_price`,
-      extd_gross_price.toFixed(2)
+      parseFloat(extd_gross_price).toFixed(2)
     ); // You can format the net_price as needed
   };
 
