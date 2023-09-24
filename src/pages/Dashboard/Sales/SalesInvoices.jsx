@@ -255,18 +255,26 @@ const SalesInvoices = ({ to }) => {
                   highlightOnHover
                   subHeader
                   actions={
-                    <CSVLink
-                      enclosingCharacter={` `}
-                      data={csv}
-                      filename={`Invoices-${new Date(
-                        Date.now()
-                      ).toLocaleDateString("en-IN")}`}
-                      className="bg-primary btn text-white mb-3 border-0 d-flex align-items-center rounded-1"
-                      onClick={exportAsCsv}
-                    >
-                      <FiDownload className="fs-4 me-2" />
-                      Export as CSV
-                    </CSVLink>
+                    <>
+                      <CSVLink
+                        enclosingCharacter={` `}
+                        data={csv}
+                        filename={`Invoices-${new Date(
+                          Date.now()
+                        ).toLocaleDateString("en-IN")}`}
+                        className="bg-primary btn text-white mb-3 border-0 d-flex align-items-center rounded-1"
+                        onClick={exportAsCsv}
+                      >
+                        <FiDownload className="fs-4 me-2" />
+                        Export as CSV
+                      </CSVLink>
+
+                      <Link to="/dashboard/warehouse/add-invoice">
+                        <button className="bg-primary btn text-white mb-3 border-0 d-flex align-items-center ms-2 rounded-1">
+                          Add Sales Invoice
+                        </button>
+                      </Link>
+                    </>
                   }
                   subHeaderComponent={
                     <div

@@ -38,6 +38,7 @@ import WarehouseInvoiceDetails from "../Warehouse/WarehouseInvoiceDetails";
 import LoginForm from "../Form/LoginForm";
 import RenewPasswordForm from "../Form/RenewPasswordForm";
 import RegistrationForm from "../Form/RegistrationForm";
+import AddInvoice from "../Warehouse/AddInvoice";
 
 const router = createBrowserRouter([
   {
@@ -168,6 +169,16 @@ const router = createBrowserRouter([
               </RoleRequired>
             ),
           },
+
+          {
+            path: "warehouse/add-invoice",
+            element: (
+              <RoleRequired role={"WAREHOUSE"}>
+                <AddInvoice />
+              </RoleRequired>
+            ),
+          },
+
           {
             path: "warehouse/grn",
             element: (
