@@ -22,7 +22,7 @@ import TextArea from "./../../components/Form/TextArea";
 export default function AddInvoice() {
   const axios = useAxiosPrivate();
   const { auth } = useAuth();
-  const { orgId } = auth;
+  const { orgId, userId } = auth;
 
   const [loading, setLoading] = useState(false);
   const [dept, setDept] = useState([]);
@@ -32,6 +32,10 @@ export default function AddInvoice() {
   const [partFullObj, setPartFullObj] = useState([]);
   const [selectPart, setSelectPart] = useState(null);
   const [partsLoading, setPartsLoading] = useState(false);
+
+  // OTHERS
+  const [orders, setOrders] = useState([]);
+  const [ordersOptions, setOrdersOptions] = useState([]);
 
   // table lowerpart data
   const [short_description, setshort_description] = useState("");
@@ -51,21 +55,40 @@ export default function AddInvoice() {
     }
   }, [totalQuantity, unitCost]);
 
-  // set extd gross price
-  // useEffect(() => {
-  //   if (net_price && net_price > 0 && gst && gst > 0) {
-  //     let modifiedGst = parseInt(gst) + 1;
-  //     let gross_price = modifiedGst * parseInt(net_price);
-  //     setExtd_gross_price(gross_price);
-  //   } else {
-  //     setExtd_gross_price(0);
-  //   }
-  // }, [gst, net_price]);
-
   // load department, Client, sub-organization
   useEffect(() => {
     let isMount = true;
     const controller = new AbortController();
+    // orders
+    (async function () {
+      try {
+        setLoading(true);
+        const { data } = await axios.get(`pipo/so/order/?org=${orgId}`, {
+          signal: controller.signal,
+        });
+        setLoading(false);
+        console.log({ orderData: data });
+        setOrders(data?.results || []);
+
+        const ordersArr = [];
+        isMount &&
+          data?.results?.forEach((dept) => {
+            const deptObj = {
+              label: dept?.so_id,
+              value: dept?.id,
+            };
+            ordersArr.push(deptObj);
+          });
+
+        const removeUndefinedData = removeUndefinedObj(ordersArr);
+        const uniqueArr = removeDuplicateObjects(removeUndefinedData);
+        setOrdersOptions(uniqueArr);
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
+    })();
+
     // organization || department
     (async function () {
       try {
@@ -198,16 +221,17 @@ export default function AddInvoice() {
   // form submit
   const { setFieldValue, values, handleChange, handleSubmit } = useFormik({
     initialValues: {
-      salesOrder: null,
-      invDate: null,
-      status: null,
-      refPONo: 0,
-      poDate: "",
-      client: null,
-      billingAddress: "",
-      shipmentAddress: "",
-      paymentTerm: "",
-      shipmentCharges: "",
+      salesOrder: null, //
+      invDate: null, //
+      status: null, //
+      refPONo: 0, //
+      poDate: "", //
+      client: null, //
+      billingAddress: "", //
+      shippingAddress: "", //
+      paymentTerm: "", //
+      shipmentCharges: 0, //
+      deliveryTerm: "", //
       shipper: "",
       docketNo: "",
 
@@ -216,7 +240,22 @@ export default function AddInvoice() {
     onSubmit: async (values, { resetForm }) => {
       try {
         // console.log(values);
-        const { department, sub_org, client, status, parts: partArr } = values;
+        const {
+          salesOrder,
+          invDate,
+          status,
+          refPONo,
+          poDate,
+          client,
+          billingAddress,
+          shippingAddress,
+          paymentTerm,
+          shipmentCharges,
+          deliveryTerm,
+          shipper,
+          docketNo,
+          parts: partArr,
+        } = values;
         // sort part obj data
         let parts = [];
         partArr.forEach((p) => {
@@ -242,21 +281,36 @@ export default function AddInvoice() {
         // created lead obj
         const createLeadObj = {
           ...values,
-          org: orgId,
-          department: department?.value || null,
-          sub_org: sub_org?.value || null,
-          status: status?.value || null,
-          client: client?.value || null,
           parts,
+
+          po_number: refPONo,
+          po_date: poDate,
+          invoice_date: invDate,
+          delivery_term: deliveryTerm?.label,
+          payment_term: paymentTerm?.label,
+          shipment_charges: shipmentCharges,
+          current_org: orgId,
+          dept: status?.label,
+
+          invoice_type: "89f8071d-e2be-426a-a460-362ce0175407",
+          invoice_comment: "sdfdsa",
+
+          billing_address: billingAddress?.label,
+          shipping_address: shippingAddress?.label,
+
+          sale_order: salesOrder?.label,
+
+          org: orgId,
+          created_by: userId,
         };
         // return console.log(createLeadObj);
         const res = await axios.post(
-          `pipo/create/sales/lead/`,
+          `/invoices/create/invoice/`,
           JSON.stringify(createLeadObj)
         );
         if (res?.status === 201) {
           resetForm({ values: "" });
-          toast.success("Lead created successfully");
+          toast.success("Invoice created successfully");
         }
       } catch (error) {
         toast.error(error?.message, { duration: 2000 });
@@ -264,6 +318,63 @@ export default function AddInvoice() {
       }
     },
   });
+
+  useEffect(() => {
+    const opt = values.salesOrder;
+    const order = orders.find((e) => e.id === opt?.value);
+    console.log({ order });
+
+    if (order) {
+      const {
+        billing_address,
+        shipping_address,
+        department,
+        ref_po,
+        client,
+        po_date,
+        delivery_term,
+        payment_term,
+        expected_inv_date,
+      } = order;
+      // dept, po_no, ref_po_date, client, billind, shipping, payment term, delivery temr
+      setFieldValue("client", { label: client?.company_name, id: client?.id });
+      // dept
+      setFieldValue("status", {
+        label: department?.name,
+        id: department?.id,
+      });
+      setFieldValue("refPONo", ref_po);
+      setFieldValue("invDate", expected_inv_date);
+      setFieldValue("poDate", po_date);
+      setFieldValue("billingAddress", {
+        label: billing_address?.address,
+        id: billing_address?.id,
+      });
+      setFieldValue("shippingAddress", {
+        label: shipping_address?.address,
+        id: shipping_address?.id,
+      });
+      setFieldValue("paymentTerm", {
+        label: payment_term?.term,
+        id: payment_term?.id,
+      });
+      setFieldValue("deliveryTerm", {
+        label: delivery_term?.term,
+        id: delivery_term?.id,
+      });
+    } else {
+      setFieldValue("client", "");
+      // dept
+      setFieldValue("status", "");
+      setFieldValue("refPONo", "");
+      setFieldValue("invDate", "");
+      setFieldValue("poDate", "");
+      setFieldValue("billingAddress", "");
+      setFieldValue("shippingAddress", "");
+      setFieldValue("paymentTerm", "");
+      setFieldValue("deliveryTerm", "");
+    }
+  }, [values.salesOrder]);
 
   // Function to update net_price based on unit_cost and quantity
   const updateNetPrice = (index, value, changedForm) => {
@@ -414,7 +525,7 @@ export default function AddInvoice() {
                   name="salesOrder"
                   isClearable
                   isSearchable
-                  options={dept}
+                  options={ordersOptions}
                   value={values.salesOrder}
                   onChange={(option) => setFieldValue("salesOrder", option)}
                 />
@@ -423,16 +534,13 @@ export default function AddInvoice() {
               {/* add Inv Date input */}
               <div className="mb-3 col-md-6">
                 <label className="mb-2 text-dark text-capitalize">
-                  Inv Date
+                  Invoice Date
                 </label>
-                <Select
-                  placeholder="Select Inv Date"
-                  isLoading={loading}
+                <InputText
+                  type="date"
                   name="invDate"
-                  isSearchable
-                  options={subOrg}
-                  value={values?.invDate}
-                  onChange={(option) => setFieldValue("invDate", option)}
+                  placeholder="Invoice Date"
+                  value={values.invDate}
                 />
               </div>
 
@@ -481,7 +589,6 @@ export default function AddInvoice() {
                   name="poDate"
                   placeholder="Ref PO Date"
                   value={values.poDate}
-                  onChange={handleChange}
                 />
               </div>
 
@@ -495,7 +602,8 @@ export default function AddInvoice() {
                   isClearable
                   name="client"
                   options={client}
-                  onChange={(option) => setFieldValue("client", option)}
+                  value={values?.client}
+                  // onChange={(option) => setFieldValue("client", option)}
                 />
               </div>
 
@@ -511,6 +619,7 @@ export default function AddInvoice() {
                   isClearable
                   name="billingAddress"
                   options={client}
+                  value={values.billingAddress}
                   onChange={(option) => setFieldValue("billingAddress", option)}
                 />
               </div>
@@ -527,6 +636,7 @@ export default function AddInvoice() {
                   isClearable
                   name="shippingAddress"
                   options={client}
+                  value={values.shippingAddress}
                   onChange={(option) =>
                     setFieldValue("shippingAddress", option)
                   }
@@ -545,6 +655,7 @@ export default function AddInvoice() {
                   isClearable
                   name="paymentTerm"
                   options={client}
+                  value={values.paymentTerm}
                   onChange={(option) => setFieldValue("paymentTerm", option)}
                 />
               </div>
@@ -561,6 +672,7 @@ export default function AddInvoice() {
                   isClearable
                   name="deliveryTerm"
                   options={client}
+                  value={values.deliveryTerm}
                   onChange={(option) => setFieldValue("deliveryTerm", option)}
                 />
               </div>
@@ -572,10 +684,12 @@ export default function AddInvoice() {
                 </label>
                 <InputText
                   name="contact_name"
-                  type="text"
+                  type="number"
                   placeholder="Shipment Charges"
                   value={values.shipmentCharges}
-                  onChange={handleChange}
+                  onChange={(e) =>
+                    setFieldValue("shipmentCharges", e.target.value)
+                  }
                 />
               </div>
 
@@ -591,6 +705,7 @@ export default function AddInvoice() {
                   isClearable
                   name="shipper"
                   options={client}
+                  value={values.shipper}
                   onChange={(option) => setFieldValue("shipper", option)}
                 />
               </div>
@@ -603,7 +718,7 @@ export default function AddInvoice() {
                   name="docketNo"
                   placeholder="Docket No"
                   value={values.docketNo}
-                  onChange={handleChange}
+                  onChange={(e) => setFieldValue("docketNo", e.target.value)}
                 />
               </div>
             </div>
@@ -890,6 +1005,10 @@ export default function AddInvoice() {
           </form>
         </div>
       </div>
+
+      <h6 style={{ marginTop: "1.5em" }} className="fw-bold">
+        Terms & Conditions: {"NO"}
+      </h6>
     </>
   );
 }
