@@ -26334,13 +26334,13 @@ input[type="number"]::-webkit-outer-spin-button {
   color: #f5f5f5 !important;
 }
 
-[data-theme-version="dark"] .login-form,
+.login-form,
 .authentication_row {
   background: #212130;
   /* border: 1px solid #3d3c3c !important; */
 }
 
-[data-theme-version="dark"] .authentication_row {
+.authentication_row {
   background: url("/login-img.jpg");
   border: none !important;
   background-repeat:no-repeat;
