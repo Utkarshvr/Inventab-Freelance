@@ -36,6 +36,7 @@ export default function AddInvoice() {
   // OTHERS
   const [orders, setOrders] = useState([]);
   const [ordersOptions, setOrdersOptions] = useState([]);
+  const [shipperOptions, setShipperOptions] = useState([]);
 
   // table lowerpart data
   const [short_description, setshort_description] = useState("");
@@ -83,6 +84,33 @@ export default function AddInvoice() {
         const removeUndefinedData = removeUndefinedObj(ordersArr);
         const uniqueArr = removeDuplicateObjects(removeUndefinedData);
         setOrdersOptions(uniqueArr);
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
+    })();
+
+    // Shipper
+    (async function () {
+      try {
+        setLoading(true);
+        const { data } = await axios.get(`/invoices/get/shipper/`, {
+          signal: controller.signal,
+        });
+        setLoading(false);
+        const shipperArr = [];
+        isMount &&
+          data?.results?.forEach((shipper) => {
+            const shipperObj = {
+              label: shipper?.name,
+              value: shipper?.id,
+            };
+            shipperArr.push(shipperObj);
+          });
+
+        const removeUndefinedData = removeUndefinedObj(shipperArr);
+        const uniqueArr = removeDuplicateObjects(removeUndefinedData);
+        setShipperOptions(uniqueArr);
       } catch (error) {
         setLoading(false);
         console.log(error);
@@ -258,10 +286,13 @@ export default function AddInvoice() {
         } = values;
         // sort part obj data
         let parts = [];
+
+        console.log({ partArr });
         partArr.forEach((p) => {
           const partObj = {
             lead_part_id: p?.lead_part_id,
-            part_id: p?.part_id?.id,
+            parts_no: p?.part_id?.id,
+            customer_part_no: p?.part_id?.part_number,
             short_description: p?.short_description,
             quantity: parseFloat(p?.quantity),
             unit_cost: parseFloat(p?.unit_cost),
@@ -279,35 +310,37 @@ export default function AddInvoice() {
         });
 
         // created lead obj
-        const createLeadObj = {
-          ...values,
-          parts,
-
+        const Invoice_Payload = {
+          parts_invoice: parts,
           po_number: refPONo,
           po_date: poDate,
           invoice_date: invDate,
           delivery_term: deliveryTerm?.label,
-          payment_term: paymentTerm?.label,
+          payment_term: paymentTerm?.id,
           shipment_charges: shipmentCharges,
           current_org: orgId,
-          dept: status?.label,
+          dept: status?.id,
+          client: client?.label,
+          shipper: shipper?.id,
+          docketNo,
 
-          invoice_type: "89f8071d-e2be-426a-a460-362ce0175407",
+          invoice_type: "138fef7c-8785-4b16-9deb-0fd49902f5fa",
           invoice_comment: "sdfdsa",
 
-          billing_address: billingAddress?.label,
-          shipping_address: shippingAddress?.label,
+          billing_address: billingAddress?.id,
+          shipping_address: shippingAddress?.id,
 
-          sale_order: salesOrder?.label,
+          sale_order: salesOrder?.id,
 
           org: orgId,
           created_by: userId,
         };
-        // return console.log(createLeadObj);
+
         const res = await axios.post(
           `/invoices/create/invoice/`,
-          JSON.stringify(createLeadObj)
+          JSON.stringify(Invoice_Payload)
         );
+        console.log({ res });
         if (res?.status === 201) {
           resetForm({ values: "" });
           toast.success("Invoice created successfully");
@@ -323,7 +356,6 @@ export default function AddInvoice() {
     const opt = values.salesOrder;
     const order = orders.find((e) => e.id === opt?.value);
     console.log({ order });
-
     if (order) {
       const {
         billing_address,
@@ -460,7 +492,9 @@ export default function AddInvoice() {
       updatedParts[index].part_id.id = value;
       updatedParts[index].part_id.part_number = label;
       let s = partFullObj.find((part) => part?.id === value);
+      console.log({ s });
       updatedParts[index].short_description = s?.short_description || "";
+      updatedParts[index].customer_part_no = s?.part_number || "";
     }
 
     setFieldValue("parts", updatedParts);
@@ -704,7 +738,7 @@ export default function AddInvoice() {
                   isSearchable
                   isClearable
                   name="shipper"
-                  options={client}
+                  options={shipperOptions}
                   value={values.shipper}
                   onChange={(option) => setFieldValue("shipper", option)}
                 />
