@@ -18,6 +18,7 @@ import {
 } from "../../utils/utilityFunc/utilityFunc";
 import InputText from "./../../components/Form/InputText";
 import TextArea from "./../../components/Form/TextArea";
+import SerializedPartsModal from "../Modal/SerializedPartsModal";
 
 export default function AddInvoice() {
   const axios = useAxiosPrivate();
@@ -32,6 +33,7 @@ export default function AddInvoice() {
   const [partFullObj, setPartFullObj] = useState([]);
   const [selectPart, setSelectPart] = useState(null);
   const [partsLoading, setPartsLoading] = useState(false);
+  const [isPartSerialized, setIsPartSerialized] = useState(false);
 
   // OTHERS
   const [orders, setOrders] = useState([]);
@@ -46,6 +48,19 @@ export default function AddInvoice() {
   const [gst, setgst] = useState();
   const [net_price, setNet_price] = useState(0);
   const [extd_gross_price, setExtd_gross_price] = useState(0);
+
+  // MODAL STATE
+  const [serialModalState, setSerialModalState] = useState({
+    isOpen: false,
+    serialNumbers: [],
+    index: 0,
+  });
+  const [selectedNums, setSelectedNums] = useState([]);
+  // console.log({
+  //   serializedParts: partFullObj.find(
+  //     (part) => part.id === "1f70309a-ea9e-4f74-99f2-94593a027e97"
+  //   ),
+  // });
 
   // set net price
   useEffect(() => {
@@ -461,6 +476,7 @@ export default function AddInvoice() {
       gst,
       net_price,
       extd_gross_price: calculateExtdGrossPrice(gst, net_price, totalQuantity),
+      serialization: isPartSerialized,
     };
 
     setFieldValue("parts", [...values.parts, newPart]);
@@ -495,7 +511,9 @@ export default function AddInvoice() {
       console.log({ s });
       updatedParts[index].short_description = s?.short_description || "";
       updatedParts[index].customer_part_no = s?.part_number || "";
+      updatedParts[index].serialization = s?.serialization || false;
     }
+    console.log({ updatedParts });
 
     setFieldValue("parts", updatedParts);
   };
@@ -509,13 +527,14 @@ export default function AddInvoice() {
       setSelectPart(option);
       setshort_description(s?.short_description || "");
 
-      setTotalQuantity(1);
+      setTotalQuantity(s?.serialization ? 0 : 1);
       setUnitCost(s?.mrp);
       setstatus(
         s?.is_active
           ? { label: "Active", value: "Active" }
           : { label: "Inactive", value: "Inactive" }
       );
+      setIsPartSerialized(s?.serialization);
 
       // Calc GST & NET PRICE
       const netprice = s?.mrp * 1;
@@ -526,6 +545,23 @@ export default function AddInvoice() {
       setExtd_gross_price(extdgrossprice);
     } else {
       setshort_description("");
+    }
+  };
+
+  //
+  const handleQuanityClickForSerializedParts = async (index, part_no) => {
+    try {
+      const { data } = await axios.get(
+        `/inventory/gr/list/?part_no=${part_no}`
+      );
+
+      setSerialModalState({
+        isOpen: true,
+        serialNumbers: data?.results,
+        index,
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -861,7 +897,7 @@ export default function AddInvoice() {
                                     <div className="select-port">
                                       <Select
                                         className="select"
-                                        placeholder="Select Port No"
+                                        placeholder="Select Part No"
                                         value={{
                                           label: part?.part_id?.part_number,
                                           value: part?.part_id?.id,
@@ -890,23 +926,48 @@ export default function AddInvoice() {
                                     />
                                   </td>
 
-                                  <td>
-                                    <input
-                                      className="new_input_class"
-                                      type="number"
-                                      placeholder="Total Quntity"
-                                      name={`parts[${index}].quantity`}
-                                      value={part.quantity}
-                                      onChange={(e) => {
-                                        handleChange(e);
-                                        updateNetPrice(
+                                  {part.serialization ? (
+                                    <td
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() =>
+                                        handleQuanityClickForSerializedParts(
                                           index,
-                                          e.target.value,
-                                          "quantity"
-                                        ); // Update net_price when unit_cost changes
-                                      }}
-                                    />
-                                  </td>
+                                          part.part_id.id
+                                        )
+                                      }
+                                    >
+                                      <input
+                                        style={{
+                                          border: "1px solid rebeccapurple",
+                                          color: "rebeccapurple",
+                                          cursor: "pointer",
+                                        }}
+                                        className="new_input_class"
+                                        type="number"
+                                        placeholder="Total Quntity"
+                                        name={`parts[${index}].quantity`}
+                                        value={part.quantity}
+                                      />
+                                    </td>
+                                  ) : (
+                                    <td>
+                                      <input
+                                        className="new_input_class"
+                                        type="number"
+                                        placeholder="Total Quntity"
+                                        name={`parts[${index}].quantity`}
+                                        value={part.quantity}
+                                        onChange={(e) => {
+                                          handleChange(e);
+                                          updateNetPrice(
+                                            index,
+                                            e.target.value,
+                                            "quantity"
+                                          ); // Update net_price when unit_cost changes
+                                        }}
+                                      />
+                                    </td>
+                                  )}
 
                                   <td>
                                     <input
@@ -1040,6 +1101,18 @@ export default function AddInvoice() {
         </div>
       </div>
 
+      {serialModalState.isOpen ? (
+        <SerializedPartsModal
+          serialNumbers={serialModalState.serialNumbers}
+          handleClose={() =>
+            setSerialModalState(() => ({ isOpen: false, serialNumbers: [] }))
+          }
+          setFieldValue={setFieldValue}
+          serialModalState={serialModalState}
+          selectedNums={selectedNums}
+          setSelectedNums={setSelectedNums}
+        />
+      ) : null}
       <h6 style={{ marginTop: "1.5em" }} className="fw-bold">
         Terms & Conditions: {"NO"}
       </h6>
