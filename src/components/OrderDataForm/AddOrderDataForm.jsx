@@ -88,7 +88,7 @@ export default function DataForm() {
           };
           clientArr.push(clientObj);
         });
-
+        console.log({ CLIENT: data?.results });
         const removeUndefinedData = removeUndefinedObj(clientArr);
         const uniqueArr = removeDuplicateObjects(removeUndefinedData);
         setClient(uniqueArr);
@@ -371,6 +371,38 @@ export default function DataForm() {
       }
     },
   });
+
+  // MAIN CODE TO CHANGE ADDRESS acc to Selected Client
+  useEffect(() => {
+    const clientId = values?.client?.value;
+    console.log(clientId);
+    // shipping && billing address
+    (async function () {
+      try {
+        const { data } = await axios.get(
+          `/organizations/fetch/org/address/?org=${clientId}`
+        );
+
+        const shippingArr = [];
+        data?.results?.forEach((s) => {
+          const shippingArrObj = {
+            value: s?.id,
+            label: s?.address,
+          };
+          shippingArr.push(shippingArrObj);
+        });
+
+        const removeUndefinedData = removeUndefinedObj(shippingArr);
+        const uniqueArr = removeDuplicateObjects(removeUndefinedData);
+        // shipping
+        setShippingAddress(uniqueArr);
+        //billing
+        setBillingAddress(uniqueArr);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, [values?.client]);
 
   // Function to update net_price based on unit_cost and quantity
   const updateNetPrice = (index, value, changedForm) => {

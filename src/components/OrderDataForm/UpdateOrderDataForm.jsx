@@ -438,6 +438,38 @@ const UpdateOrderDataForm = ({ orderData }) => {
     },
   });
 
+  // MAIN CODE TO CHANGE ADDRESS acc to Selected Client
+  useEffect(() => {
+    const clientId = values?.client?.value;
+    console.log(clientId);
+    // shipping && billing address
+    (async function () {
+      try {
+        const { data } = await axios.get(
+          `/organizations/fetch/org/address/?org=${clientId}`
+        );
+
+        const shippingArr = [];
+        data?.results?.forEach((s) => {
+          const shippingArrObj = {
+            value: s?.id,
+            label: s?.address,
+          };
+          shippingArr.push(shippingArrObj);
+        });
+
+        const removeUndefinedData = removeUndefinedObj(shippingArr);
+        const uniqueArr = removeDuplicateObjects(removeUndefinedData);
+        // shipping
+        setShippingAddress(uniqueArr);
+        //billing
+        setBillingAddress(uniqueArr);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, [values?.client]);
+
   // Function to update net_price based on unit_cost and quantity
   const updateNetPrice = (index, value, changedForm) => {
     const part = values.parts[index];
@@ -652,7 +684,11 @@ const UpdateOrderDataForm = ({ orderData }) => {
               name="client"
               options={client}
               value={values.client}
-              onChange={(option) => setFieldValue("client", option)}
+              onChange={(option) => {
+                setFieldValue("client", option);
+                setFieldValue("shipping_address", null);
+                setFieldValue("billing_address", null);
+              }}
             />
           </div>
 
