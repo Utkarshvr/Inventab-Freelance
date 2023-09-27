@@ -28,6 +28,7 @@ export default function AddGRN() {
   const [selectedPart, setSelectedPart] = useState(null);
 
   const [desc, setDesc] = useState("");
+  const [quantity, setQuantity] = useState(0);
 
   console.log(purchaseOrders);
 
@@ -108,7 +109,9 @@ export default function AddGRN() {
       (part) => part?.parts_id?.id === selectedPart?.value
     );
     const description = part?.short_description;
+    const quantity = part?.quantity;
     setDesc(description);
+    setQuantity(quantity);
   }, [selectedPart]);
 
   return (
@@ -170,9 +173,8 @@ export default function AddGRN() {
                           <input
                             className="new_input_class"
                             type="text"
-                            name="short_description"
-                            value={"Select A Part No"}
-                            // value={desc || "Select A Part No"}
+                            name="quantity"
+                            value={quantity || 0}
                             readOnly
                           />
                         </td>
