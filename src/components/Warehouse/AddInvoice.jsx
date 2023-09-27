@@ -1111,6 +1111,7 @@ export default function AddInvoice() {
           serialModalState={serialModalState}
           selectedNums={selectedNums}
           setSelectedNums={setSelectedNums}
+          updateNetPrice={updateNetPrice}
         />
       ) : null}
       <h6 style={{ marginTop: "1.5em" }} className="fw-bold">

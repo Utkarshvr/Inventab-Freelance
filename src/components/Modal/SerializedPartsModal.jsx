@@ -1,5 +1,3 @@
-import { set } from "lodash";
-import { useState } from "react";
 import DataTable from "react-data-table-component";
 
 export default function SerializedPartsModal({
@@ -9,6 +7,7 @@ export default function SerializedPartsModal({
   serialModalState,
   selectedNums,
   setSelectedNums,
+  updateNetPrice,
 }) {
   console.log({ selectedNums });
 
@@ -63,6 +62,11 @@ export default function SerializedPartsModal({
                     `parts[${serialModalState.index}].quantity`,
                     prevSelectedSerials?.length - 1
                   );
+                  updateNetPrice(
+                    serialModalState.index,
+                    prevSelectedSerials?.length - 1,
+                    "quantity"
+                  );
                 } else {
                   const prevSelectedSerials = selectedSerials;
 
@@ -84,6 +88,11 @@ export default function SerializedPartsModal({
                   setFieldValue(
                     `parts[${serialModalState.index}].quantity`,
                     prevSelectedSerials?.length + 1
+                  );
+                  updateNetPrice(
+                    serialModalState.index,
+                    prevSelectedSerials?.length + 1,
+                    "quantity"
                   );
                 }
               }}
