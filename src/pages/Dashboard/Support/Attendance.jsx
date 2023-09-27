@@ -224,7 +224,7 @@ const Attendance = () => {
                       Sick: {sickLeave} / {allowedList?.sick}
                     </p>
                   </div>
-                  {ownLeaves.map((leave, index) => (
+                  {ownLeaves?.map((leave, index) => (
                     <div className="border border-dark mb-3 rounded-2">
                       <table className="table">
                         <thead>

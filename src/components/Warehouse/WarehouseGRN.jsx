@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Loader from "../../ui/Loader";
 import DataTable from "react-data-table-component";
+import { Link } from "react-router-dom";
 
 export default function WarehouseGRN() {
   const [loading, setLoading] = useState(false);
@@ -71,13 +72,15 @@ export default function WarehouseGRN() {
                 striped
                 highlightOnHover
                 subHeader
-                // actions={
-                //   <>
-                //     <h3 className="bg-primary text-white rounded-0 p-3">
-                //       Total: {numDifferentiation(total)}
-                //     </h3>
-                // </>
-                // }
+                actions={
+                  <>
+                    <Link to="/dashboard/warehouse/grn/add-grn">
+                      <button className="bg-primary btn text-white mb-3 border-0 d-flex align-items-center ms-2 rounded-1">
+                        Add GRN
+                      </button>
+                    </Link>
+                  </>
+                }
               />
             </div>
           </div>
