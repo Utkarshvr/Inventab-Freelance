@@ -40,6 +40,7 @@ import RenewPasswordForm from "../Form/RenewPasswordForm";
 import RegistrationForm from "../Form/RegistrationForm";
 import AddInvoice from "../Warehouse/AddInvoice";
 import WarehouseGRNDetails from "../Warehouse/WarehouseGRNDetails";
+import AddGRN from "../Warehouse/AddGRN";
 
 const router = createBrowserRouter([
   {
@@ -185,6 +186,14 @@ const router = createBrowserRouter([
             element: (
               <RoleRequired role={"WAREHOUSE"}>
                 <WarehouseGRN />
+              </RoleRequired>
+            ),
+          },
+          {
+            path: "warehouse/grn/add-grn",
+            element: (
+              <RoleRequired role={"WAREHOUSE"}>
+                <AddGRN />
               </RoleRequired>
             ),
           },
