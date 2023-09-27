@@ -688,9 +688,9 @@ export default function AddInvoice() {
                   isSearchable
                   isClearable
                   name="billingAddress"
-                  options={client}
+                  // options={client}
                   value={values.billingAddress}
-                  onChange={(option) => setFieldValue("billingAddress", option)}
+                  // onChange={(option) => setFieldValue("billingAddress", option)}
                 />
               </div>
 
@@ -705,11 +705,11 @@ export default function AddInvoice() {
                   isSearchable
                   isClearable
                   name="shippingAddress"
-                  options={client}
+                  // options={client}
                   value={values.shippingAddress}
-                  onChange={(option) =>
-                    setFieldValue("shippingAddress", option)
-                  }
+                  // onChange={(option) =>
+                  //   setFieldValue("shippingAddress", option)
+                  // }
                 />
               </div>
 
@@ -724,9 +724,9 @@ export default function AddInvoice() {
                   isSearchable
                   isClearable
                   name="paymentTerm"
-                  options={client}
+                  // options={client}
                   value={values.paymentTerm}
-                  onChange={(option) => setFieldValue("paymentTerm", option)}
+                  // onChange={(option) => setFieldValue("paymentTerm", option)}
                 />
               </div>
 
@@ -741,9 +741,9 @@ export default function AddInvoice() {
                   isSearchable
                   isClearable
                   name="deliveryTerm"
-                  options={client}
+                  // options={client}
                   value={values.deliveryTerm}
-                  onChange={(option) => setFieldValue("deliveryTerm", option)}
+                  // onChange={(option) => setFieldValue("deliveryTerm", option)}
                 />
               </div>
 
