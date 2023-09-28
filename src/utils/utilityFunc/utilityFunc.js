@@ -479,7 +479,7 @@ utils.generateWeeklyOffs = () => {
 };
 utils.generateOwnLeavesClassnames = (ownLeaves) => {
   let ownLeavesClassnames = [];
-  ownLeaves.forEach((leave) => {
+  ownLeaves?.forEach((leave) => {
     leave.leave_dates.forEach((leave_date) => {
       const dateObj = extractDateInNums(leave_date.date);
 
@@ -503,7 +503,7 @@ utils.generateOwnLeavesClassnames = (ownLeaves) => {
 utils.generateCustomClassNames = (holidays, ownLeaves) => {
   const weeklyOffs = utils.generateWeeklyOffs();
 
-  const holidaysCustomClassnames = holidays.map((holiday) => {
+  const holidaysCustomClassnames = holidays?.map((holiday) => {
     const dateObj = extractDateInNums(holiday.date);
     return { ...dateObj, className: "custom-holidays" };
   });
