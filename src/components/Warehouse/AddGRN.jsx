@@ -29,6 +29,7 @@ export default function AddGRN() {
 
   const [desc, setDesc] = useState("");
   const [quantity, setQuantity] = useState(0);
+  const [qtyRecieved, setQtyRecieved] = useState(0);
 
   console.log(purchaseOrders);
 
@@ -166,26 +167,32 @@ export default function AddGRN() {
                             type="text"
                             name="short_description"
                             value={desc || "Select A Part No"}
+                            disabled={!selectedPart}
                             readOnly
                           />
                         </td>
                         <td>
                           <input
                             className="new_input_class"
-                            type="text"
+                            type="number"
                             name="quantity"
                             value={quantity || 0}
+                            disabled={!selectedPart}
                             readOnly
                           />
                         </td>
                         <td>
                           <input
                             className="new_input_class"
-                            type="text"
-                            name="short_description"
-                            value={"Select A Part No"}
-                            // value={desc || "Select A Part No"}
-                            readOnly
+                            type="number"
+                            name="qtyRecieved"
+                            value={qtyRecieved}
+                            onChange={(e) =>
+                              setQtyRecieved(
+                                e.target.value < 0 ? 0 : e.target.value
+                              )
+                            }
+                            disabled={!selectedPart}
                           />
                         </td>
                       </tr>
