@@ -40,7 +40,9 @@ import RenewPasswordForm from "../Form/RenewPasswordForm";
 import RegistrationForm from "../Form/RegistrationForm";
 import AddInvoice from "../Warehouse/AddInvoice";
 import WarehouseGRNDetails from "../Warehouse/WarehouseGRNDetails";
-import AddGRN from "../Warehouse/AddGRN";
+import AddGR from "../Warehouse/AddGR";
+import AddProjectDataForm from "../other/AddProjectDataForm";
+import ProjectTable from "../other/project/Project";
 
 const router = createBrowserRouter([
   {
@@ -190,21 +192,21 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "warehouse/grn/add-grn",
+            path: "warehouse/grn/:grnId",
             element: (
               <RoleRequired role={"WAREHOUSE"}>
-                <AddGRN />
+                <AddGR />
               </RoleRequired>
             ),
           },
-          {
-            path: "warehouse/grn/:id",
-            element: (
-              <RoleRequired role={"WAREHOUSE"}>
-                <WarehouseGRNDetails />
-              </RoleRequired>
-            ),
-          },
+          // {
+          //   path: "warehouse/grn/:id",
+          //   element: (
+          //     <RoleRequired role={"WAREHOUSE"}>
+          //       <WarehouseGRNDetails />
+          //     </RoleRequired>
+          //   ),
+          // },
           {
             path: "warehouse/stock",
             element: (
@@ -327,6 +329,15 @@ const router = createBrowserRouter([
           {
             path: "attendance",
             element: <Attendance />,
+          },
+          /* OTHER */
+          {
+            path: "project",
+            element: <ProjectTable />,
+          },
+          {
+            path: "project/:id",
+            element: <AddProjectDataForm />,
           },
         ],
       },

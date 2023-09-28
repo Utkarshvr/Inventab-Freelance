@@ -1,44 +1,80 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Loader from "../../ui/Loader";
 import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function WarehouseGRN() {
   const [loading, setLoading] = useState(false);
+  const [grnList, setGrnList] = useState([]);
+
+  const axios = useAxiosPrivate();
+  const { auth } = useAuth();
+  const { orgId } = auth;
 
   // columns for table
   const columns = [
     {
       name: "GRN",
-      selector: (row) => row?.name,
+      selector: (row) => (
+        <Link
+          to={`${row?.id}`}
+          className="text-center text-info dark_theme_text"
+        >
+          {row?.grn_id}
+        </Link>
+      ),
       sortable: true,
     },
     {
       name: "PO",
-      selector: (row) => row?.name,
+      selector: (row) => row?.po?.po_id,
       sortable: true,
     },
     {
       name: "Vendor",
-      selector: (row) => row?.name,
+      selector: (row) => row?.vendor?.id,
       sortable: true,
     },
     {
       name: "Qty Expected",
-      selector: (row) => row?.name,
+      selector: (row) => row?.name || 0,
       sortable: true,
     },
     {
       name: "Qty Received",
-      selector: (row) => row?.name,
+      selector: (row) =>
+        row?.goods_received?.reduce(
+          (acc, gr) => acc + gr?.quantity_received,
+          0
+        ) || 0,
       sortable: true,
     },
     {
       name: "Status",
-      selector: (row) => row?.name,
+      selector: (row) => row?.status || "STATUS",
       sortable: true,
     },
   ];
+
+  // GET GRN LIST
+  useEffect(() => {
+    // orders
+    (async function () {
+      try {
+        setLoading(true);
+        const { data } = await axios.get(`/inventory/grn/fetch/`);
+        setLoading(false);
+        console.log({ data });
+        setGrnList(data?.results);
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
+    })();
+  }, [axios, orgId]);
+
   return (
     <>
       {loading ? (
@@ -50,7 +86,7 @@ export default function WarehouseGRN() {
           <div className="card">
             <div className="card-body">
               <DataTable
-                data={[{ name: "Hello" }]}
+                data={grnList || []}
                 columns={columns}
                 customStyles={{
                   rows: {
