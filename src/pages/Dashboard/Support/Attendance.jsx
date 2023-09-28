@@ -47,7 +47,6 @@ const Attendance = () => {
 
   const [fetchLeavesToggle, setFetchLeavesToggle] = useState(false);
 
-  console.log(ownLeaves);
   // EFFECTS
   useEffect(() => {
     (async () => {
@@ -57,28 +56,29 @@ const Attendance = () => {
         const { data: weeklyOffsData } = await axios.get(
           `/org/get/weeklyoff/?org_id=${orgId}`
         );
-        setWeeklyOffs(weeklyOffsData?.results[0]?.weekly_off_day);
+        setWeeklyOffs(weeklyOffsData?.results[0]?.weekly_off_day || []);
 
         // Get Holidaylist
         const { data: holidaysListData } = await axios.get(
           `org/get/holidaylist/?org_id=${orgId}`
         );
-        setHolidays(holidaysListData?.results[0]?.holiday_date);
+        setHolidays(holidaysListData?.results[0]?.holiday_date || []);
 
         // Get AllowedList
         const { data: allowedListData } = await axios.get(
           `org/get/allowedleaves/?org_id=${orgId}`
         );
+
         setAllowedList({
-          sick: allowedListData?.results[0]?.sick,
-          casual: allowedListData?.results[0]?.casual,
+          sick: allowedListData?.results[0]?.sick || 0,
+          casual: allowedListData?.results[0]?.casual || 0,
         });
 
         // Get  Own LeaveStatus
         const { data: ownLeavesData } = await axios.get(
           `org/get/ownleavestatus/?user_id=${selectedUserId}`
         );
-        setOwnLeaves(ownLeavesData?.results);
+        setOwnLeaves(ownLeavesData?.results || []);
       } catch (error) {
         console.log(error);
       }
