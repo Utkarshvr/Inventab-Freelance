@@ -52,11 +52,11 @@ export default function WarehouseGRN() {
         ) || 0,
       sortable: true,
     },
-    // {
-    //   name: "Status",
-    //   selector: (row) => row?.status,
-    //   sortable: true,
-    // },
+    {
+      name: "Status",
+      selector: (row) => row?.status,
+      sortable: true,
+    },
   ];
 
   // GET GRN LIST
