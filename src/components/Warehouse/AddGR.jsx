@@ -203,7 +203,38 @@ export default function AddGR() {
     },
     {
       name: "Qty Recieved",
-      selector: (row) => row?.quantity_received,
+      selector: (row) =>
+        !row?.serialized ? (
+          <td>
+            <input
+              className="new_input_class"
+              type="number"
+              name="qtyRecieved"
+              value={row?.quantity_received}
+              // onChange={(e) =>
+              //   setQtyRecieved(e.target.value < 0 ? 0 : e.target.value)
+              // }
+              // disabled={!selectedPart}
+            />
+          </td>
+        ) : (
+          <td
+          // onClick={() => setShowModal((prev) => !prev)}
+          >
+            <input
+              style={{
+                border: "1px solid rebeccapurple",
+                color: "rebeccapurple",
+                cursor: "pointer",
+              }}
+              className="new_input_class"
+              type="number"
+              name="qtyRecieved"
+              value={row?.quantity_received}
+              // disabled={!selectedPart}
+            />
+          </td>
+        ),
       sortable: true,
     },
   ];
