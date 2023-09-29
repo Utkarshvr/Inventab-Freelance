@@ -39,7 +39,8 @@ export default function WarehouseGRN() {
     },
     {
       name: "Qty Expected",
-      selector: (row) => row?.name || 0,
+      selector: (row) =>
+        row?.po?.parts?.reduce((acc, part) => acc + part?.quantity, 0) || 0,
       sortable: true,
     },
     {
@@ -51,11 +52,11 @@ export default function WarehouseGRN() {
         ) || 0,
       sortable: true,
     },
-    {
-      name: "Status",
-      selector: (row) => row?.status || "STATUS",
-      sortable: true,
-    },
+    // {
+    //   name: "Status",
+    //   selector: (row) => row?.status,
+    //   sortable: true,
+    // },
   ];
 
   // GET GRN LIST
@@ -108,15 +109,15 @@ export default function WarehouseGRN() {
                 striped
                 highlightOnHover
                 subHeader
-                actions={
-                  <>
-                    <Link to="/dashboard/warehouse/grn/add-grn">
-                      <button className="bg-primary btn text-white mb-3 border-0 d-flex align-items-center ms-2 rounded-1">
-                        Add GRN
-                      </button>
-                    </Link>
-                  </>
-                }
+                // actions={
+                //   <>
+                //     <Link to="/dashboard/warehouse/grn/add-grn">
+                //       <button className="bg-primary btn text-white mb-3 border-0 d-flex align-items-center ms-2 rounded-1">
+                //         Add GRN
+                //       </button>
+                //     </Link>
+                //   </>
+                // }
               />
             </div>
           </div>
