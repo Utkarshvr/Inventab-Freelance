@@ -10,7 +10,6 @@ import {
   removeUndefinedObj,
 } from "../../utils/utilityFunc/utilityFunc";
 import { useParams } from "react-router-dom";
-import DataTable from "react-data-table-component";
 
 export default function AddGR() {
   const [loading, setLoading] = useState(false);
@@ -184,60 +183,6 @@ export default function AddGR() {
       console.log(error);
     }
   }
-
-  const columns = [
-    {
-      name: "Part No",
-      selector: (row) => row?.part_no?.part_number,
-      sortable: true,
-    },
-    {
-      name: "Description",
-      selector: (row) => row?.part_no?.short_description || 0,
-      sortable: true,
-    },
-    {
-      name: "Qty Expected",
-      selector: (row) => row?.quantity,
-      sortable: true,
-    },
-    {
-      name: "Qty Recieved",
-      selector: (row) =>
-        !row?.serialized ? (
-          <td>
-            <input
-              className="new_input_class"
-              type="number"
-              name="qtyRecieved"
-              value={row?.quantity_received}
-              // onChange={(e) =>
-              //   setQtyRecieved(e.target.value < 0 ? 0 : e.target.value)
-              // }
-              // disabled={!selectedPart}
-            />
-          </td>
-        ) : (
-          <td
-          // onClick={() => setShowModal((prev) => !prev)}
-          >
-            <input
-              style={{
-                border: "1px solid rebeccapurple",
-                color: "rebeccapurple",
-                cursor: "pointer",
-              }}
-              className="new_input_class"
-              type="number"
-              name="qtyRecieved"
-              value={row?.quantity_received}
-              // disabled={!selectedPart}
-            />
-          </td>
-        ),
-      sortable: true,
-    },
-  ];
   // /api/v1/inventory/gr/list/?part_no={part_no_uuid}
   return (
     <>
@@ -256,6 +201,12 @@ export default function AddGR() {
               isSearchable
               className="text-start w-25 my-4 "
             />
+            <button
+              className="btn btn-primary rounded-1 py-2 px-4 d-flex justify-content-center align-items-center"
+              // onClick={handleTable}
+            >
+              Add
+            </button>
           </div>
 
           {/* Table */}
@@ -338,49 +289,28 @@ export default function AddGR() {
                             />
                           </td>
                         )}
+                        <td>
+                          <button
+                            className="btn btn-danger btn-sm"
+                            // onClick={() => handleRemovePart(index)}
+                          >
+                            Remove
+                          </button>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
-                <button
-                  style={{ width: "fit-content" }}
-                  className="btn btn-primary btn-common max-width rounded-1"
-                  onClick={createGRN}
-                >
-                  Update GR
-                </button>
               </div>
             </div>
           </div>
 
-          <div className="card">
-            <div className="card-body">
-              <DataTable
-                data={goodReceived}
-                columns={columns}
-                customStyles={{
-                  rows: {
-                    style: {
-                      fontSize: "16px",
-                    },
-                  },
-                  headCells: {
-                    style: {
-                      fontSize: "19px",
-                      width: "170px",
-                    },
-                  },
-                }}
-                noContextMenu
-                fixedHeader
-                fixedHeaderScrollHeight="550px"
-                pagination
-                striped
-                highlightOnHover
-                subHeader
-              />
-            </div>
-          </div>
+          <button
+            className="btn btn-primary btn-common rounded-1"
+            onClick={createGRN}
+          >
+            Update GR
+          </button>
 
           {/* Modal for serial no */}
           {showModal ? (
