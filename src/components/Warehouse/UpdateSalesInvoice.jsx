@@ -18,9 +18,9 @@ import {
   removeUndefinedObj,
   calculateExtdGrossPrice,
 } from "../../utils/utilityFunc/utilityFunc";
-import InputText from "./../../components/Form/InputText";
+import InputText from "../Form/InputText";
 
-export default function WarehouseInvoiceDetails() {
+export default function UpdateSalesInvoice() {
   const [loading, setLoading] = useState(false);
   const [paymentRecords, setPaymentRecords] = useState([]);
   const { id: invoice_id } = useParams();
@@ -708,7 +708,7 @@ export default function WarehouseInvoiceDetails() {
       <div className="d-flex gap-4 justify-content-end mb-4">
         {/* back btn */}
         <Link
-          to="/dashboard/accounting/invoices"
+          to="/dashboard/warehouse/invoices"
           className="btn btn-primary btn-common rounded-1 me-2"
         >
           <BsArrowLeft className="me-2" />
@@ -903,7 +903,7 @@ export default function WarehouseInvoiceDetails() {
               </div>
 
               {/* add Shipper input */}
-              <div className="mb-3 col-md-6">
+              {/* <div className="mb-3 col-md-6">
                 <label className="mb-2 text-dark text-capitalize">
                   Shipper
                 </label>
@@ -917,10 +917,10 @@ export default function WarehouseInvoiceDetails() {
                   value={values.shipper}
                   onChange={(option) => setFieldValue("shipper", option)}
                 />
-              </div>
+              </div> */}
 
               {/* add Docket No input */}
-              <div className="mb-3 col-md-6">
+              {/* <div className="mb-3 col-md-6">
                 <InputText
                   title="Enter Docket No"
                   type="text"
@@ -929,7 +929,7 @@ export default function WarehouseInvoiceDetails() {
                   value={values.docketNo}
                   onChange={(e) => setFieldValue("docketNo", e.target.value)}
                 />
-              </div>
+              </div> */}
             </div>
             {/* Table */}
             <div className="row">

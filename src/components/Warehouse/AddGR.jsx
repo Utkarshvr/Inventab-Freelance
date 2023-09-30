@@ -9,7 +9,7 @@ import {
   removeDuplicateObjects,
   removeUndefinedObj,
 } from "../../utils/utilityFunc/utilityFunc";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
 
 export default function AddGR() {
@@ -19,6 +19,10 @@ export default function AddGR() {
   const { auth } = useAuth();
   const { orgId } = auth;
   const { grnId } = useParams();
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const GRN = queryParams.get("GRN");
 
   const [showModal, setShowModal] = useState(false);
   const [serialNumbers, setSerialNumbers] = useState([]);
@@ -38,32 +42,7 @@ export default function AddGR() {
   const [qtyRecieved, setQtyRecieved] = useState(0);
   const [isSerialized, setIsSerialized] = useState(false);
 
-  const [grnList, setGrnList] = useState([]);
   const [goodReceived, setGoodReceived] = useState([]);
-  console.log(goodReceived);
-  // GET GRN LIST
-  useEffect(() => {
-    // orders
-    (async function () {
-      try {
-        setLoading(true);
-        const { data } = await axios.get(`/inventory/grn/fetch/`);
-        setLoading(false);
-        console.log({ data });
-        setGrnList(data?.results);
-      } catch (error) {
-        setLoading(false);
-        console.log(error);
-      }
-    })();
-  }, [axios, orgId]);
-  useEffect(() => {
-    if (grnList?.length > 0)
-      setGoodReceived(
-        grnList?.find((grn) => grn?.id === grnId)?.goods_received
-      );
-  }, [grnList]);
-
   // load department, Client, sub-organization
   useEffect(() => {
     const controller = new AbortController();
@@ -94,6 +73,22 @@ export default function AddGR() {
         const removeUndefinedData = removeUndefinedObj(posArr);
         const uniqueArr = removeDuplicateObjects(removeUndefinedData);
         setPurchaseOrdersOption(uniqueArr);
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
+    })();
+    (async function () {
+      try {
+        const { data } = await axios.get(
+          `/inventory/grn/fetch/?grn_id=${GRN}`,
+          {
+            signal: controller.signal,
+          }
+        );
+        console.log({ GRN: data });
+        const goods_received = data?.results[0]?.goods_received;
+        setGoodReceived(goods_received);
       } catch (error) {
         setLoading(false);
         console.log(error);

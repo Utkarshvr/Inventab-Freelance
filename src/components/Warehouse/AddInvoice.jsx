@@ -571,7 +571,7 @@ export default function AddInvoice() {
       {/* back button */}
       <div className="d-flex justify-content-end me-5 mb-4 ">
         <Link
-          to="/dashboard/sales-leads"
+          to="/dashboard/warehouse/invoices"
           className="btn btn-primary rounded-1 border-0 text-white"
         >
           <BsArrowLeft className="me-2" />
@@ -764,7 +764,7 @@ export default function AddInvoice() {
               </div>
 
               {/* add Shipper input */}
-              <div className="mb-3 col-md-6">
+              {/* <div className="mb-3 col-md-6">
                 <label className="mb-2 text-dark text-capitalize">
                   Shipper
                 </label>
@@ -778,10 +778,10 @@ export default function AddInvoice() {
                   value={values.shipper}
                   onChange={(option) => setFieldValue("shipper", option)}
                 />
-              </div>
+              </div> */}
 
               {/* add Docket No input */}
-              <div className="mb-3 col-md-6">
+              {/* <div className="mb-3 col-md-6">
                 <InputText
                   title="Enter Docket No"
                   type="text"
@@ -790,7 +790,7 @@ export default function AddInvoice() {
                   value={values.docketNo}
                   onChange={(e) => setFieldValue("docketNo", e.target.value)}
                 />
-              </div>
+              </div> */}
             </div>
             {/* Table */}
             <div className="row">

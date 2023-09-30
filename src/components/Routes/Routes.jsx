@@ -34,7 +34,6 @@ import WarehouseGRN from "../Warehouse/WarehouseGRN";
 import AddBacklogDataForm from "../other/AddBacklogDataForm";
 import BacklogTable from "../other/BacklogTable";
 import AccountingInvoiceDetails from "../Accounting/AccountingInvoiceDetails";
-import WarehouseInvoiceDetails from "../Warehouse/WarehouseInvoiceDetails";
 import LoginForm from "../Form/LoginForm";
 import RenewPasswordForm from "../Form/RenewPasswordForm";
 import RegistrationForm from "../Form/RegistrationForm";
@@ -43,6 +42,9 @@ import WarehouseGRNDetails from "../Warehouse/WarehouseGRNDetails";
 import AddGR from "../Warehouse/AddGR";
 import AddProjectDataForm from "../other/AddProjectDataForm";
 import ProjectTable from "../other/project/Project";
+import ExcelDataExtractor from "../other/ExcelDataExtractor";
+import UpdateSalesInvoice from "../Warehouse/UpdateSalesInvoice";
+// import UpdateSalesInvoice from "../../pages/Dashboard/Sales/UpdateSalesInvoice";
 
 const router = createBrowserRouter([
   {
@@ -169,7 +171,7 @@ const router = createBrowserRouter([
             path: "warehouse/invoices/:id",
             element: (
               <RoleRequired role={"WAREHOUSE"}>
-                <WarehouseInvoiceDetails />
+                <UpdateSalesInvoice />
               </RoleRequired>
             ),
           },
@@ -178,7 +180,7 @@ const router = createBrowserRouter([
             path: "warehouse/add-invoice",
             element: (
               <RoleRequired role={"WAREHOUSE"}>
-                <AddInvoice />
+                <AddInvoice showDocketAndShipper={true} />
               </RoleRequired>
             ),
           },
@@ -338,6 +340,10 @@ const router = createBrowserRouter([
           {
             path: "project/:id",
             element: <AddProjectDataForm />,
+          },
+          {
+            path: "ExcelDataExtractor",
+            element: <ExcelDataExtractor />,
           },
         ],
       },
