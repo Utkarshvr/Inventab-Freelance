@@ -59,13 +59,14 @@ export default function WarehouseInvoiceDetails() {
   const [selectPart, setSelectPart] = useState(null);
   const [partsLoading, setPartsLoading] = useState(false);
   const [isPartSerialized, setIsPartSerialized] = useState(false);
-  const [invoiceDetails, setInvoiceDetails] = useState({});
+  const [invoiceDetails, setInvoiceDetails] = useState(null);
 
   // OTHERS
   const [orders, setOrders] = useState([]);
   const [ordersOptions, setOrdersOptions] = useState([]);
   const [shipperOptions, setShipperOptions] = useState([]);
   const [isInitialWorkDone, setIsInitialWorkDone] = useState(false);
+  const [isInititalPartsSetup, setIsInititalPartsSetup] = useState(false);
 
   // table lowerpart data
   const [short_description, setshort_description] = useState("");
@@ -104,7 +105,7 @@ export default function WarehouseInvoiceDetails() {
           signal: controller.signal,
         });
         setLoading(false);
-        console.log({ orderData: data });
+        // console.log({ orderData: data });
         setOrders(data?.results || []);
 
         const ordersArr = [];
@@ -276,7 +277,7 @@ export default function WarehouseInvoiceDetails() {
           }
         );
         setInvoiceDetails(data?.results[0]);
-        console.log({ data });
+        // console.log({ data });
       } catch (error) {
         console.log(error);
       }
@@ -323,7 +324,7 @@ export default function WarehouseInvoiceDetails() {
         const {
           salesOrder,
           invDate,
-          status,
+          dept,
           refPONo,
           poDate,
           client,
@@ -339,19 +340,14 @@ export default function WarehouseInvoiceDetails() {
         // sort part obj data
         let parts = [];
 
-        console.log({ partArr });
+        // console.log({ partArr });
         partArr.forEach((p) => {
           const partObj = {
-            lead_part_id: p?.lead_part_id,
             parts_no: p?.part_id?.id,
             customer_part_no: p?.part_id?.part_number,
             short_description: p?.short_description,
             quantity: parseFloat(p?.quantity),
-            unit_cost: parseFloat(p?.unit_cost),
-            status: "Active",
-            gst: parseFloat(p?.gst),
-            net_price: parseFloat(p?.net_price),
-            extd_gross_price: parseFloat(p?.extd_gross_price),
+            price: parseFloat(p?.unit_cost),
           };
 
           if (p?.lead_part_id == undefined) {
@@ -367,11 +363,14 @@ export default function WarehouseInvoiceDetails() {
           po_number: refPONo,
           po_date: poDate,
           invoice_date: invDate,
-          delivery_term: deliveryTerm?.label,
+          invoice_comment: "Invoice Comment",
+          delivery_term:
+            deliveryTerm?.label?.charAt(0).toUpperCase() +
+            deliveryTerm?.label.slice(1),
           payment_term: paymentTerm?.id,
           shipment_charges: shipmentCharges,
           current_org: orgId,
-          dept: status?.id,
+          dept: dept?.id,
           client: client?.label,
           shipper: shipper?.id,
           docketNo,
@@ -387,16 +386,14 @@ export default function WarehouseInvoiceDetails() {
           org: orgId,
           created_by: userId,
         };
+        console.log({ Invoice_Payload });
 
-        const res = await axios.post(
-          `/invoices/create/invoice/`,
+        const res = await axios.put(
+          `/invoices/update/invoice/${invoice_id}/`,
           JSON.stringify(Invoice_Payload)
         );
-        console.log({ res });
-        if (res?.status === 201) {
-          resetForm({ values: "" });
-          toast.success("Invoice created successfully");
-        }
+
+        toast.success("Invoice updated successfully");
       } catch (error) {
         toast.error(error?.message, { duration: 2000 });
         console.log(error);
@@ -404,128 +401,166 @@ export default function WarehouseInvoiceDetails() {
     },
   });
 
-  // useEffect(() => {
-  //   if (!isInitialWorkDone && invoiceDetails) {
-  //     const initialValues = {
-  //       project_name: invoiceDetails?.project_name,
-  //       client: {
-  //         label: invoiceDetails?.client?.company_name,
-  //         value: invoiceDetails?.client?.id,
-  //       },
-  //       salesOrder: {
-  //         label: invoiceDetails?.sale_order?.so_id,
-  //         value: invoiceDetails?.sale_order?.id,
-  //       },
-  //       billing_address: {
-  //         label: invoiceDetails?.billing_address?.address,
-  //         value: invoiceDetails?.billing_address?.id,
-  //       },
-  //       invDate: invoiceDetails?.invoice_date,
-  //       deliveryTerm: invoiceDetails?.delivery_term,
-  //       paymentTerm: {
-  //         label: invoiceDetails?.payment_term?.term,
-  //         value: invoiceDetails?.payment_term?.id,
-  //       },
-  //       status: invoiceDetails?.status,
-  //       org: orgId,
-  //       project_manager: {
-  //         value: invoiceDetails?.project_manager?.id,
-  //         label:
-  //           invoiceDetails?.project_manager?.first_name +
-  //           " " +
-  //           invoiceDetails?.project_manager?.last_name,
-  //       },
-  //       sub_org: {
-  //         value: invoiceDetails?.sub_org?.id,
-  //         label: invoiceDetails?.sub_org?.sub_company_name,
-  //       },
-  //       budget_currency: {
-  //         value: invoiceDetails?.budget_currency,
-  //         label: invoiceDetails?.budget_currency,
-  //       },
-  //     };
+  useEffect(() => {
+    if (!isInitialWorkDone && invoiceDetails) {
+      const initialValues = {
+        salesOrder: {
+          label: invoiceDetails?.sale_order?.so_id,
+          value: invoiceDetails?.sale_order?.id,
+        },
+        invDate: invoiceDetails?.invoice_date,
+        dept: {
+          label: invoiceDetails?.dept?.name,
+          value: invoiceDetails?.sale_order?.id,
+        },
+        refPONo: invoiceDetails?.po_number,
+        poDate: invoiceDetails?.payment_date,
+        client: {
+          label: invoiceDetails?.org?.company_name,
+          value: invoiceDetails?.org?.id,
+        },
+        billingAddress: {
+          label: invoiceDetails?.billing_address?.address,
+          value: invoiceDetails?.billing_address?.id,
+        },
+        shippingAddress: {
+          label: invoiceDetails?.shipping_address?.address,
+          value: invoiceDetails?.shipping_address?.id,
+        },
+        deliveryTerm: {
+          label: invoiceDetails?.delivery_term,
+          value: invoiceDetails?.delivery_term,
+        },
+        paymentTerm: {
+          label: invoiceDetails?.payment_term?.term,
+          value: invoiceDetails?.payment_term?.id,
+        },
+        shipper: {
+          label: invoiceDetails?.shipper,
+          value: invoiceDetails?.shipper,
+        },
+        shipmentCharges: invoiceDetails?.shipment_charges,
+        docketNo: invoiceDetails?.docket_no,
+        // parts: invoiceDetails?.parts_invoice || [],
+      };
+      console.log({ invoiceDetails });
 
-  //     [
-  //       "project_name",
-  //       "client",
-  //       "so",
-  //       "project_id",
-  //       "project_budget",
-  //       "saleable",
-  //       "description",
-  //       "status",
-  //       "org",
-  //       "project_manager",
-  //       "sub_org",
-  //       "budget_currency",
-  //     ].map((fieldName) => {
-  //       setFieldValue(fieldName, initialValues[fieldName]);
-  //     });
-
-  //     setIsInitialWorkDone(true);
-  //   }
-  // }, [invoiceDetails]);
+      [
+        "billingAddress",
+        "shippingAddress",
+        "paymentTerm",
+        "deliveryTerm",
+        "shipmentCharges",
+        "shipper",
+        "docketNo",
+        "parts",
+        "salesOrder",
+        "invDate",
+        "dept",
+        "refPONo",
+        "poDate",
+        "client",
+      ].map((fieldName) => {
+        setFieldValue(fieldName, initialValues[fieldName]);
+      });
+      setIsInitialWorkDone(true);
+    }
+  }, [invoiceDetails]);
 
   useEffect(() => {
-    const opt = values.salesOrder;
-    const order = orders.find((e) => e.id === opt?.value);
-    console.log({ order });
-    if (order) {
-      const {
-        billing_address,
-        shipping_address,
-        department,
-        ref_po,
-        client,
-        po_date,
-        delivery_term,
-        payment_term,
-        expected_inv_date,
-      } = order;
-      // dept, po_no, ref_po_date, client, billind, shipping, payment term, delivery temr
-      setFieldValue("client", { label: client?.company_name, id: client?.id });
-      // dept
-      setFieldValue("status", {
-        label: department?.name,
-        id: department?.id,
+    if (!isInititalPartsSetup && invoiceDetails && partFullObj.length > 0) {
+      const newParts = invoiceDetails?.parts_invoice?.map((partInv) => {
+        let wantedPart = partFullObj.find(
+          (part) => part?.id === partInv?.parts_no?.id
+        );
+        const quantity = wantedPart?.serialization ? 0 : 1;
+        const unit_cost = wantedPart?.mrp;
+        const net_price = quantity * unit_cost;
+        const gst = wantedPart?.gst_itm?.country_gst[0]?.gst_percent;
+
+        const newPart = {
+          part_id: {
+            id: wantedPart?.id,
+            part_number: wantedPart?.part_number,
+          },
+          short_description: wantedPart?.short_description,
+          serialization: wantedPart?.serialization,
+          quantity,
+          unit_cost,
+          net_price,
+          gst,
+          extd_gross_price: calculateExtdGrossPrice(gst, net_price),
+        };
+        console.log({ newPart });
+        return newPart;
       });
-      setFieldValue("refPONo", ref_po);
-      setFieldValue("invDate", expected_inv_date);
-      setFieldValue("poDate", po_date);
-      setFieldValue("billingAddress", {
-        label: billing_address?.address,
-        id: billing_address?.id,
-      });
-      setFieldValue("shippingAddress", {
-        label: shipping_address?.address,
-        id: shipping_address?.id,
-      });
-      setFieldValue("paymentTerm", {
-        label: payment_term?.term,
-        id: payment_term?.id,
-      });
-      setFieldValue("deliveryTerm", {
-        label: delivery_term?.term,
-        id: delivery_term?.id,
-      });
-    } else {
-      setFieldValue("client", "");
-      // dept
-      setFieldValue("status", "");
-      setFieldValue("refPONo", "");
-      setFieldValue("invDate", "");
-      setFieldValue("poDate", "");
-      setFieldValue("billingAddress", "");
-      setFieldValue("shippingAddress", "");
-      setFieldValue("paymentTerm", "");
-      setFieldValue("deliveryTerm", "");
+
+      setFieldValue("parts", newParts);
+
+      setIsInititalPartsSetup(true);
     }
-  }, [values.salesOrder]);
+  }, [invoiceDetails, partFullObj]);
+
+  // useEffect(() => {
+  //   const opt = values.salesOrder;
+  //   const order = orders.find((e) => e.id === opt?.value);
+  //   console.log({ order });
+  //   if (order) {
+  //     const {
+  //       billing_address,
+  //       shipping_address,
+  //       department,
+  //       ref_po,
+  //       client,
+  //       po_date,
+  //       delivery_term,
+  //       payment_term,
+  //       expected_inv_date,
+  //     } = order;
+  //     // dept, po_no, ref_po_date, client, billind, shipping, payment term, delivery temr
+  //     setFieldValue("client", { label: client?.company_name, id: client?.id });
+  //     // dept
+  //     setFieldValue("status", {
+  //       label: department?.name,
+  //       id: department?.id,
+  //     });
+  //     setFieldValue("refPONo", ref_po);
+  //     setFieldValue("invDate", expected_inv_date);
+  //     setFieldValue("poDate", po_date);
+  //     setFieldValue("billingAddress", {
+  //       label: billing_address?.address,
+  //       id: billing_address?.id,
+  //     });
+  //     setFieldValue("shippingAddress", {
+  //       label: shipping_address?.address,
+  //       id: shipping_address?.id,
+  //     });
+  //     setFieldValue("paymentTerm", {
+  //       label: payment_term?.term,
+  //       id: payment_term?.id,
+  //     });
+  //     setFieldValue("deliveryTerm", {
+  //       label: delivery_term?.term,
+  //       id: delivery_term?.id,
+  //     });
+  //   } else {
+  //     setFieldValue("client", "");
+  //     // dept
+  //     setFieldValue("status", "");
+  //     setFieldValue("refPONo", "");
+  //     setFieldValue("invDate", "");
+  //     setFieldValue("poDate", "");
+  //     setFieldValue("billingAddress", "");
+  //     setFieldValue("shippingAddress", "");
+  //     setFieldValue("paymentTerm", "");
+  //     setFieldValue("deliveryTerm", "");
+  //   }
+  // }, [values.salesOrder]);
 
   // Function to update net_price based on unit_cost and quantity
   const updateNetPrice = (index, value, changedForm) => {
     const part = values.parts[index];
-    console.log({ part });
+    // console.log({ part });
     let unitCost;
     let quantity;
     let gst = part.gst;
@@ -561,7 +596,7 @@ export default function WarehouseInvoiceDetails() {
 
   //parts created staff
   const handleTable = (event) => {
-    event.preventDefault();
+    event?.preventDefault();
 
     const newPart = {
       part_id: {
@@ -607,12 +642,12 @@ export default function WarehouseInvoiceDetails() {
       updatedParts[index].part_id.id = value;
       updatedParts[index].part_id.part_number = label;
       let s = partFullObj.find((part) => part?.id === value);
-      console.log({ s });
+      // console.log({ s });
       updatedParts[index].short_description = s?.short_description || "";
       updatedParts[index].customer_part_no = s?.part_number || "";
       updatedParts[index].serialization = s?.serialization || false;
     }
-    console.log({ updatedParts });
+    // console.log({ updatedParts });
 
     setFieldValue("parts", updatedParts);
   };
@@ -620,10 +655,11 @@ export default function WarehouseInvoiceDetails() {
   // select part for the [PART NO]
   const handleSelectPart = (option) => {
     let { value } = option;
+    // console.log({ value });
     if (value) {
       let s = partFullObj.find((part) => part?.id === value);
-      console.log({ s });
-      setSelectPart(option);
+      // console.log({ s });
+      setSelectPart({ label: s?.part_number, value: s?.id });
       setshort_description(s?.short_description || "");
 
       setTotalQuantity(s?.serialization ? 0 : 1);
@@ -726,10 +762,10 @@ export default function WarehouseInvoiceDetails() {
                   isLoading={loading}
                   isClearable
                   isSearchable
-                  name="status"
-                  value={values?.status}
+                  name="dept"
+                  value={values?.dept}
                   options={statusOptions}
-                  onChange={(option) => setFieldValue("status", option)}
+                  onChange={(option) => setFieldValue("dept", option)}
                 />
               </div>
 
@@ -740,16 +776,17 @@ export default function WarehouseInvoiceDetails() {
                   type="text"
                   name="refPONo"
                   placeholder="Ref PO No"
-                  value={values?.refPONo || ""}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (
-                      value === "" ||
-                      (/^\d+$/.test(value) && parseInt(value) <= 100)
-                    ) {
-                      handleChange(e);
-                    }
-                  }}
+                  value={values?.refPONo}
+                  onChange={handleChange}
+                  // onChange={(e) => {
+                  //   const value = e.target.value;
+                  //   if (
+                  //     value === "" ||
+                  //     (/^\d+$/.test(value) && parseInt(value) <= 100)
+                  //   ) {
+                  //     handleChange(e);
+                  //   }
+                  // }}
                 />
               </div>
 
@@ -974,7 +1011,7 @@ export default function WarehouseInvoiceDetails() {
               <>
                 {" "}
                 <div className="table-responsive111">
-                  {values.parts.length > 0 ? (
+                  {values.parts?.length > 0 ? (
                     <div>
                       <table className="table table-bordered table-responsive-sm111">
                         <thead>
@@ -1196,7 +1233,7 @@ export default function WarehouseInvoiceDetails() {
               <input
                 className="btn btn-primary btn-common rounded-1"
                 type="submit"
-                value="Add Invoice"
+                value="Update Invoice"
               />
             </div>
           </form>

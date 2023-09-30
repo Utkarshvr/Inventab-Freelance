@@ -90,12 +90,12 @@ Update Invoice
     "parts_invoice": [
         {
             "id": "69ad8df9-e349-4fba-bb17-38acaa982f28",
-            "quantity": 100.0,
-            "customer_part_no": "sdfs",
-            "price": 0.0,
-            "warranty": 0,
-            "short_description": "Part For Testing",
-            "parts_no": "29551d23-3072-4b59-85ea-42cf3371d61e"
+            # "quantity": 100.0,
+            # "customer_part_no": "sdfs",
+            # "price": 0.0,
+            # "warranty": 0,
+            # "short_description": "Part For Testing",
+            # "parts_no": "29551d23-3072-4b59-85ea-42cf3371d61e"
         }
     ]
 }
