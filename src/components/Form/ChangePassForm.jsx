@@ -120,7 +120,7 @@ export default function ChangePassForm({ regEmail, OtpPayload }) {
       toast.success("Otp Sent to your email", { duration: 2000 });
       setTimeLeftToRegenOtp(resendTime);
     } catch (error) {
-      toast.error(error?.mesasage, { duration: 2000 });
+      toast.error("Couldn't send OTP", { duration: 2000 });
     }
   };
 

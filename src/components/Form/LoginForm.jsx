@@ -71,7 +71,7 @@ const LoginForm = ({ setActiveFormType }) => {
             toast.success("Logged in successfull", { duration: 2000 });
           }
         } catch (error) {
-          toast.error(error?.message, { duration: 2000 });
+          toast.error("Incorrect Email & Password", { duration: 2000 });
         }
       },
     });

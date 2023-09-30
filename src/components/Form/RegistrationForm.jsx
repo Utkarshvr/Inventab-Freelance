@@ -102,7 +102,7 @@ const RegistrationForm = () => {
 
         toast.success("Registered successfull", { duration: 2000 });
       } catch (error) {
-        toast.error(error?.message, { duration: 2000 });
+        toast.error("Invalid Fields", { duration: 2000 });
         console.log(error);
       }
     },
