@@ -70,7 +70,7 @@ export default function DataForm() {
       } catch (error) {
         setLoading(false);
         console.log(error.message);
-        toast.error(error.response.status);
+        toast.error("Couldn't fetch all the sub orgs");
       }
     })();
 
@@ -361,7 +361,7 @@ export default function DataForm() {
           resetForm({ values: "" });
           toast.success("Order updated successfully");
         } else {
-          toast.error("Something wrong, please try again later", {
+          toast.error("Fill all the forms with valid format", {
             duration: 2000,
           });
         }

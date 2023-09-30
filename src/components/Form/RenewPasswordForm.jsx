@@ -41,7 +41,7 @@ const RenewPasswordForm = () => {
         setRegEmail(values.email);
         setIsOtpFormOpen(true);
       } catch (error) {
-        toast.error(error?.message, { duration: 2000 });
+        toast.error("Couldn't send OTP", { duration: 2000 });
         console.log(error);
       }
     },

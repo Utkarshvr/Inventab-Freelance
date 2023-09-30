@@ -33,7 +33,7 @@ export default function PaymentForm({ setIsPaymentFormActive }) {
         toast.success("Payment Created", { duration: 2000 });
         setIsPaymentFormActive(false);
       } catch (error) {
-        toast.error(error?.message, { duration: 2000 });
+        toast.error("An error occured", { duration: 2000 });
       }
     },
   });
