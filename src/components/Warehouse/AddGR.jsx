@@ -11,6 +11,8 @@ import {
 } from "../../utils/utilityFunc/utilityFunc";
 import { useLocation, useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
+import toast from "react-hot-toast";
+import { useFormik } from "formik";
 
 export default function AddGR() {
   const [loading, setLoading] = useState(false);
@@ -27,57 +29,17 @@ export default function AddGR() {
   const [showModal, setShowModal] = useState(false);
   const [serialNumbers, setSerialNumbers] = useState([]);
 
-  const [purchaseOrders, setPurchaseOrders] = useState([]);
-  const [purchaseOrdersOption, setPurchaseOrdersOption] = useState([]);
-  const [selectedPO, setSelectedPO] = useState(null);
+  const [po, setPO] = useState(null);
 
   const [parts, setParts] = useState([]);
   const [partsOption, setPartsOption] = useState([]);
   const [selectedPart, setSelectedPart] = useState(null);
-
-  // FORM
-  const [partId, setPartId] = useState("");
-  const [desc, setDesc] = useState("");
-  const [quantity, setQuantity] = useState(0);
-  const [qtyRecieved, setQtyRecieved] = useState(0);
-  const [isSerialized, setIsSerialized] = useState(false);
 
   const [goodReceived, setGoodReceived] = useState([]);
   // load department, Client, sub-organization
   useEffect(() => {
     const controller = new AbortController();
     let isMount = true;
-    // orders
-    (async function () {
-      try {
-        setLoading(true);
-        const { data } = await axios.get(
-          `/pipo/purchase-order/list/?org=${orgId}`,
-          {
-            signal: controller.signal,
-          }
-        );
-        setLoading(false);
-
-        const posArr = [];
-        setPurchaseOrders(data?.results || []);
-
-        data?.results?.forEach((po) => {
-          const deptObj = {
-            label: po?.po_id,
-            value: po?.id,
-          };
-          posArr.push(deptObj);
-        });
-
-        const removeUndefinedData = removeUndefinedObj(posArr);
-        const uniqueArr = removeDuplicateObjects(removeUndefinedData);
-        setPurchaseOrdersOption(uniqueArr);
-      } catch (error) {
-        setLoading(false);
-        console.log(error);
-      }
-    })();
     (async function () {
       try {
         const { data } = await axios.get(
@@ -88,7 +50,9 @@ export default function AddGR() {
         );
         console.log({ GRN: data });
         const goods_received = data?.results[0]?.goods_received;
+        const po = data?.results[0]?.po;
         setGoodReceived(goods_received);
+        setPO({ label: po?.po_id, value: po?.id });
       } catch (error) {
         setLoading(false);
         console.log(error);
@@ -101,7 +65,7 @@ export default function AddGR() {
   }, [axios, orgId]);
 
   useEffect(() => {
-    const poId = selectedPO?.value;
+    const poId = po?.value;
     (async function () {
       try {
         const { data } = await axios.get(
@@ -129,30 +93,13 @@ export default function AddGR() {
         console.log(error);
       }
     })();
-  }, [selectedPO]);
+  }, [po]);
 
-  useEffect(() => {
-    const part = parts?.find(
-      (part) => part?.parts_id?.id === selectedPart?.value
-    );
-
-    const description = part?.short_description;
-    const quantity = part?.quantity;
-    const isSerializedPart = part?.parts_id?.serialization;
-    const part_id = part?.parts_id?.id;
-
-    setDesc(description);
-    setQuantity(quantity);
-    setIsSerialized(isSerializedPart);
-    setPartId(part_id);
-
-    if (!selectedPart) setSerialNumbers([]);
-  }, [selectedPart]);
   useEffect(() => {
     const xyz = serialNumbers?.filter(
       (sn) => sn && sn !== null && sn !== undefined && sn !== ""
     );
-    setQtyRecieved(xyz?.length);
+    // setQtyRecieved(xyz?.length);
   }, [serialNumbers]);
 
   function handleAddSNO() {
@@ -162,78 +109,17 @@ export default function AddGR() {
     setSerialNumbers((prev) => prev.filter((_sn, index) => index !== i));
   }
 
-  async function createGRN() {
-    try {
-      const payload = {
-        grn: grnId,
-        part_no: partId,
-        short_description: desc,
-        quantity_received: qtyRecieved,
-        serialized: isSerialized,
-      };
-      console.log({ payload });
-      const { data } = await axios.post(`/inventory/gr/create/`, payload);
-      console.log(data);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
-  }
+  // form submit
+  const { setFieldValue, values, handleChange, handleSubmit } = useFormik({
+    initialValues: {
+      goods_received: goodReceived || [],
+    },
+  });
 
-  const columns = [
-    {
-      name: "Part No",
-      selector: (row) => row?.part_no?.part_number,
-      sortable: true,
-    },
-    {
-      name: "Description",
-      selector: (row) => row?.part_no?.short_description || 0,
-      sortable: true,
-    },
-    {
-      name: "Qty Expected",
-      selector: (row) => row?.quantity,
-      sortable: true,
-    },
-    {
-      name: "Qty Recieved",
-      selector: (row) =>
-        !row?.serialized ? (
-          <td>
-            <input
-              className="new_input_class"
-              type="number"
-              name="qtyRecieved"
-              value={row?.quantity_received}
-              // onChange={(e) =>
-              //   setQtyRecieved(e.target.value < 0 ? 0 : e.target.value)
-              // }
-              // disabled={!selectedPart}
-            />
-          </td>
-        ) : (
-          <td
-          // onClick={() => setShowModal((prev) => !prev)}
-          >
-            <input
-              style={{
-                border: "1px solid rebeccapurple",
-                color: "rebeccapurple",
-                cursor: "pointer",
-              }}
-              className="new_input_class"
-              type="number"
-              name="qtyRecieved"
-              value={row?.quantity_received}
-              // disabled={!selectedPart}
-            />
-          </td>
-        ),
-      sortable: true,
-    },
-  ];
-  // /api/v1/inventory/gr/list/?part_no={part_no_uuid}
+  useEffect(() => {
+    setFieldValue("goods_received", goodReceived);
+  }, [goodReceived]);
+
   return (
     <>
       {loading ? (
@@ -244,137 +130,118 @@ export default function AddGR() {
           <SectionTitle heading="Add GR" />
           <div className="d-flex gap-4 align-items-center">
             <Select
-              options={purchaseOrdersOption}
-              value={selectedPO}
-              onChange={(selected) => setSelectedPO(selected)}
+              value={po}
               placeholder="Select PO No"
               isSearchable
               className="text-start w-25 my-4 "
             />
           </div>
 
-          {/* Table */}
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="card p-3">
-                <div className="table-responsive111 pb-4">
-                  <table className="table header-border table-responsive-sm111">
-                    <thead>
-                      <tr>
-                        <th scope="col">Part No</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Qty Expected</th>
-                        <th scope="col">Qty Recieved</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <div className="select-port">
-                            <Select
-                              options={partsOption}
-                              value={selectedPart}
-                              onChange={(selected) => setSelectedPart(selected)}
-                              placeholder="Select PO No"
-                              isSearchable={false}
-                              className="text-start"
-                              style={{ zIndex: 1000000000000000 }}
-                            />
-                          </div>
-                        </td>
-                        <td>
-                          <input
-                            className="new_input_class"
-                            type="text"
-                            name="short_description"
-                            value={desc || "Select A Part No"}
-                            disabled={!selectedPart}
-                            readOnly
-                          />
-                        </td>
-                        <td>
-                          <input
-                            className="new_input_class"
-                            type="number"
-                            name="quantity"
-                            value={quantity || 0}
-                            disabled={!selectedPart}
-                            readOnly
-                          />
-                        </td>
-                        {!isSerialized ? (
-                          <td>
-                            <input
-                              className="new_input_class"
-                              type="number"
-                              name="qtyRecieved"
-                              value={qtyRecieved}
-                              onChange={(e) =>
-                                setQtyRecieved(
-                                  e.target.value < 0 ? 0 : e.target.value
-                                )
-                              }
-                              disabled={!selectedPart}
-                            />
-                          </td>
-                        ) : (
-                          <td onClick={() => setShowModal((prev) => !prev)}>
-                            <input
-                              style={{
-                                border: "1px solid rebeccapurple",
-                                color: "rebeccapurple",
-                                cursor: "pointer",
-                              }}
-                              className="new_input_class"
-                              type="number"
-                              name="qtyRecieved"
-                              value={qtyRecieved}
-                              disabled={!selectedPart}
-                            />
-                          </td>
-                        )}
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <button
-                  style={{ width: "fit-content" }}
-                  className="btn btn-primary btn-common max-width rounded-1"
-                  onClick={createGRN}
-                >
-                  Update GR
-                </button>
-              </div>
-            </div>
-          </div>
+          <div className="table-responsive111">
+            {values.goods_received?.length > 0 ? (
+              <div>
+                <table className="table table-bordered table-responsive-sm111">
+                  <thead>
+                    <tr>
+                      <th scope="col">Part No</th>
+                      <th scope="col">Description</th>
+                      <th scope="col">Qty Received</th>
+                    </tr>
+                  </thead>
+                  {values?.goods_received?.map((gr, index) => {
+                    return (
+                      <>
+                        <tbody>
+                          <tr key={index + 1}>
+                            <td>
+                              <div className="select-part">
+                                <Select
+                                  className="select"
+                                  placeholder="Select Part No"
+                                  value={{
+                                    label: gr?.part_no?.part_number,
+                                    value: gr?.part_no?.id,
+                                  }}
+                                  options={partsOption}
+                                  name="part_id"
+                                  isSearchable
+                                  isClearable
+                                  // onChange={(selectedOption) =>
+                                  //   handlePartSelectChange(
+                                  //     selectedOption,
+                                  //     index
+                                  //   )
+                                  // }
+                                />
+                              </div>
+                            </td>
+                            <td>
+                              <input
+                                className="new_input_class"
+                                type="text"
+                                placeholder="Short Description"
+                                name={`parts[${index}].short_description`}
+                                value={gr?.part_no?.short_description}
+                                onChange={handleChange}
+                              />
+                            </td>
 
-          <div className="card">
-            <div className="card-body">
-              <DataTable
-                data={goodReceived}
-                columns={columns}
-                customStyles={{
-                  rows: {
-                    style: {
-                      fontSize: "16px",
-                    },
-                  },
-                  headCells: {
-                    style: {
-                      fontSize: "19px",
-                      width: "170px",
-                    },
-                  },
-                }}
-                noContextMenu
-                fixedHeader
-                fixedHeaderScrollHeight="550px"
-                pagination
-                striped
-                highlightOnHover
-                subHeader
-              />
-            </div>
+                            {gr?.serialized ? (
+                              <td
+                                style={{ cursor: "pointer" }}
+                                // onClick={() =>
+                                //   handleQuanityClickForSerializedParts(
+                                //     index,
+                                //     gr?.part_no?.id
+                                //   )
+                                // }
+                              >
+                                <input
+                                  style={{
+                                    border: "1px solid rebeccapurple",
+                                    color: "rebeccapurple",
+                                    cursor: "pointer",
+                                  }}
+                                  className="new_input_class"
+                                  type="number"
+                                  placeholder="Quntity"
+                                  name={`parts[${index}].quantity`}
+                                  value={gr.quantity_received}
+                                  readOnly
+                                />
+                              </td>
+                            ) : (
+                              <td>
+                                <input
+                                  className="new_input_class"
+                                  type="number"
+                                  placeholder="Quntity"
+                                  name={`parts[${index}].quantity`}
+                                  value={gr.quantity_received}
+                                  onChange={handleChange}
+                                />
+                              </td>
+                            )}
+
+                            <td>
+                              <button
+                                type="button"
+                                className="btn btn-danger btn-sm"
+                                // onClick={() => handleRemovePart(index)}
+                              >
+                                Remove
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </>
+                    );
+                  })}
+                </table>
+              </div>
+            ) : (
+              <h3 className="text-center">No Parts Added</h3>
+            )}
           </div>
 
           {/* Modal for serial no */}
