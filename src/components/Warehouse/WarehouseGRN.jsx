@@ -19,7 +19,7 @@ export default function WarehouseGRN() {
       name: "GRN",
       selector: (row) => (
         <Link
-          to={`${row?.id}`}
+          to={`${row?.id}?GRN=${row?.grn_id}`}
           className="text-center text-info dark_theme_text"
         >
           {row?.grn_id}
