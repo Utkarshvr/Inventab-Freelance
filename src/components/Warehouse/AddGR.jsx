@@ -28,6 +28,7 @@ export default function AddGR() {
 
   const [showModal, setShowModal] = useState(false);
   const [serialNumbers, setSerialNumbers] = useState([]);
+  const [selectedGrId, setSelectedGrId] = useState(null);
 
   const [po, setPO] = useState(null);
 
@@ -88,25 +89,36 @@ export default function AddGR() {
         const uniqueArr = removeDuplicateObjects(removeUndefinedData);
         setPartsOption(uniqueArr);
         setSelectedPart(uniqueArr[0]);
-        setSerialNumbers([]);
       } catch (error) {
         console.log(error);
       }
     })();
   }, [po]);
 
-  useEffect(() => {
-    const xyz = serialNumbers?.filter(
-      (sn) => sn && sn !== null && sn !== undefined && sn !== ""
-    );
-    // setQtyRecieved(xyz?.length);
-  }, [serialNumbers]);
+  function handleAddSNO(grId) {
+    setSerialNumbers((prev) => [...prev, { grId, sn: [""] }]);
 
-  function handleAddSNO() {
-    setSerialNumbers((prev) => [...prev, ""]);
+    const prevSn = serialNumbers.find((sn) => grId === sn?.grId)?.sn || [];
+
+    const newArrWOCurrentIndex = serialNumbers?.filter(
+      (sn) => sn?.grId !== grId
+    );
+    setSerialNumbers(() => [
+      ...newArrWOCurrentIndex,
+      { grId, sn: [...prevSn, ""] },
+    ]);
   }
-  function handleRemoveSNO(i) {
-    setSerialNumbers((prev) => prev.filter((_sn, index) => index !== i));
+  function handleRemoveSNO(grId, i) {
+    const newSn = serialNumbers
+      .find((sn) => grId === sn?.grId)
+      ?.sn?.filter((_sn, index) => index !== i);
+
+    const newArrWOCurrentIndex = serialNumbers?.filter(
+      (sn) => sn?.grId !== grId
+    );
+    updateQty(i);
+
+    setSerialNumbers((prev) => [...newArrWOCurrentIndex, { grId, sn: newSn }]);
   }
 
   // form submit
@@ -116,9 +128,52 @@ export default function AddGR() {
     },
   });
 
+  const updateQty = (index, type, updatedSerialNumbers) => {
+    if (type === "INSTANTANEOUS_CHANGE") {
+      const xyz = updatedSerialNumbers
+        ?.find((sn) => sn?.grId === selectedGrId)
+        ?.sn?.filter(
+          (sn) => sn && sn !== null && sn !== undefined && sn !== ""
+        );
+
+      console.log({ xyz, selectedGrId });
+      setFieldValue(`goods_received[${index}].quantity_received`, xyz?.length);
+    } else {
+      const xyz = serialNumbers
+        ?.find((sn) => sn?.grId === selectedGrId)
+        ?.sn?.filter(
+          (sn) => sn && sn !== null && sn !== undefined && sn !== ""
+        );
+
+      console.log({ xyz, selectedGrId });
+      setFieldValue(`goods_received[${index}].quantity_received`, xyz?.length);
+    }
+  };
+  // useEffect(() => {
+
+  // }, [serialNumbers]);
+  console.log({ goodReceived });
   useEffect(() => {
-    setFieldValue("goods_received", goodReceived);
+    setFieldValue(
+      "goods_received",
+      goodReceived?.map((gr) => ({
+        ...gr,
+        quantity_received: gr?.serialized ? 0 : gr?.quantity_received,
+      }))
+    );
+    setSerialNumbers(() =>
+      goodReceived?.map((gr) => ({ grId: gr?.id, sn: [] }))
+    );
   }, [goodReceived]);
+
+  function handleRemoveGR(id) {
+    setFieldValue(
+      "goods_received",
+      values.goods_received.filter((gr) => gr?.part_no?.id !== id)
+    );
+  }
+
+  console.log({ values });
 
   return (
     <>
@@ -136,113 +191,116 @@ export default function AddGR() {
               className="text-start w-25 my-4 "
             />
           </div>
-
-          <div className="table-responsive111">
-            {values.goods_received?.length > 0 ? (
-              <div>
-                <table className="table table-bordered table-responsive-sm111">
-                  <thead>
-                    <tr>
-                      <th scope="col">Part No</th>
-                      <th scope="col">Description</th>
-                      <th scope="col">Qty Received</th>
-                    </tr>
-                  </thead>
-                  {values?.goods_received?.map((gr, index) => {
-                    return (
-                      <>
-                        <tbody>
-                          <tr key={index + 1}>
-                            <td>
-                              <div className="select-part">
-                                <Select
-                                  className="select"
-                                  placeholder="Select Part No"
-                                  value={{
-                                    label: gr?.part_no?.part_number,
-                                    value: gr?.part_no?.id,
-                                  }}
-                                  options={partsOption}
-                                  name="part_id"
-                                  isSearchable
-                                  isClearable
-                                  // onChange={(selectedOption) =>
-                                  //   handlePartSelectChange(
-                                  //     selectedOption,
-                                  //     index
-                                  //   )
-                                  // }
-                                />
-                              </div>
-                            </td>
-                            <td>
-                              <input
-                                className="new_input_class"
-                                type="text"
-                                placeholder="Short Description"
-                                name={`parts[${index}].short_description`}
-                                value={gr?.part_no?.short_description}
-                                onChange={handleChange}
-                              />
-                            </td>
-
-                            {gr?.serialized ? (
-                              <td
-                                style={{ cursor: "pointer" }}
-                                // onClick={() =>
-                                //   handleQuanityClickForSerializedParts(
-                                //     index,
-                                //     gr?.part_no?.id
-                                //   )
-                                // }
-                              >
-                                <input
-                                  style={{
-                                    border: "1px solid rebeccapurple",
-                                    color: "rebeccapurple",
-                                    cursor: "pointer",
-                                  }}
-                                  className="new_input_class"
-                                  type="number"
-                                  placeholder="Quntity"
-                                  name={`parts[${index}].quantity`}
-                                  value={gr.quantity_received}
-                                  readOnly
-                                />
+          <form onSubmit={handleSubmit}>
+            <div className="table-responsive111">
+              {values.goods_received?.length > 0 ? (
+                <div>
+                  <table className="table table-bordered table-responsive-sm111">
+                    <thead>
+                      <tr>
+                        <th scope="col">Part No</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Qty Received</th>
+                      </tr>
+                    </thead>
+                    {values?.goods_received?.map((gr, index) => {
+                      return (
+                        <>
+                          <tbody>
+                            <tr key={index + 1}>
+                              <td>
+                                <div className="select-part">
+                                  <Select
+                                    className="select"
+                                    placeholder="Select Part No"
+                                    value={{
+                                      label: gr?.part_no?.part_number,
+                                      value: gr?.part_no?.id,
+                                    }}
+                                    name={`goods_received[${index}].part`}
+                                    options={partsOption}
+                                    isSearchable
+                                    // onChange={(selectedOption) =>
+                                    //   handlePartSelectChange(
+                                    //     selectedOption,
+                                    //     index
+                                    //   )
+                                    // }
+                                  />
+                                </div>
                               </td>
-                            ) : (
                               <td>
                                 <input
                                   className="new_input_class"
-                                  type="number"
-                                  placeholder="Quntity"
-                                  name={`parts[${index}].quantity`}
-                                  value={gr.quantity_received}
+                                  type="text"
+                                  placeholder="Short Description"
+                                  name={`goods_received[${index}].description`}
+                                  value={gr?.part_no?.description}
                                   onChange={handleChange}
                                 />
                               </td>
-                            )}
 
-                            <td>
-                              <button
-                                type="button"
-                                className="btn btn-danger btn-sm"
-                                // onClick={() => handleRemovePart(index)}
-                              >
-                                Remove
-                              </button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </>
-                    );
-                  })}
-                </table>
-              </div>
-            ) : (
-              <h3 className="text-center">No Parts Added</h3>
-            )}
-          </div>
+                              {gr?.serialized ? (
+                                <td
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => {
+                                    setShowModal(true);
+                                    setSelectedGrId(gr?.id);
+                                  }}
+                                >
+                                  <input
+                                    style={{
+                                      border: "1px solid rebeccapurple",
+                                      color: "rebeccapurple",
+                                      cursor: "pointer",
+                                    }}
+                                    className="new_input_class"
+                                    type="number"
+                                    placeholder="Quantity"
+                                    name={`goods_received[${index}].quantity_received`}
+                                    value={gr.quantity_received}
+                                    readOnly
+                                  />
+                                </td>
+                              ) : (
+                                <td>
+                                  <input
+                                    className="new_input_class"
+                                    type="number"
+                                    placeholder="Quntity"
+                                    name={`goods_received[${index}].quantity_received`}
+                                    value={gr.quantity_received}
+                                    onChange={handleChange}
+                                  />
+                                </td>
+                              )}
+
+                              <td>
+                                <button
+                                  type="button"
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() =>
+                                    handleRemoveGR(gr?.part_no?.id)
+                                  }
+                                >
+                                  Remove
+                                </button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </>
+                      );
+                    })}
+                  </table>
+                </div>
+              ) : (
+                <h3 className="text-center">No Parts Added</h3>
+              )}
+            </div>
+            <button className="btn btn-primary rounded-1" type="submit">
+              Update GR
+            </button>
+          </form>
 
           {/* Modal for serial no */}
           {showModal ? (
@@ -270,7 +328,7 @@ export default function AddGR() {
                           <th className="text-light ps-4 fs-5">Serial No</th>
                           <th className="text-light ps-4 fs-5">
                             <button
-                              onClick={handleAddSNO}
+                              onClick={() => handleAddSNO(selectedGrId)}
                               disabled={
                                 serialNumbers.length > 0 &&
                                 !serialNumbers?.find(
@@ -290,34 +348,66 @@ export default function AddGR() {
                         </tr>
                       </thead>
                       <tbody>
-                        {serialNumbers?.map((sn, index) => (
-                          <tr key={index}>
-                            <td>
-                              <input
-                                className="new_input_class mb-3"
-                                type="text"
-                                name="short_description"
-                                value={sn}
-                                onChange={(event) => {
-                                  setSerialNumbers(() => {
-                                    const serialNumsCOPY = [...serialNumbers];
-                                    serialNumsCOPY[index] = event.target.value;
-                                    return serialNumsCOPY;
-                                  });
-                                }}
-                              />
-                            </td>
-                            <td>
-                              <button
-                                onClick={() => handleRemoveSNO(index)}
-                                type="button"
-                                className="btn btn-primary px-2 py-1"
-                              >
-                                Remove
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
+                        {serialNumbers
+                          ?.find((sn) => sn?.grId === selectedGrId)
+                          ?.sn?.map((sn, index) => (
+                            <tr key={index}>
+                              <td>
+                                <input
+                                  className="new_input_class mb-3"
+                                  type="text"
+                                  name="short_description"
+                                  value={sn}
+                                  onChange={(event) => {
+                                    const prevSerials =
+                                      serialNumbers?.find(
+                                        (sn) => sn?.grId === selectedGrId
+                                      )?.sn || [];
+                                    prevSerials[index] = event.target.value;
+                                    const newArrWOCurrentIndex =
+                                      serialNumbers?.filter(
+                                        (sn) => sn?.grId !== selectedGrId
+                                      );
+                                    console.log({
+                                      prevSerials,
+                                      newArrWOCurrentIndex,
+                                    });
+
+                                    const newArr = [
+                                      ...newArrWOCurrentIndex,
+                                      {
+                                        grId: selectedGrId,
+                                        sn: prevSerials,
+                                      },
+                                    ];
+                                    setSerialNumbers(() => newArr);
+
+                                    const grIndex =
+                                      values.goods_received?.findIndex(
+                                        (gr) => gr?.id === selectedGrId
+                                      );
+                                    console.log({ grIndex });
+                                    updateQty(
+                                      grIndex,
+                                      "INSTANTANEOUS_CHANGE",
+                                      newArr
+                                    );
+                                  }}
+                                />
+                              </td>
+                              <td>
+                                <button
+                                  onClick={() =>
+                                    handleRemoveSNO(selectedGrId, index)
+                                  }
+                                  type="button"
+                                  className="btn btn-primary px-2 py-1"
+                                >
+                                  Remove
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
                       </tbody>
                     </table>
                   </div>
