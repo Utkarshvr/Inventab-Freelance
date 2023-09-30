@@ -432,7 +432,12 @@ const UpdateOrderDataForm = ({ orderData }) => {
           });
         }
       } catch (error) {
-        toast.error(error?.message, { duration: 2000 });
+        toast.error(
+          error?.response?.status === 400
+            ? "All fields must be present"
+            : error?.message,
+          { duration: 2000 }
+        );
         console.log(error);
       }
     },

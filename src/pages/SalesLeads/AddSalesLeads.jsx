@@ -215,6 +215,8 @@ const AddSalesDataForm = () => {
       try {
         // console.log(values);
         const { department, sub_org, client, status, parts: partArr } = values;
+
+        // Fill all the forms with valid format
         // sort part obj data
         let parts = [];
         partArr.forEach((p) => {
@@ -257,7 +259,10 @@ const AddSalesDataForm = () => {
           toast.success("Lead created successfully");
         }
       } catch (error) {
-        toast.error(error?.message, { duration: 2000 });
+        toast.error(
+          error?.response?.status === 400 ? "All fields must be present" : error?.message,
+          { duration: 2000 }
+        );
         console.log(error);
       }
     },
