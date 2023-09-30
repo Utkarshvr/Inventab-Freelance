@@ -473,7 +473,7 @@ export default function UpdateSalesInvoice() {
         let wantedPart = partFullObj.find(
           (part) => part?.id === partInv?.parts_no?.id
         );
-        const quantity = wantedPart?.serialization ? 0 : 1;
+        const quantity = wantedPart?.quantity;
         const unit_cost = wantedPart?.mrp;
         const net_price = quantity * unit_cost;
         const gst = wantedPart?.gst_itm?.country_gst[0]?.gst_percent;
