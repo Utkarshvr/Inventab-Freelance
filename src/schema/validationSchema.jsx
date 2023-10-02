@@ -17,3 +17,11 @@ export const emailSchema = Yup.object({
     .matches(emailRules, { message: "Field should contain a valid e-mail" })
     .required("Email required"),
 });
+
+// login schema
+export const leadsSchema = Yup.object({
+  department: Yup.string().required({
+    name: "department",
+    msg: "Department required",
+  }),
+});

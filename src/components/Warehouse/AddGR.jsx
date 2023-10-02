@@ -10,7 +10,6 @@ import {
   removeUndefinedObj,
 } from "../../utils/utilityFunc/utilityFunc";
 import { useLocation, useParams } from "react-router-dom";
-import DataTable from "react-data-table-component";
 import toast from "react-hot-toast";
 import { useFormik } from "formik";
 
@@ -32,9 +31,7 @@ export default function AddGR() {
 
   const [po, setPO] = useState(null);
 
-  const [parts, setParts] = useState([]);
   const [partsOption, setPartsOption] = useState([]);
-  const [selectedPart, setSelectedPart] = useState(null);
 
   const [goodReceived, setGoodReceived] = useState([]);
   // load department, Client, sub-organization
@@ -75,7 +72,7 @@ export default function AddGR() {
 
         const partsArr = [];
         const parts = data?.results[0]?.parts;
-        setParts(parts || []);
+        // setParts(parts || []);
 
         parts?.forEach((part) => {
           const deptObj = {
@@ -88,7 +85,7 @@ export default function AddGR() {
         const removeUndefinedData = removeUndefinedObj(partsArr);
         const uniqueArr = removeDuplicateObjects(removeUndefinedData);
         setPartsOption(uniqueArr);
-        setSelectedPart(uniqueArr[0]);
+        // setSelectedPart(uniqueArr[0]);
       } catch (error) {
         console.log(error);
       }
@@ -126,6 +123,21 @@ export default function AddGR() {
     initialValues: {
       goods_received: goodReceived || [],
     },
+    onSubmit: async () => {
+      try {
+        const payload = values;
+        console.log({ payload, url: `/inventory/gr/create/${GRN}` });
+
+        const { data } = await axios.put(
+          `/inventory/gr/create/${grnId}`,
+          payload
+        );
+        console.log({ payload, data });
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
+    },
   });
 
   const updateQty = (index, type, updatedSerialNumbers) => {
@@ -149,10 +161,7 @@ export default function AddGR() {
       setFieldValue(`goods_received[${index}].quantity_received`, xyz?.length);
     }
   };
-  // useEffect(() => {
 
-  // }, [serialNumbers]);
-  console.log({ goodReceived });
   useEffect(() => {
     setFieldValue(
       "goods_received",
@@ -172,8 +181,6 @@ export default function AddGR() {
       values.goods_received.filter((gr) => gr?.part_no?.id !== id)
     );
   }
-
-  console.log({ values });
 
   return (
     <>
@@ -323,7 +330,7 @@ export default function AddGR() {
                   </div>
                   <div className="table-responsive">
                     <table className="table table-bordered text-center">
-                      <thead style={{ background: "#343A40" }}>
+                      <thead>
                         <tr>
                           <th className="text-light ps-4 fs-5">Serial No</th>
                           <th className="text-light ps-4 fs-5">
