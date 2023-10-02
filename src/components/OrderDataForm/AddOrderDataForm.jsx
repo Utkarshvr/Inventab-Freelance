@@ -361,14 +361,14 @@ export default function DataForm() {
           resetForm({ values: "" });
           toast.success("Order updated successfully");
         } else {
-          toast.error("Fill all the forms with valid format", {
+          toast.error("The Data Format is not proper", {
             duration: 2000,
           });
         }
       } catch (error) {
         toast.error(
           error?.response?.status === 400
-            ? "All fields must be present"
+            ? "Fill all the  * fields"
             : error?.message,
           { duration: 2000 }
         );
