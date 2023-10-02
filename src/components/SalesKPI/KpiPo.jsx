@@ -100,7 +100,7 @@ const KpiPo = () => {
             <div className="card-body p-0 rounded-0">
               <div className="table-responsive">
                 <table className="table table-bordered">
-                  <thead style={{ background: "#343A40" }}>
+                  <thead>
                     <tr>
                       <th className="text-light ps-4 fs-5">Department</th>
                       <th className="text-light ps-4 fs-5">Total</th>
