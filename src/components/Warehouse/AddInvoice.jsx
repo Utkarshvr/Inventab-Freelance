@@ -363,7 +363,7 @@ export default function AddInvoice() {
       } catch (error) {
         toast.error(
           error?.response?.status === 400
-            ? "All fields must be present"
+            ? "Fill all the  * fields"
             : error?.message,
           { duration: 2000 }
         );
