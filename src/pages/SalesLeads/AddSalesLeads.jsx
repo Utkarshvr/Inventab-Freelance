@@ -270,7 +270,7 @@ const AddSalesDataForm = () => {
       } catch (error) {
         toast.error(
           error?.response?.status === 400
-            ? "fill all the  * fields"
+            ? "Fill all the  * fields"
             : error?.message,
           { duration: 2000 }
         );
