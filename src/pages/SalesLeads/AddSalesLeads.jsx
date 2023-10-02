@@ -18,6 +18,7 @@ import {
 } from "../../utils/utilityFunc/utilityFunc";
 import InputText from "./../../components/Form/InputText";
 import TextArea from "./../../components/Form/TextArea";
+import { leadsSchema } from "../../schema/validationSchema";
 
 const AddSalesDataForm = () => {
   const axios = useAxiosPrivate();
@@ -196,7 +197,14 @@ const AddSalesDataForm = () => {
   ];
 
   // form submit
-  const { setFieldValue, values, handleChange, handleSubmit } = useFormik({
+  const {
+    setFieldValue,
+    errors,
+    handleBlur,
+    values,
+    handleChange,
+    handleSubmit,
+  } = useFormik({
     initialValues: {
       department: null,
       sub_org: null,
@@ -211,6 +219,7 @@ const AddSalesDataForm = () => {
       description: "",
       parts: [],
     },
+    // validationSchema: leadsSchema,
     onSubmit: async (values, { resetForm }) => {
       try {
         // console.log(values);
@@ -260,7 +269,9 @@ const AddSalesDataForm = () => {
         }
       } catch (error) {
         toast.error(
-          error?.response?.status === 400 ? "All fields must be present" : error?.message,
+          error?.response?.status === 400
+            ? "fill all the  * fields"
+            : error?.message,
           { duration: 2000 }
         );
         console.log(error);
@@ -268,6 +279,7 @@ const AddSalesDataForm = () => {
     },
   });
 
+  console.log({ errors });
   // Function to update net_price based on unit_cost and quantity
   const updateNetPrice = (index, value, changedForm) => {
     const part = values.parts[index];
@@ -420,12 +432,13 @@ const AddSalesDataForm = () => {
                   isSearchable
                   options={dept}
                   value={values.department}
+                  // onBlur={handleBlur}
                   onChange={(option) => setFieldValue("department", option)}
                 />
               </div>
 
               {/* add sub org input */}
-              <div className="mb-3 col-md-6">
+              {/* <div className="mb-3 col-md-6">
                 <label className="mb-2 text-dark text-capitalize">
                   Sub org
                 </label>
@@ -438,7 +451,7 @@ const AddSalesDataForm = () => {
                   value={values?.sub_org}
                   onChange={(option) => setFieldValue("sub_org", option)}
                 />
-              </div>
+              </div> */}
 
               {/* Rof PO NO input */}
               <div className="mb-3 col-md-6">
