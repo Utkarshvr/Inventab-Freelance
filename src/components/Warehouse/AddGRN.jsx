@@ -2,15 +2,10 @@ import { useState, useEffect } from "react";
 import Loader from "../../ui/Loader";
 import Select from "react-select";
 import PageTitle from "../Shared/PageTitle";
-import SectionTitle from "../Shared/SectionTitle";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useAuth } from "../../hooks/useAuth";
 import DataTable from "react-data-table-component";
 
-import {
-  removeDuplicateObjects,
-  removeUndefinedObj,
-} from "../../utils/utilityFunc/utilityFunc";
 import toast from "react-hot-toast";
 import { useFormik } from "formik";
 
@@ -67,13 +62,12 @@ export default function AddGRN() {
       vendor: null,
       // vendor: selectedvendor?.id,
     },
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       try {
         const payload = {
           po: values?.po?.value,
           org: orgId,
           vendor: values?.vendor?.value,
-          // vendor: selectedvendor?.id,
         };
         console.log({
           payload,
@@ -81,9 +75,14 @@ export default function AddGRN() {
 
         const { data } = await axios.post(`/inventory/grn/create/`, payload);
         console.log({ data });
+        toast.success("GRN Created", { duration: 2000 });
+        resetForm();
       } catch (error) {
         setLoading(false);
         console.log(error);
+        toast.error(error?.msg || "Couldn't Create The GRN", {
+          duration: 2000,
+        });
       }
     },
   });
@@ -139,8 +138,8 @@ export default function AddGRN() {
         <Loader />
       ) : (
         <>
-          <PageTitle title="Add GR" />
-          <SectionTitle heading="Add GR" />
+          <PageTitle title="Add GRN" />
+          {/* <SectionTitle heading="Add GR" /> */}
           <form className="mb-4" onSubmit={handleSubmit}>
             {/* FIELDS */}
             <div className="row">
