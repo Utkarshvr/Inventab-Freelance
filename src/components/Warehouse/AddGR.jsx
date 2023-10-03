@@ -151,8 +151,11 @@ export default function AddGR() {
           goods_received: payload,
           data,
         });
+        toast.success("GR Updated", { duration: 2000 });
+
       } catch (error) {
         setLoading(false);
+        toast.error(error?.msg || "Couldn't Update GR", { duration: 2000 });
         console.log(error);
       }
     },
@@ -267,8 +270,8 @@ export default function AddGR() {
         <Loader />
       ) : (
         <>
-          <PageTitle title="Add GR" />
-          <SectionTitle heading="Add GR" />
+          <PageTitle title="UPDATE GR" />
+          {/* <SectionTitle heading="Add GR" /> */}
           <div className="d-flex gap-4 align-items-center">
             <Select
               value={po}
@@ -321,7 +324,7 @@ export default function AddGR() {
                                   type="text"
                                   placeholder="Short Description"
                                   name={`goods_received[${index}].description`}
-                                  value={gr?.part_no?.description}
+                                  value={gr?.part_no?.short_description}
                                   onChange={handleChange}
                                 />
                               </td>
