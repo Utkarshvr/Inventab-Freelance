@@ -82,7 +82,7 @@ export default function WarehouseGRN() {
         <Loader />
       ) : (
         <>
-          <h1 className="text-center">GRN</h1>
+          <h1 className="text-center">Good Reciept Note (GRN)</h1>
 
           <div className="card">
             <div className="card-body">
