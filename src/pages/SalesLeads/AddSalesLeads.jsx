@@ -399,6 +399,7 @@ const AddSalesDataForm = () => {
     }
   };
 
+  if (loading || partsLoading) return <Loader />;
   return (
     <>
       <PageTitle title="Add Sales Leads" />

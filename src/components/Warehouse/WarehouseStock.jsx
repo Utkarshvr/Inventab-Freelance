@@ -3,10 +3,14 @@ import { useAuth } from "../../hooks/useAuth";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import Loader from "../../ui/Loader";
 import DataTable from "react-data-table-component";
+import { CSVLink } from "react-csv";
+import { FiDownload } from "react-icons/fi";
 
 export default function WarehouseStock() {
   const [loading, setLoading] = useState(false);
   const [stockList, setStockList] = useState([]);
+
+  const [csv, setCsv] = useState([]);
 
   const axios = useAxiosPrivate();
   const { auth } = useAuth();
@@ -53,6 +57,24 @@ export default function WarehouseStock() {
       sortable: true,
     },
   ];
+
+  // export as csv
+  const exportAsCsv = () => {
+    let data = [];
+    stockList.forEach((stock) => {
+      // @desc sales invoice csv object
+      const csvObj = {
+        "Part No": stock?.part_no?.part_number || "",
+        Description: stock?.part_no?.short_description || "",
+        Qty: stock?.quantity || 0,
+        Value: stock?.quantity * stock?.part_no?.mrp || 0,
+      };
+
+      data.push(csvObj);
+    });
+
+    setCsv((prev) => [...prev, ...data]);
+  };
   return (
     <>
       {loading ? (
@@ -86,13 +108,22 @@ export default function WarehouseStock() {
                 striped
                 highlightOnHover
                 subHeader
-                // actions={
-                //   <>
-                //     <h3 className="bg-primary text-white rounded-0 p-3">
-                //       Total: {numDifferentiation(total)}
-                //     </h3>
-                // </>
-                // }
+                actions={
+                  <>
+                    <CSVLink
+                      enclosingCharacter={` `}
+                      data={csv}
+                      filename={`Stock-${new Date(
+                        Date.now()
+                      ).toLocaleDateString("en-IN")}`}
+                      className="bg-primary btn text-white mb-3 border-0 d-flex align-items-center rounded-1"
+                      onClick={exportAsCsv}
+                    >
+                      <FiDownload className="fs-4 me-2" />
+                      Export as CSV
+                    </CSVLink>
+                  </>
+                }
               />
             </div>
           </div>

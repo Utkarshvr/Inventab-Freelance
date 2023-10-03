@@ -532,6 +532,8 @@ export default function DataForm() {
     setFieldValue("parts", updatedParts);
   };
 
+  if (loading || partsLoading) return <Loader />;
+
   return (
     <div className="card-body">
       <Toaster />

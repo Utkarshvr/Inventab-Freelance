@@ -570,6 +570,9 @@ export default function AddInvoice() {
     }
   };
 
+  if (loading || partsLoading) return <Loader />;
+
+
   return (
     <>
       <PageTitle title="Add Invoice" />

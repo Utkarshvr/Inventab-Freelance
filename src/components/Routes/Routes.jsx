@@ -44,6 +44,7 @@ import AddProjectDataForm from "../other/AddProjectDataForm";
 import ProjectTable from "../other/project/Project";
 import ExcelDataExtractor from "../other/ExcelDataExtractor";
 import UpdateSalesInvoice from "../Warehouse/UpdateSalesInvoice";
+import AddGRN from "../Warehouse/AddGRN";
 // import UpdateSalesInvoice from "../../pages/Dashboard/Sales/UpdateSalesInvoice";
 
 const router = createBrowserRouter([
@@ -198,6 +199,14 @@ const router = createBrowserRouter([
             element: (
               <RoleRequired role={"WAREHOUSE"}>
                 <AddGR />
+              </RoleRequired>
+            ),
+          },
+          {
+            path: "warehouse/grn/add-grn",
+            element: (
+              <RoleRequired role={"WAREHOUSE"}>
+                <AddGRN />
               </RoleRequired>
             ),
           },

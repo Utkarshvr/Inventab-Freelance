@@ -418,6 +418,7 @@ export default function SalesDataForm(props) {
       setExtd_gross_price(extdgrossprice);
     }
   };
+  if (loading || partsLoading) return <Loader />;
 
   return (
     <>
