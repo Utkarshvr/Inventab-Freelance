@@ -114,9 +114,12 @@ export default function AddGR() {
     const newArrWOCurrentIndex = serialNumbers?.filter(
       (sn) => sn?.grId !== grId
     );
-    updateQty(i);
 
     setSerialNumbers((prev) => [...newArrWOCurrentIndex, { grId, sn: newSn }]);
+    updateQty(i, "INSTANTANEOUS_CHANGE", [
+      ...newArrWOCurrentIndex,
+      { grId, sn: newSn },
+    ]);
   }
   console.log({ serialNumbers });
   // form submit
@@ -152,7 +155,6 @@ export default function AddGR() {
           data,
         });
         toast.success("GR Updated", { duration: 2000 });
-
       } catch (error) {
         setLoading(false);
         toast.error(error?.msg || "Couldn't Update GR", { duration: 2000 });
@@ -188,7 +190,7 @@ export default function AddGR() {
       "goods_received",
       goodReceived?.map((gr) => ({
         ...gr,
-        quantity_received: gr?.serialized ? 0 : gr?.quantity_received,
+        quantity_received: gr?.quantity_received,
       }))
     );
     setSerialNumbers(() =>
