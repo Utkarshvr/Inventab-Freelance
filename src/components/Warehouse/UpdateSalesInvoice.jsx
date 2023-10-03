@@ -705,7 +705,8 @@ export default function UpdateSalesInvoice() {
     }
   };
 
-  if (loading) return <Loader />;
+  if (loading || partsLoading) return <Loader />;
+
   return (
     <div className="div">
       <h2 className="text-center fw-bold">{INVOICE_NO}</h2>
