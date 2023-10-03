@@ -3,7 +3,7 @@ import { read, utils } from "xlsx";
 
 function ExcelDataExtractor() {
   const [excelData, setExcelData] = useState(null);
-
+  console.log({ excelData });
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {

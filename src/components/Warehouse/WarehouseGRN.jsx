@@ -34,7 +34,7 @@ export default function WarehouseGRN() {
     },
     {
       name: "Vendor",
-      selector: (row) => row?.vendor?.id,
+      selector: (row) => row?.vendor?.company_name,
       sortable: true,
     },
     {
@@ -109,15 +109,15 @@ export default function WarehouseGRN() {
                 striped
                 highlightOnHover
                 subHeader
-                // actions={
-                //   <>
-                //     <Link to="/dashboard/warehouse/grn/add-grn">
-                //       <button className="bg-primary btn text-white mb-3 border-0 d-flex align-items-center ms-2 rounded-1">
-                //         Add GRN
-                //       </button>
-                //     </Link>
-                //   </>
-                // }
+                actions={
+                  <>
+                    <Link to="/dashboard/warehouse/grn/add-grn">
+                      <button className="bg-primary btn text-white mb-3 border-0 d-flex align-items-center ms-2 rounded-1">
+                        Add GRN
+                      </button>
+                    </Link>
+                  </>
+                }
               />
             </div>
           </div>

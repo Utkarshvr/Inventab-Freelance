@@ -12,6 +12,7 @@ import {
 import { useLocation, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useFormik } from "formik";
+import { read, utils } from "xlsx";
 
 export default function AddGR() {
   const [loading, setLoading] = useState(false);
@@ -117,29 +118,46 @@ export default function AddGR() {
 
     setSerialNumbers((prev) => [...newArrWOCurrentIndex, { grId, sn: newSn }]);
   }
-
+  console.log({ serialNumbers });
   // form submit
   const { setFieldValue, values, handleChange, handleSubmit } = useFormik({
     initialValues: {
       goods_received: goodReceived || [],
     },
-    onSubmit: async () => {
+    onSubmit: async (values) => {
       try {
-        const payload = values;
-        console.log({ payload, url: `/inventory/gr/create/${GRN}` });
+        const payload = values.goods_received.map((gr) => ({
+          id: gr?.id,
+          part_no: gr?.part_no?.id,
+          short_description: gr?.short_description,
+          quantity_received: gr?.quantity_received,
+          serialized: gr?.serialized,
+          gr_parts: serialNumbers
+            ?.find((sn) => sn?.grId === gr?.id)
+            ?.sn?.map((sn) => ({
+              serial_number: sn,
+              part_number: gr?.part_no?.id,
+            })),
+        }));
+        console.log({
+          payload: { goods_received: payload },
+          url: `/inventory/gr/create/${grnId}`,
+        });
 
-        const { data } = await axios.put(
-          `/inventory/gr/create/${grnId}`,
-          payload
-        );
-        console.log({ payload, data });
+        const { data } = await axios.put(`/inventory/gr/create/${grnId}/`, {
+          goods_received: payload,
+        });
+        console.log({
+          goods_received: payload,
+          data,
+        });
       } catch (error) {
         setLoading(false);
         console.log(error);
       }
     },
   });
-
+  // console.log(values.goods_received);
   const updateQty = (index, type, updatedSerialNumbers) => {
     if (type === "INSTANTANEOUS_CHANGE") {
       const xyz = updatedSerialNumbers
@@ -181,6 +199,67 @@ export default function AddGR() {
       values.goods_received.filter((gr) => gr?.part_no?.id !== id)
     );
   }
+
+  const [excelData, setExcelData] = useState(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        const data = event.target.result;
+        const workbook = read(data, { type: "binary" });
+        const sheetName = workbook.SheetNames[0]; // Assuming the first sheet
+        const sheet = workbook.Sheets[sheetName];
+        const extractedData = utils.sheet_to_json(sheet, { header: 1 });
+        setExcelData(extractedData);
+      };
+
+      reader.readAsBinaryString(file);
+    }
+  };
+
+  useEffect(() => {
+    if (excelData) {
+      const prevSn =
+        serialNumbers.find((sn) => selectedGrId === sn?.grId)?.sn || [];
+
+      const newArrWOCurrentIndex = serialNumbers?.filter(
+        (sn) => sn?.grId !== selectedGrId
+      );
+
+      const newSerialNums = excelData.filter((data, index) => index !== 0);
+      console.log({ excelData });
+      const newArr = [
+        ...newArrWOCurrentIndex,
+        {
+          grId: selectedGrId,
+          sn: [...prevSn, ...newSerialNums.map((e) => e[0])],
+        },
+      ];
+
+      setSerialNumbers(() => newArr);
+
+      const grIndex = values.goods_received?.findIndex(
+        (gr) => gr?.id === selectedGrId
+      );
+      console.log({ grIndex });
+      updateQty(grIndex, "INSTANTANEOUS_CHANGE", newArr);
+
+      console.log({
+        selectedGrId,
+        newSerialNums,
+        excelData,
+        prevSn,
+
+        newSerials: [
+          ...newArrWOCurrentIndex,
+          { grId: selectedGrId, sn: [...prevSn, ...newSerialNums] },
+        ],
+      });
+    }
+  }, [excelData]);
 
   return (
     <>
@@ -322,6 +401,13 @@ export default function AddGR() {
               <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div className="modal-content">
                   <div className="modal-header">
+                    <input
+                      type="file"
+                      className="btn btn-primary"
+                      onChange={handleFileChange}
+                      accept=".xls, .xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                    />
+
                     <button
                       type="button"
                       className="btn-close"
