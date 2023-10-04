@@ -271,7 +271,7 @@ const UpdateBacklog = () => {
             <div className="card-body">
               {!loading ? (
                 <BacklogDataForm
-                  saleData={selectedData}
+                  selectedData={selectedData}
                   modalState={{ toggleForm, setToggleForm }}
                 />
               ) : (

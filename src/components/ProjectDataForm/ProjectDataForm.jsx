@@ -14,13 +14,15 @@ import {
 import TextArea from "../Form/TextArea";
 import { useParams } from "react-router-dom";
 
-export default function AddProjectDataForm(props) {
+export default function AddProjectDataForm({ modalState, selectedData }) {
   const axios = useAxiosPrivate();
   const { auth } = useAuth();
   const { orgId } = auth;
   const { id } = useParams();
 
-  const { setToggleForm } = props.modalState || {};
+  const { setToggleForm } = modalState || {};
+
+  console.log({ selectedData });
 
   const [isInitialWorkDone, setIsInitialWorkDone] = useState(false);
   const [loading, setLoading] = useState(false);
