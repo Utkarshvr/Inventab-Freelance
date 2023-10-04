@@ -76,6 +76,18 @@ export default function WarehouseGRN() {
     })();
   }, [axios, orgId]);
 
+  const [search, setSearch] = useState("");
+  const [filteredGRNList, setFilteredGRNList] = useState([]);
+  // search function
+  useEffect(() => {
+    console.log(grnList);
+    if (Boolean(search)) {
+      let result = grnList.filter((grn) =>
+        grn?.grn_id?.toLowerCase()?.match(search.toLowerCase())
+      );
+      setFilteredGRNList(result);
+    } else setFilteredGRNList(grnList);
+  }, [search]);
   return (
     <>
       {loading ? (
@@ -87,7 +99,7 @@ export default function WarehouseGRN() {
           <div className="card">
             <div className="card-body">
               <DataTable
-                data={grnList || []}
+                data={filteredGRNList || []}
                 columns={columns}
                 customStyles={{
                   rows: {
@@ -118,6 +130,22 @@ export default function WarehouseGRN() {
                     </Link>
                   </>
                 }
+                subHeaderComponent={
+                  <div
+                    style={{ width: "60%" }}
+                    className="rounded my-4"
+                  >
+                    {/* Input Search Area */}
+                    <input
+                      className="new_input_class"
+                      type="text"
+                      placeholder="Search here"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                    />
+                  </div>
+                }
+                subHeaderAlign="left"
               />
             </div>
           </div>
