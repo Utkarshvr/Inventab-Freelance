@@ -15,7 +15,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { format } from "date-fns";
 import { toast } from "react-hot-toast";
 
-export default function AddBacklogDataForm(props) {
+export default function AddBacklogDataForm({ selectedData, modalState }) {
   const axios = useAxiosPrivate();
   const { auth } = useAuth();
   const { orgId } = auth;
@@ -26,13 +26,15 @@ export default function AddBacklogDataForm(props) {
   const BACKLOG_NAME = queryParams.get("backlog");
   console.log(BACKLOG_NAME);
 
-  const { setToggleForm } = props.modalState || {};
+  const { setToggleForm } = modalState || {};
+  console.log({ selectedData });
 
   const [loading, setLoading] = useState(false);
   const [projects, setProjects] = useState([]);
   const [priorityOptions, setPriorityOptions] = useState([]);
   const [userOptions, setUserOptions] = useState([]);
   const [log, setLog] = useState([]);
+  const [isInitialSettingDone, setIsInitialSettingDone] = useState(false);
 
   const statusOptions = [
     { value: "Work in process", label: "Work in process" },
@@ -46,12 +48,12 @@ export default function AddBacklogDataForm(props) {
       backlog_id: BACKLOG_NAME,
       // backlog_id: null,
       title: "",
-      project: null,
+      project: { label: selectedData?.project, value: selectedData?.project },
       type: "",
       status: null,
       priority: null,
       end_date: "",
-      description: "",
+      description: selectedData?.project_desc || "",
       user: null,
     },
     onSubmit: async (values, { resetForm }) => {
@@ -98,6 +100,33 @@ export default function AddBacklogDataForm(props) {
       }
     },
   });
+  useEffect(() => {
+    if (!isInitialSettingDone && selectedData) {
+      formik.setFieldValue("project", {
+        label: selectedData?.project,
+        value: selectedData?.project,
+      });
+      formik.setFieldValue("user", {
+        label:
+          selectedData?.user?.first_name + " " + selectedData?.user?.first_name,
+        value: selectedData?.user?.id,
+      });
+      formik.setFieldValue("status", {
+        label: selectedData?.status,
+        value: selectedData?.status,
+      });
+      formik.setFieldValue("priority", {
+        label: selectedData?.priority,
+        value: selectedData?.priority,
+      });
+
+      formik.setFieldValue("title", selectedData?.user_story);
+
+      formik.setFieldValue("type", selectedData?.type);
+
+      setIsInitialSettingDone(true);
+    }
+  }, [selectedData]);
 
   useEffect(() => {
     let isMount = true;
