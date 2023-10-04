@@ -75,12 +75,12 @@ export default function AddGRN() {
           org: orgId,
           vendor: values?.vendor?.value,
           goods_received: values.parts.map((part) => ({
-            id: part?.parts_id?.id,
+            // id: part?.parts_id?.id,
             part_no: part?.parts_id?.id,
             short_description: part?.short_description,
             quantity_received: part?.quantity,
             serialized: part?.parts_id?.serialization,
-            part_parts: serialNumbers
+            gr_parts: serialNumbers
               ?.find((sn) => sn?.partId === part?.parts_id?.id)
               ?.sn?.map((sn) => ({
                 serial_number: sn,
@@ -92,7 +92,7 @@ export default function AddGRN() {
           payload,
         });
 
-        const { data } = await axios.post(`/inventory/GRN/create/`, payload);
+        const { data } = await axios.post(`/inventory/grn/create/`, payload);
         console.log({ data });
 
         toast.success("GRN Created", { duration: 2000 });
