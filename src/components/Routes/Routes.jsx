@@ -21,8 +21,8 @@ import Backlog from "../EngineeringPages/Backlog";
 import Project from "../EngineeringPages/Project";
 import EmployeeTimesheet from "../EngineeringPages/EmployeeTimesheet";
 import RoleRequired from "../AuthRequired/RoleRequired";
-import AddProject from "../engg/Project";
-import UpdateProject from "../engg/UpdateProject";
+// import AddProject from "../engg/Project";
+// import UpdateProject from "../engg/UpdateProject";
 import AccountingPage from "../../pages/Accounting/AccountingPage";
 import AccountingAR from "../Accounting/AccountingAR";
 import AccountingInvoices from "../Accounting/AccountingInvoices";
@@ -45,7 +45,14 @@ import ProjectTable from "../other/project/Project";
 import ExcelDataExtractor from "../other/ExcelDataExtractor";
 import UpdateSalesInvoice from "../Warehouse/UpdateSalesInvoice";
 import AddGRN from "../Warehouse/AddGRN";
-// import UpdateSalesInvoice from "../../pages/Dashboard/Sales/UpdateSalesInvoice";
+// import Backlog from "../../pages/Dashboard/EngineeringPages/Backlog";
+// import Project from "../../pages/Dashboard/EngineeringPages/Project";
+// import EmployeeTimesheet from "../../pages/Dashboard/EngineeringPages/EmployeeTimesheet";
+import AddProject from "../Project/AddProject";
+import AddBacklog from "../Backlog/AddBacklog";
+import UpdateProject from "../Project/UpdateProject";
+import UpdateBacklog from "../Backlog/UpdateBacklog";
+import GridView from "../Project/GridView";
 
 const router = createBrowserRouter([
   {
@@ -226,47 +233,45 @@ const router = createBrowserRouter([
               </RoleRequired>
             ),
           },
-          // ENGINEERING
+          /* Engineering */
           {
             path: "eng",
-            element: (
-              <RoleRequired role={"ENGINEERING"}>
-                <EngineeringDashboard />
-              </RoleRequired>
-            ),
-          },
-          {
-            path: "engg",
-            element: <AddProject role={"ENGINEERING"} />,
-          },
-          {
-            path: "engg/update-project/:id",
-            element: <UpdateProject role={"ENGINEERING"} />,
+            element: <EngineeringDashboard />,
           },
           {
             path: "eng-backlog",
-            element: (
-              <RoleRequired role={"ENGINEERING"}>
-                <Backlog />
-              </RoleRequired>
-            ),
+            element: <Backlog />,
+          },
+          {
+            path: "engg/grid-backlog",
+            element: <GridView />,
+          },
+          {
+            path: "engg/add-backlog",
+            element: <AddBacklog />,
+          },
+          {
+            path: "engg/update-backlog/:id",
+            element: <UpdateBacklog />,
           },
           {
             path: "eng-project",
-            element: (
-              <RoleRequired role={"ENGINEERING"}>
-                <Project />
-              </RoleRequired>
-            ),
+            element: <Project />,
+          },
+          {
+            path: "engg/add-project",
+            element: <AddProject />,
+          },
+          {
+            path: "engg/update-project/:id",
+            element: <UpdateProject />,
           },
           {
             path: "eng-employeetimesheet",
-            element: (
-              <RoleRequired role={"ENGINEERING"}>
-                <EmployeeTimesheet />
-              </RoleRequired>
-            ),
+            element: <EmployeeTimesheet />,
           },
+
+          // SALES
           {
             path: "sales/add-sales-leads",
             element: (

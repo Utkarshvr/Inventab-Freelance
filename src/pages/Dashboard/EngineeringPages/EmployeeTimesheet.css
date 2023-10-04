@@ -1,0 +1,49 @@
+.btn-toggle {
+    background-color: #ccc; 
+    color: black; 
+    border: none;
+    /* padding: 5px 10px; */
+    cursor: pointer;
+  }
+  
+  .btn-toggle.employee {
+    background-color: #007bff; /* Employee background color */
+    color: #fff; /* Employee text color */
+  }
+  
+  .btn-toggle.pm {
+    background-color: #dc3545; /* PM background color */
+    color: #fff; /* PM text color */
+  }
+
+
+
+
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 160px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
+  
