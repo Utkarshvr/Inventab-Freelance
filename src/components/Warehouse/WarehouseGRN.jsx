@@ -86,7 +86,8 @@ export default function WarehouseGRN() {
         grn?.grn_id?.toLowerCase()?.match(search.toLowerCase())
       );
       setFilteredGRNList(result);
-    } else setFilteredGRNList(grnList);
+    }
+    // else setFilteredGRNList(grnList);
   }, [search]);
   return (
     <>
@@ -99,7 +100,7 @@ export default function WarehouseGRN() {
           <div className="card">
             <div className="card-body">
               <DataTable
-                data={filteredGRNList || []}
+                data={search !== "" ? filteredGRNList : grnList || []}
                 columns={columns}
                 customStyles={{
                   rows: {
@@ -131,10 +132,7 @@ export default function WarehouseGRN() {
                   </>
                 }
                 subHeaderComponent={
-                  <div
-                    style={{ width: "60%" }}
-                    className="rounded my-4"
-                  >
+                  <div style={{ width: "60%" }} className="rounded my-4">
                     {/* Input Search Area */}
                     <input
                       className="new_input_class"
