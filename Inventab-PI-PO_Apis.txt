@@ -1,0 +1,150 @@
+PO List
+http://143.244.142.0/api/v1/pipo/purchase-order/list/
+--------------------------------------------------------------------------------------------------------------
+Create Po
+http://143.244.142.0/api/v1/pipo/create/purchase-order/
+{
+            "id": "45c6d4e4-57d4-4e55-9600-fc4d6508babf",
+            "parts": [
+                {
+                    "id": "a002df23-d9c6-4561-8368-e9bed6ecd5d4",
+                    "created": "2023-07-03T18:32:32.860418+05:30",
+                    "modified": "2023-07-03T18:32:32.860432+05:30",
+                    "parts_no": "testpart1",
+                    "price": 11.0,
+                    "quantity": 100,
+                    "warranty": 0,
+                    "short_description": "Part For Testing1",
+                    "expected_date": "2023-07-03",
+                    "parts_id": "51b8078a-2899-4fc5-9baa-1a71437a159c"
+                }
+            ],
+            "created": "2023-07-03T18:31:35.581390+05:30",
+            "modified": "2023-07-03T18:31:35.581409+05:30",
+            "po_id": "POD-100000000-000001",
+            "expected_date": "2023-07-02",
+            "comments": "dfghj",
+            "mobile": "8975150086",
+            "created_by": "6ecd2e55-42f1-4743-91c4-ec6d0b716033",
+            "org": "0884137a-b5dc-4f5b-b64d-9e7baf0d3819",
+            "vendor": "0884137a-b5dc-4f5b-b64d-9e7baf0d3819",
+            "associated_pi": "051a3d64-9ad3-458b-b94c-3b74a3f99bf1",
+            "po_type": "7b0bc7bb-da03-4ccb-8e1d-a9a9f5c04912",
+            "project": null,
+            "user": null,
+            "status": 1,
+            "so": null,
+            "payment_term": 1,
+            "delivery_term": 1,
+            "billing_address": "5fe3fb26-a9d3-4c4d-8298-18d9f4bb186f",
+            "shipping_address": "5fe3fb26-a9d3-4c4d-8298-18d9f4bb186f"
+        }
+----------------------------------------------------------------------------------------------------------------       
+Update PO
+http://143.244.142.0/api/v1/pipo/create/purchase-order/{po_uuid}/
+{
+            "parts": [
+                {
+                    "id": "a002df23-d9c6-4561-8368-e9bed6ecd5d4",
+                    "created": "2023-07-03T18:32:32.860418+05:30",
+                    "modified": "2023-07-03T18:32:32.860432+05:30",
+                    "parts_no": "testpart1",
+                    "price": 11.0,
+                    "quantity": 100,
+                    "warranty": 0,
+                    "short_description": "Part For Testing1",
+                    "expected_date": "2023-07-03",
+                    "parts_id": "51b8078a-2899-4fc5-9baa-1a71437a159c"
+                }
+            ],
+            "created": "2023-07-03T18:31:35.581390+05:30",
+            "modified": "2023-07-03T18:31:35.581409+05:30",
+            "po_id": "POD-100000000-000001",
+            "expected_date": "2023-07-02",
+            "comments": "dfghj",
+            "mobile": "8975150086",
+            "created_by": "6ecd2e55-42f1-4743-91c4-ec6d0b716033",
+            "org": "0884137a-b5dc-4f5b-b64d-9e7baf0d3819",
+            "vendor": "0884137a-b5dc-4f5b-b64d-9e7baf0d3819",
+            "associated_pi": "051a3d64-9ad3-458b-b94c-3b74a3f99bf1",
+            "po_type": "7b0bc7bb-da03-4ccb-8e1d-a9a9f5c04912",
+            "project": null,
+            "user": null,
+            "status": 1,
+            "so": null,
+            "payment_term": 1,
+            "delivery_term": 1,
+            "billing_address": "5fe3fb26-a9d3-4c4d-8298-18d9f4bb186f",
+            "shipping_address": "5fe3fb26-a9d3-4c4d-8298-18d9f4bb186f"
+        }
+---------------------------------------------------------------------------------------------------------------------
+Get PI List
+http://143.244.142.0/api/v1/pipo/pi/fetch/?org={org_id}
+---------------------------------------------------------------------------------------------------------------------
+Create PI
+http://143.244.142.0/api/v1/pipo/create/pi/
+{
+    "id": "be64656e-79e5-436f-9ab3-34d6157a2b09",
+    "parts": [
+        {
+            "id": "9939c75e-612d-433e-a05a-8e556504b1aa",
+            "created": "2023-07-03T18:46:12.273270+05:30",
+            "modified": "2023-07-03T18:46:12.292609+05:30",
+            "quantity": 111,
+            "parts_no": "testpart2",
+            "price": 1.0,
+            "gst": "18.00",
+            "extd_price": "111.00",
+            "extd_gross_price": "130.98",
+            "pi_id": "be64656e-79e5-436f-9ab3-34d6157a2b09",
+            "parts_id": "3ca1f410-8da1-4cf5-9c4d-d99d8f2a83ab"
+        }
+    ],
+    "created": "2023-07-03T18:45:59.678672+05:30",
+    "modified": "2023-07-03T18:46:12.296530+05:30",
+    "pi_id": "PID-100000000-000002",
+    "expected_date": "2023-03-22",
+    "comments": "dfghjk",
+    "total": "130.98",
+    "created_by": "96a5a748-01e2-4424-817e-dce654a10603",
+    "org": "0884137a-b5dc-4f5b-b64d-9e7baf0d3819",
+    "pi_type": "7b0bc7bb-da03-4ccb-8e1d-a9a9f5c04912",
+    "so": "101269dd-d436-439a-b0d8-82ebec54b1c5",
+    "project": null,
+    "user": null,
+    "status": 1
+}
+------------------------------------------------------------------------------------
+Update PI
+http://143.244.142.0/api/v1/pipo/create/pi/{pi_uuid}/
+{
+    "parts": [
+        {
+            "id": "9939c75e-612d-433e-a05a-8e556504b1aa",
+            "created": "2023-07-03T18:46:12.273270+05:30",
+            "modified": "2023-07-03T18:46:12.292609+05:30",
+            "quantity": 111,
+            "parts_no": "testpart2",
+            "price": 1.0,
+            "gst": "18.00",
+            "extd_price": "111.00",
+            "extd_gross_price": "130.98",
+            "pi_id": "be64656e-79e5-436f-9ab3-34d6157a2b09",
+            "parts_id": "3ca1f410-8da1-4cf5-9c4d-d99d8f2a83ab"
+        }
+    ],
+    "created": "2023-07-03T18:45:59.678672+05:30",
+    "modified": "2023-07-03T18:46:12.296530+05:30",
+    "pi_id": "PID-100000000-000002",
+    "expected_date": "2023-03-22",
+    "comments": "dfghjk",
+    "total": "130.98",
+    "created_by": "96a5a748-01e2-4424-817e-dce654a10603",
+    "org": "0884137a-b5dc-4f5b-b64d-9e7baf0d3819",
+    "pi_type": "7b0bc7bb-da03-4ccb-8e1d-a9a9f5c04912",
+    "so": "101269dd-d436-439a-b0d8-82ebec54b1c5",
+    "project": null,
+    "user": null,
+    "status": 1
+}
+------------------------------------------------------------------------------------------------

@@ -1,0 +1,147 @@
+################## Sales Invoice Module Apis #############################################
+Base url = http://143.244.142.0
+===========================================================================================
+Get Single Invoice
+/api/v1/invoices/fetch/all/invoices/?id={invoice_uuid}
+------------------------------------------------------------
+Get Invoice List Filter By Org id
+/api/v1/invoices/fetch/all/invoices/?org={org_id}
+------------------------------------------------------------
+Get Sales Invoices Serialized Parts List
+/api/v1/invoices/fetch/all/invoices/get_serialized_parts/?invoice_number={invoice_no}&part_number={part_no}
+------------------------------------------------------------
+Get Delivery Terms
+DELIVERY_TERM_CHOICES = (
+        ('exworks', 'EXWORKS'),
+        ('delivered', 'DELIVERED'),
+        ('until_port', 'UNTIL_PORT'),
+    )
+------------------------------------------------------------
+Get Payment Terms
+api/v1/organizations/fetch/payment/term/
+------------------------------------------------------------
+Get Invoice Type List
+/api/v1/invoices/get/invoice-type/
+--------------------------------------------------------------
+Get Shipper List
+/api/v1/invoices/get/shipper/
+---------------------------------------------------------------
+Good Received List
+/api/v1/inventory/gr/list/?part_no={part_no_uuid}
+------------------------------------------------------------------------
+Create Invoice
+/api/v1/invoices/create/invoice/
+{
+            "po_number": "DSF",
+            "invoice_date": "2023-06-08",
+            "delivery_term": "exworks",
+            "invoice_comment": "sdfdsa",
+            "shipper": "{shipper_uuid}",
+            "shipment_charges": 0.0,
+            "org": "0884137a-b5dc-4f5b-b64d-9e7baf0d3819",
+            "current_org": "0884137a-b5dc-4f5b-b64d-9e7baf0d3819",
+            "sub_org": null,
+            "dept": "29d96868-fcb6-4ade-8bbb-de2daf46889b",
+            "invoice_type": "89f8071d-e2be-426a-a460-362ce0175407",
+            "billing_address": "5fe3fb26-a9d3-4c4d-8298-18d9f4bb186f",
+            "shipping_address": "5fe3fb26-a9d3-4c4d-8298-18d9f4bb186f",
+            "sale_order": "28dfdf1e-d006-4f7b-9089-ce333cf521bf",
+            "payment_term": 1,
+            "created_by": "96a5a748-01e2-4424-817e-dce654a10603",
+            "parts_invoice": [
+		    { 
+		      "quantity": 1.0,
+		      "customer_part_no":  "wkwm2wp001",
+		      "price": 5.0,
+		      "warranty": 12,
+		      "short_description": "Dongle label for wikitek mechanik 2w",
+		      "parts_no": "92c6e2ff-4131-436a-9941-9e186766d072",
+		      "part" : "{goodreceived_UUID}
+		    }
+		  ]
+        }
+-----------------------------------------------------------------------------------
+/api/v1/parts/update/serialized/part/{serialized_part_UUID}/
+  
+{
+    "invoice_number": "{invoice_uuid}",
+    "invoice_date": "{invoice_date}"
+}
+-----------------------------------------------------------------------------------
+Update Invoice
+/api/v1/invoices/update/invoice/{invoice_UUid}/
+{
+    "po_number": "dsds",
+    "invoice_date": "2023-08-17",
+    "delivery_term": "exworks",
+    "invoice_comment": "sdfghj",
+    "shipper": "{shipper_uuid}",
+    "shipment_charges": 0.0,
+    "org": "0884137a-b5dc-4f5b-b64d-9e7baf0d3819",
+    "current_org": "0884137a-b5dc-4f5b-b64d-9e7baf0d3819",
+    "sub_org": "ee3f95b8-bea5-498a-a7fa-e85d5ba26440",
+    "dept": "29d96868-fcb6-4ade-8bbb-de2daf46889b",
+    "invoice_type": "89f8071d-e2be-426a-a460-362ce0175407",
+    "billing_address": "5fe3fb26-a9d3-4c4d-8298-18d9f4bb186f",
+    "shipping_address": "5fe3fb26-a9d3-4c4d-8298-18d9f4bb186f",
+    "sale_order": "1cbd37b5-4e5d-4cbb-90d1-42289baa895d",
+    "payment_term": 1,
+    "created_by": "96a5a748-01e2-4424-817e-dce654a10603",
+    "parts_invoice": [
+        {
+            "id": "69ad8df9-e349-4fba-bb17-38acaa982f28",
+            # "quantity": 100.0,
+            # "customer_part_no": "sdfs",
+            # "price": 0.0,
+            # "warranty": 0,
+            # "short_description": "Part For Testing",
+            # "parts_no": "29551d23-3072-4b59-85ea-42cf3371d61e"
+        }
+    ]
+}
+--------------------------------------------------------------------------------------------
+Create Invoice Payment
+/api/v1/invoices/create/payment/
+Payload -
+{
+    "date_received": "2023-09-12",
+    "transaction_id": "",
+    "amount": 1000.0,
+    "comment": "",
+    "invoice": "{invoice_uuid}"
+}
+--------------------------------------------------------------------------------------------
+============================ GRN APIs ========================================
+Get Po list filter by org id
+/api/v1/pipo/purchase-order/list/?org={org_id}
+------------------------------------------------------------------------------
+Get Single PO list
+api/v1/pipo/purchase-order/list/?id={po_uuid}
+------------------------------------------------------------------------------
+Create GRN
+/api/v1/inventory/grn/create/
+{
+    "po": "{po_uuid}",
+    "org": "{user_org_uuid}",
+    "vendor": "{po_vendor_uuid}"
+}
+-----------------------------------------------------------------------------
+Create GR
+/api/v1/inventory/gr/create/
+{
+            "grn": "{grn_uuid}",
+            "part_no": "{part_uuid}",
+            "short_description" : "{selected part desc}",
+            "quantity_received": 0,
+            "serialized": true/false
+}
+-----------------------------------------------------------------------------
+Serialized Parts
+/api/v1/parts/create
+{
+        "serial_number": "222222",
+        "part_number": "51b8078a-2899-4fc5-9baa-1a71437a159c",
+        "grn": "{GRNotes_UUid}",
+        "gr_part": "{GoodReceived+UUID}"
+}
+--------------------------------------------------------------------------------------------
