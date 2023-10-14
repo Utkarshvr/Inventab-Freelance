@@ -247,6 +247,7 @@ const AddPi = () => {
           `/pipo/create/pi/`,
           JSON.stringify(createLeadObj)
         );
+        console.log({ PAYLOAD: createLeadObj });
         if (res?.status === 201) {
           resetForm({ values: "" });
           toast.success("PI created successfully");

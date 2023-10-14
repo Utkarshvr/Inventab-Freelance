@@ -474,10 +474,10 @@ export default function AddInvoice({ selectedData }) {
         partArr.forEach((part) => {
           const partObj = {
             lead_part_id: part?.lead_part_id,
-            parts_no: part?.part_id?.value,
+            parts_no: part?.part_id?.id,
             short_description: part?.short_description,
             quantity: parseFloat(part?.quantity),
-            price: parseFloat(part?.price),
+            price: parseFloat(part?.unit_cost),
             status: "Active",
             gst: parseFloat(part?.gst),
             net_price: parseFloat(part?.net_price),
@@ -497,7 +497,7 @@ export default function AddInvoice({ selectedData }) {
           ...values,
           expected_date: expectedDate,
           po_type: potype?.value || null,
-          parts: partArr,
+          parts,
           vendor: vendor?.value,
           // po_date: poDate,
           // invoice_date: invDate,
@@ -517,16 +517,15 @@ export default function AddInvoice({ selectedData }) {
           created_by: userId,
           associated_pi: salesOrder?.value,
         };
+        console.log({ Invoice_Payload });
 
         const res = await axios.put(
           `pipo/create/purchase-order/${id}/`,
           JSON.stringify(Invoice_Payload)
         );
         console.log({ res });
-        if (res?.status === 201) {
-          resetForm({ values: "" });
-          toast.success("PO updated successfully");
-        }
+        // resetForm({ values: "" });
+        toast.success("PO updated successfully");
       } catch (error) {
         toast.error(
           error?.response?.status === 400
