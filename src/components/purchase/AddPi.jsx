@@ -214,10 +214,11 @@ const AddPi = () => {
         partArr.forEach((p) => {
           const partObj = {
             lead_part_id: p?.lead_part_id,
-            part_id: p?.part_id?.id,
+            parts_id: p?.part_id?.id,
+            parts_no: p?.part_id?.part_number,
             short_description: p?.short_description,
             quantity: parseFloat(p?.quantity),
-            unit_cost: parseFloat(p?.unit_cost),
+            price: parseFloat(p?.unit_cost),
             status: "Active",
             gst: parseFloat(p?.gst),
             net_price: parseFloat(p?.net_price),
@@ -240,14 +241,15 @@ const AddPi = () => {
           expected_date: expectedDate,
           status: status?.value || null,
           comments: comments || null,
-          parts: partArr,
+          parts,
         };
         // return console.log(createLeadObj);
+        console.log({ PAYLOAD: createLeadObj });
+
         const res = await axios.post(
           `/pipo/create/pi/`,
           JSON.stringify(createLeadObj)
         );
-        console.log({ PAYLOAD: createLeadObj });
         if (res?.status === 201) {
           resetForm({ values: "" });
           toast.success("PI created successfully");

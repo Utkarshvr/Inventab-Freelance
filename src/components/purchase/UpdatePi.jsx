@@ -343,7 +343,8 @@ const UpdatePi = () => {
     ) {
       const newParts = pi?.parts?.map((partInv) => {
         let wantedPart = partFullObj.find(
-          (part) => part?.id === partInv?.parts_id
+          (part) =>
+            part?.id === partInv?.parts_id || part?.id === partInv?.part_id
         );
         const quantity = partInv?.quantity;
         const unit_cost = partInv?.price;
