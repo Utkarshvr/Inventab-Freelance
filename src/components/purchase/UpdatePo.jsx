@@ -615,7 +615,8 @@ export default function AddInvoice({ selectedData }) {
     ) {
       const newParts = po?.parts?.map((partInv) => {
         let wantedPart = partFullObj.find(
-          (part) => part?.po_id === partInv?.parts_id?.id
+          (part) =>
+            part?.id === partInv?.parts_id?.id || part?.id === partInv?.parts_id
         );
         const quantity = partInv?.quantity;
         const unit_cost = partInv?.price;

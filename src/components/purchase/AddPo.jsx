@@ -468,6 +468,8 @@ export default function AddInvoice() {
           const partObj = {
             lead_part_id: part?.lead_part_id,
             parts_no: part?.part_id?.part_number,
+            parts_id: part?.part_id?.id,
+            // parts_id: { id: part?.part_id?.id },
             short_description: part?.short_description,
             quantity: parseFloat(part?.quantity),
             price: parseFloat(part?.unit_cost),
@@ -478,7 +480,6 @@ export default function AddInvoice() {
             quantity: parseFloat(part?.quantity),
 
             // parts_no: p?.parts_id?.id,
-            // parts_id: part?.parts_id?.id,
             // price: parseFloat(part?.price),
             // gst: parseFloat(part?.gst),
             // net_price: parseFloat(part?.net_price),
