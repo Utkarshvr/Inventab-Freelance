@@ -19,7 +19,7 @@ import {
 import InputText from "./../../components/Form/InputText";
 import TextArea from "./../../components/Form/TextArea";
 import { leadsSchema } from "../../schema/validationSchema";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const AddPi = () => {
   const axios = useAxiosPrivate();
@@ -73,12 +73,9 @@ const AddPi = () => {
     (async function () {
       try {
         setLoading(true);
-        const { data } = await axios.get(
-          `pipo/pi/fetch/?org=${orgId}`,
-          {
-            signal: controller.signal,
-          }
-        );
+        const { data } = await axios.get(`pipo/pi/fetch/?org=${orgId}`, {
+          signal: controller.signal,
+        });
         setLoading(false);
         const typeArr = [];
         isMount &&
@@ -98,8 +95,6 @@ const AddPi = () => {
         console.log(error);
       }
     })();
-
-    
 
     // sub org
     (async function () {
@@ -157,8 +152,6 @@ const AddPi = () => {
       }
     })();
 
-    
-
     return () => {
       (isMount = false), controller.abort();
     };
@@ -196,7 +189,7 @@ const AddPi = () => {
       // contact_name: "",
       // mobile: "",
       comments: "",
-  
+
       parts: [],
     },
     // validationSchema: leadsSchema,
@@ -206,11 +199,18 @@ const AddPi = () => {
           ? format(new Date(values.expected_date), "yyyy-MM-dd")
           : "";
         // console.log(values);
-        const { type, expected_date, comments, status, parts: partArr } = values;
+        const {
+          type,
+          expected_date,
+          comments,
+          status,
+          parts: partArr,
+        } = values;
 
         // Fill all the forms with valid format
         // sort part obj data
         let parts = [];
+        console.log({ type, expected_date, comments, status, parts: partArr });
         partArr.forEach((p) => {
           const partObj = {
             lead_part_id: p?.lead_part_id,
@@ -221,7 +221,6 @@ const AddPi = () => {
             status: "Active",
             gst: parseFloat(p?.gst),
             net_price: parseFloat(p?.net_price),
-
             extd_gross_price: parseFloat(p?.extd_gross_price),
           };
 
@@ -240,8 +239,8 @@ const AddPi = () => {
           // pi_id: pi?.label || null,
           expected_date: expectedDate,
           status: status?.value || null,
-          comments: comments?.value || null,
-          parts:partArr,
+          comments: comments || null,
+          parts: partArr,
         };
         // return console.log(createLeadObj);
         const res = await axios.post(
@@ -423,8 +422,6 @@ const AddPi = () => {
                 />
               </div>
 
-             
-
               {/* add status input */}
               <div className="mb-3 col-md-6">
                 <label className="mb-2 text-dark text-capitalize">
@@ -442,8 +439,6 @@ const AddPi = () => {
                 />
               </div>
 
-              
-
               {/* add po date input */}
               <div className="mb-3 col-md-6">
                 <InputText
@@ -454,8 +449,6 @@ const AddPi = () => {
                   onChange={handleChange}
                 />
               </div>
-
-              
 
               {/* description input */}
               <div className="mb-3 col-12">
@@ -522,7 +515,7 @@ const AddPi = () => {
                               readOnly
                             />
                           </td>
-                          
+
                           <td>
                             <button
                               className="btn btn-primary rounded-1 py-2 px-4 d-flex justify-content-center align-items-center"
@@ -775,6 +768,3 @@ const AddPi = () => {
 };
 
 export default AddPi;
-
-
-

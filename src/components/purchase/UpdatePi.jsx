@@ -250,6 +250,7 @@ const UpdatePi = () => {
         } = values;
 
         let parts = [];
+        console.log(partArr);
         partArr.forEach((p) => {
           const partObj = {
             lead_part_id: p?.lead_part_id,
@@ -278,7 +279,7 @@ const UpdatePi = () => {
           pi_id: pi_id?.value,
           expected_date: expectedDate,
           status: status?.valueOf || null,
-          comments: comments?.value || "",
+          comments: comments || "",
           parts,
         };
         // return console.log(createLeadObj);
@@ -286,9 +287,10 @@ const UpdatePi = () => {
           `pipo/create/pi/${id}/`,
           JSON.stringify(createLeadObj)
         );
+        console.log({ res });
+        resetForm({ values: "" });
+        toast.success("Lead created successfully");
         if (res?.status === 201) {
-          resetForm({ values: "" });
-          toast.success("Lead created successfully");
         }
       } catch (error) {
         toast.error(
@@ -297,7 +299,7 @@ const UpdatePi = () => {
             : error?.message,
           { duration: 2000 }
         );
-        console.log(error);
+        console.log({ error });
       }
     },
   });
