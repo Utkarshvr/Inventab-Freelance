@@ -459,14 +459,18 @@ export default function AddInvoice() {
         // sort part obj data
         let parts = [];
 
-        console.log({ partArr });
-        partArr.forEach((part) => {
+        console.log({
+          parts: partArr,
+          pi_id,
+          status,
+        });
+        partArr?.forEach((part) => {
           const partObj = {
             lead_part_id: part?.lead_part_id,
-            parts_no: part?.part_id?.value,
+            parts_no: part?.part_id?.part_number,
             short_description: part?.short_description,
             quantity: parseFloat(part?.quantity),
-            price: parseFloat(part?.price),
+            price: parseFloat(part?.unit_cost),
             status: "Active",
             gst: parseFloat(part?.gst),
             net_price: parseFloat(part?.net_price),
@@ -500,7 +504,7 @@ export default function AddInvoice() {
           ...values,
           expected_date: expectedDate,
           po_type: potype?.value || null,
-          parts: partArr,
+          parts,
           vendor: vendor?.value,
           // po_date: poDate,
           // invoice_date: invDate,
@@ -514,12 +518,13 @@ export default function AddInvoice() {
           shipping_address: shippingAddress?.value,
           mobile: mobile,
           po_id: null,
-          status: status?.value,
+          status: parseFloat(status?.value),
           // associated_pi:associatedPI?.value,
           org: orgId,
           created_by: userId,
           associated_pi: salesOrder?.value,
         };
+        console.log({ Invoice_Payload });
 
         // const postData = {
         //     parts,
