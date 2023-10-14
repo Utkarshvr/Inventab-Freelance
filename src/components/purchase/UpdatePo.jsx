@@ -615,7 +615,7 @@ export default function AddInvoice({ selectedData }) {
     ) {
       const newParts = po?.parts?.map((partInv) => {
         let wantedPart = partFullObj.find(
-          (part) => part?.id === partInv?.parts_id?.id
+          (part) => part?.po_id === partInv?.parts_id?.id
         );
         const quantity = partInv?.quantity;
         const unit_cost = partInv?.price;
@@ -623,7 +623,7 @@ export default function AddInvoice({ selectedData }) {
 
         const gst = wantedPart?.gst_itm?.country_gst[0]?.gst_percent;
 
-        console.log({ wantedPart, gst });
+        console.log({ poParts: po?.parts, wantedPart, gst });
 
         const newPart = {
           part_id: {
