@@ -65,9 +65,9 @@ export default function AddInvoice({ selectedData }) {
 
   const [allPOs, setAllPOs] = useState([]);
 
-//   useEffect(() => {
-//     if (allPOs.length > 0) setPo(allPOs.find((po) => po?.id === id));
-//   }, [allPOs]);
+  //   useEffect(() => {
+  //     if (allPOs.length > 0) setPo(allPOs.find((po) => po?.id === id));
+  //   }, [allPOs]);
 
   console.log({ allPOs, po });
   // MODAL STATE
@@ -548,8 +548,8 @@ export default function AddInvoice({ selectedData }) {
     if (!isInitialWorkDone && po) {
       const initialValues = {
         salesOrder: {
-          label: po?.po_id,
-          value: po?.id,
+          label: po?.associated_pi?.pi_id,
+          value: po?.associated_pi?.id,
         },
         potype: {
           label: po?.po_type?.name,
@@ -673,7 +673,32 @@ export default function AddInvoice({ selectedData }) {
 
       setFieldValue("expectedDate", expected_date);
 
-      setFieldValue("parts", parts);
+      const formattedParts = parts?.map((part) => {
+        let thatPart = partFullObj.find(
+          (partObj) => partObj?.id === part?.parts_id
+        );
+        console.log({ thatPart });
+
+        return {
+          part_id: {
+            id: thatPart?.id,
+            part_number: thatPart?.part_number,
+          },
+          short_description: thatPart?.short_description,
+          quantity: part?.quantity,
+          unit_cost: part?.price,
+          status: status?.value,
+          gst: thatPart?.gst_itm?.country_gst[0]?.gst_percent,
+          net_price: part?.price * part?.quantity,
+          extd_gross_price: calculateExtdGrossPrice(
+            thatPart?.gst_itm?.country_gst[0]?.gst_percent,
+            part?.price * part?.quantity
+          ),
+          serialization: thatPart?.serialization,
+        };
+      });
+      console.log({ formattedParts });
+      setFieldValue("parts", formattedParts);
     } else {
       setFieldValue("expectedDate", "");
       setFieldValue("parts", "");
